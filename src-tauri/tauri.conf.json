@@ -1,16 +1,16 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "zeus-management",
+  "productName": "tauriwebpack",
   "version": "0.1.0",
-  "identifier": "com.ernesto.zeus-management",
+  "identifier": "com.tauriwebpack.app",
   "build": {
-    "frontendDist": "../src"
+    "frontendDist": "../dist"
   },
   "app": {
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "zeus-management",
+        "title": "tauriwebpack",
         "width": 800,
         "height": 600
       }

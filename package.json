@@ -1,15 +1,22 @@
 {
-  "name": "zeus-management",
+  "name": "tauriwebpack",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "dev": "webpack serve --open",
+    "build": "webpack",
     "tauri": "tauri"
   },
   "devDependencies": {
-    "@tauri-apps/cli": "^2"
-  },
-  "dependencies": {
-    "@tauri-apps/plugin-sql": "^2.4.0"
+    "@tauri-apps/cli": "^2",
+    "copy-webpack-plugin": "^12.0.2",
+    "css-loader": "^7.1.2",
+    "file-loader": "^6.2.0",
+    "html-webpack-plugin": "^5.6.3",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.0"
   }
 }

@@ -113,6 +113,17 @@ export const GUI =(function(){
         userIdInput.required = true;
         form.appendChild(userIdInput);
 
+        const acceptBtn = document.createElement('button');
+        acceptBtn.className = 'accept-btn';
+        acceptBtn.type = 'submit';
+        acceptBtn.textContent = 'Aceptar';
+        form.appendChild(acceptBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'cancel-btn';
+        cancelBtn.textContent = 'Cancelar';
+        form.appendChild(cancelBtn);
+
         body.appendChild(dialog);
     };
 

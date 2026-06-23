@@ -72,6 +72,49 @@ export const GUI =(function(){
 
             paymentsTable.children.item(1).appendChild(row);
         });
-    }
+    };
+
+    function renderAddPaymentForm(){
+        const body = document.querySelector('body');
+        const dialog = document.createElement('dialog');
+        const form = document.createElement('form');
+        form.action = 'dialog';
+        dialog.appendChild(form);
+        
+        const amountPaidLabel = document.createElement('label');
+        amountPaidLabel.htmlFor = 'amount-paid-input';
+        amountPaidLabel.textContent = 'Cantidad pagada:';
+        form.appendChild(amountPaidLabel);
+
+        const amountPaidInput = document.createElement('input');
+        amountPaidInput.id = 'amount-paid-input';
+        amountPaidInput.type = 'number';
+        amountPaidInput.required = true;
+        form.appendChild(amountPaidInput);
+
+        const paymentDateLabel = document.createElement('label');
+        paymentDateLabel.htmlFor = 'payment-date-input';
+        paymentDateLabel.textContent = 'Fecha de pago(Solo seleccionar si no es ahora):';
+        form.appendChild(paymentDateLabel);
+
+        const paymentDateInput = document.createElement('input');
+        paymentDateInput.id = 'payment-date-input';
+        paymentDateInput.type = 'datetime-local';
+        form.appendChild(paymentDateInput);
+
+        const userIdLabel = document.createElement('label');
+        userIdLabel.htmlFor = 'user-id-input';
+        userIdLabel.textContent = 'ID de usuario';
+        form.appendChild(userIdLabel);
+
+        const userIdInput = document.createElement('input');
+        userIdInput.id = 'user-id-input';
+        userIdInput.type = 'number';
+        userIdInput.required = true;
+        form.appendChild(userIdInput);
+
+        body.appendChild(dialog);
+    };
+
     return {renderTables};
 })();

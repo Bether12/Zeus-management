@@ -23,7 +23,6 @@ export class Data{
                 FOREIGN KEY(user_id) REFERENCES users(id)
                 );`);
         console.log('Database successfully initiated');
-        this.db.close();
         }catch(error){
             console.log(error);
         }
@@ -33,18 +32,14 @@ export class Data{
         if(queyType === 'get'){
             try{
                 this.db = await Database.load('sqlite:gym.db');
-                const response = await this.db.select(query, params);
-                this.db.close();
-                return response;
+                return await this.db.select(query, params);
             }catch(error){
                 console.log(error);
             }
         }else if (queyType === 'set'){
             try{
                 this.db = await Database.load('sqlite:gym.db');
-                const response = await this.db.execute(query, params);
-                this.db.close();
-                return response;
+                return await this.db.execute(query, params);
             }catch(error){
                 console.log(error);
             }

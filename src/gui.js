@@ -1,10 +1,20 @@
 import { Data } from "./db.js";
+import { eventMaster } from "./events.js";
 
 export const GUI =(function(){
     const Database = new Data();
     const body = document.querySelector('body');
     const usersTable = document.querySelector('#users-id');
     const paymentsTable = document.querySelector('#payment-records');
+
+    //Users table btn
+    const addPaymentBtn = document.querySelector('#add-payment-btn');
+    const editPaymentBtn = document.querySelector('#edit-payment-btn');
+    const deletePaymentBtn = document.querySelector('#delete-payment-btn');
+
+    //Payment table buttons
+    const addUserBtn = document.querySelector('#add-user-btn');
+    const editUserBtn = document.querySelector('#edit-user-btn');
 
     async function renderTables(){
         const responseUsers = await Database.queryDatabase('get', `
@@ -124,8 +134,13 @@ export const GUI =(function(){
         cancelBtn.textContent = 'Cancelar';
         form.appendChild(cancelBtn);
 
+        eventMaster.closeDialog(cancelBtn, dialog);
+
         body.appendChild(dialog);
+        dialog.showModal();
     };
+
+    eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
 
     return {renderTables};
 })();

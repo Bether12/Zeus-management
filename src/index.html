@@ -11,9 +11,19 @@
   <body>
     <h1>Registro de pagos y clientes</h1>
     <div class="payments">
-      <table>
-        <thead></thead>
-        <tbody></tbody>
+      <table id="users-id">
+        <thead>
+          <tr>
+            <td>ID</td>
+            <td>Nombre</td>
+            <td>Cantidad pagada</td>
+            <td>Fecha últ. pago</td>
+            <td>Activo</td>
+          </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
       </table>
       <div class="buttons">
         <button>Añadir pago</button>
@@ -22,8 +32,15 @@
       </div>
     </div>
     <div class="users">
-      <table>
-        <thead></thead>
+      <table id="payment-records">
+        <thead>
+          <tr>
+            <td>ID de pago</td>
+            <td>Cantidad pagada</td>
+            <td>Fecha de pago</td>
+            <td>ID de usuario</td>
+          </tr>
+        </thead>
         <tbody></tbody>
       </table>
       <div class="buttons">

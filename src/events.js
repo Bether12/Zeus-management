@@ -1,7 +1,5 @@
-import { Data } from "./db.js";
-
-export const eventMaster = (function(){
-    const Database = new Data();
+export const eventMaster = function(Data){
+    const Database = Data;
 
     function addClickEventListener(DOMElement, fun){
         DOMElement.addEventListener('click', (e)=>{fun()});
@@ -50,12 +48,12 @@ export const eventMaster = (function(){
 
                 if  (inputs[1].value.trim().length === 0){
                     Database.queryDatabase('set',`
-                            INSERT INTO payment_records(amount_paid, user_id) 
+                            INSERT INTO payment_records (amount_paid, user_id) 
                             VALUES ($1, $2)
                         ;`, [inputs[0].value, inputs[2].value]);
                 }else {
                     Database.queryDatabase('set',`
-                            INSERT INTO payment_records(amount_paid, payment_date, user_id) 
+                            INSERT INTO payment_records (amount_paid, payment_date, user_id) 
                             VALUES ($1, $2, $3)
                         ;`, [inputs[0].value, inputs[1].value, inputs[2].value]);
                 }
@@ -64,4 +62,4 @@ export const eventMaster = (function(){
     }
 
     return {addClickEventListener, closeDialog, checkAddPaymentForm, resolveForm};
-})();
+};

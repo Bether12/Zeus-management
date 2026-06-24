@@ -1,8 +1,6 @@
-import { Data } from "./db.js";
-import { eventMaster } from "./events.js";
-
-export const GUI =(function(){
-    const Database = new Data();
+export const GUI = function(Data, Event){
+    const Database = Data;
+    const eventMaster = Event;
     const body = document.querySelector('body');
     const usersTable = document.querySelector('#users-id');
     const paymentsTable = document.querySelector('#payment-records');
@@ -149,4 +147,4 @@ export const GUI =(function(){
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
 
     return {renderTables};
-})();
+};

@@ -89,6 +89,8 @@ export const GUI =(function(){
         const dialog = document.createElement('dialog');
         const form = document.createElement('form');
         form.action = 'dialog';
+        form.noValidate = true;
+
         dialog.appendChild(form);
         
         const amountPaidLabel = document.createElement('label');
@@ -100,6 +102,7 @@ export const GUI =(function(){
         amountPaidInput.id = 'amount-paid-input';
         amountPaidInput.type = 'number';
         amountPaidInput.required = true;
+        amountPaidInput.step = '100';
         form.appendChild(amountPaidInput);
 
         const paymentDateLabel = document.createElement('label');
@@ -121,6 +124,7 @@ export const GUI =(function(){
         userIdInput.id = 'user-id-input';
         userIdInput.type = 'number';
         userIdInput.required = true;
+        userIdInput.step = '1';
         form.appendChild(userIdInput);
 
         const acceptBtn = document.createElement('button');
@@ -134,7 +138,9 @@ export const GUI =(function(){
         cancelBtn.textContent = 'Cancelar';
         form.appendChild(cancelBtn);
 
+        eventMaster.resolveForm(acceptBtn,form,dialog);
         eventMaster.closeDialog(cancelBtn, dialog);
+        eventMaster.checkAddPaymentForm(form);
 
         body.appendChild(dialog);
         dialog.showModal();

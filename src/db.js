@@ -21,7 +21,7 @@ export class Data{
                 amount_paid INT NOT NULL, 
                 payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
                 user_id INTEGER NOT NULL, 
-                FOREIGN KEY(user_id) REFERENCES users(id)
+                FOREIGN KEY(user_id) REFERENCES users_id(id)
                 );`);
         console.log('Database successfully initiated');
         }catch(error){

@@ -179,7 +179,7 @@ export const GUI = function(Data, Event){
 
         eventMaster.resolveForm('user',acceptBtn,form,dialog);
         eventMaster.closeDialog(cancelBtn, dialog);
-        eventMaster.checkAddPaymentForm(form);
+        eventMaster.checkForm(form);
 
         body.appendChild(dialog);
         dialog.showModal();

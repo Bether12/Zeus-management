@@ -11,7 +11,7 @@ export const eventMaster = function(Data){
         });
     }
 
-    function checkAddPaymentForm(DOMElement){
+    function checkForm(DOMElement){
         DOMElement.addEventListener('input', (e)=>{
             const target = e.target;
             if(target.id === 'amount-paid-input' && target.validity.valueMissing){
@@ -51,20 +51,9 @@ export const eventMaster = function(Data){
                     form.querySelector('#payment-date-input'),
                     form.querySelector('#user-id-input')
                 ];
+                await Database.setPayment(input[2].value, input[0].value, input[1].value);
 
-                if  (inputs[1].value.trim().length === 0){
-                    await Database.queryDatabase('set',`
-                            INSERT INTO payment_records (amount_paid, user_id) 
-                            VALUES ($1, $2)
-                        ;`, [inputs[0].value, inputs[2].value]);
-                    dialog.close();
-                }else {
-                    await Database.queryDatabase('set',`
-                            INSERT INTO payment_records (amount_paid, payment_date, user_id) 
-                            VALUES ($1, $2, $3)
-                        ;`, [inputs[0].value, inputs[1].value, inputs[2].value]);
-                    dialog.close();
-                }
+                dialog.close();
             }else if (type === 'user'){
                 const input = form.querySelector('#name-input');
                 await Database.queryDatabase('set', `INSERT INTO users_id(name) VALUES ($1)`, [input.value]);
@@ -75,5 +64,5 @@ export const eventMaster = function(Data){
         });
     }
 
-    return {addClickEventListener, closeDialog, checkAddPaymentForm, resolveForm};
+    return {addClickEventListener, closeDialog, checkForm, resolveForm};
 };

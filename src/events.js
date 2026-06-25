@@ -20,6 +20,13 @@ export const eventMaster = function(Data){
             } else if (target.id === 'amount-paid-input' && target.validity.stepMismatch){
                 target.setCustomValidity('El monto pagado tiene que ser un múltiplo de 100');
                 target.reportValidity();
+            } else if(target.id === 'payment-date-input' && target.validity.valueMissing){
+                target.setCustomValidity('La fecha no puede estar vacía');
+                target.reportValidity();
+            } else if (target.id === 'payment-date-input' && target.validity.valid){
+                //TODO: needs fixing because it causes english validity messages appear
+                target.setCustomValidity('Formato de fecha inválido');
+                target.reportValidity();
             } else if (target.id === 'user-id-input' && target.validity.valueMissing){
                 target.setCustomValidity('Escriba el ID del usuario');
                 target.reportValidity();
@@ -30,7 +37,7 @@ export const eventMaster = function(Data){
                 target.setCustomValidity('El nombre de usuario no puede estar vacío');
                 target.reportValidity();
             } else if (target.id === 'name-input' && target.validity.tooShort){
-                target.setCustomValidity('El nombre de usuario ha de tener al menos 3 letras');
+                target.setCustomValidity('El nombre de usuario ha de tener al menos 15 letras');
                 target.reportValidity();
             } else {
                 target.setCustomValidity('');
@@ -51,7 +58,7 @@ export const eventMaster = function(Data){
                     form.querySelector('#payment-date-input'),
                     form.querySelector('#user-id-input')
                 ];
-                await Database.setPayment(input[2].value, input[0].value, input[1].value);
+                await Database.setPayment(inputs[2].value, inputs[0].value, inputs[1].value);
 
                 dialog.close();
             }else if (type === 'user'){

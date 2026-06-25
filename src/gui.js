@@ -112,6 +112,7 @@ export const GUI = function(Data, Event){
 
         const paymentDateInput = document.createElement('input');
         paymentDateInput.id = 'payment-date-input';
+        paymentDateInput.required = true;
         paymentDateInput.type = 'datetime-local';
         form.appendChild(paymentDateInput);
 
@@ -140,7 +141,7 @@ export const GUI = function(Data, Event){
 
         eventMaster.resolveForm('payment',acceptBtn,form,dialog);
         eventMaster.closeDialog(cancelBtn, dialog);
-        eventMaster.checkAddPaymentForm(form);
+        eventMaster.checkForm(form);
 
         body.appendChild(dialog);
         dialog.showModal();
@@ -163,7 +164,7 @@ export const GUI = function(Data, Event){
         const nameInput = document.createElement('input');
         nameInput.id = 'name-input';
         nameInput.required = true;
-        nameInput.minLength = 3;
+        nameInput.minLength = 15;
         form.appendChild(nameInput);
 
         const acceptBtn = document.createElement('button');

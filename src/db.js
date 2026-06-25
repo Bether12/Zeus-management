@@ -1,29 +1,30 @@
-const Database = window.__TAURI__.sql;
+//const Database = window.__TAURI__.sql;
 
 export class Data{
 
-    constructor(){
-        console.log("Initializing database");
+    constructor(db){
+        console.log('Database successfully initiated');
+        this.db = db;
     }
 
-    async initializeDatabase(){
+    static async initializeDatabase(){
         try{
-            this.db = await Database.load('sqlite:gym.db');
+            const db = await window.__TAURI__.sql.load('sqlite:gym.db');
             //Create users id table with their last payment data
-            await this.db.execute(`CREATE TABLE IF NOT EXISTS users_id(
+            await db.execute(`CREATE TABLE IF NOT EXISTS users_id(
                 id INTEGER PRIMARY KEY AUTOINCREMENT ,
                 name VARCHAR(70) NOT NULL,  
                 amount_paid INT NOT NULL,
                 last_payment TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 active BOOLEAN DEFAULT 1);`);
-            await this.db.execute(`CREATE TABLE IF NOT EXISTS payment_records(
+            await db.execute(`CREATE TABLE IF NOT EXISTS payment_records(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 amount_paid INT NOT NULL, 
                 payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
                 user_id INTEGER NOT NULL, 
                 FOREIGN KEY(user_id) REFERENCES users_id(id)
                 );`);
-        console.log('Database successfully initiated');
+        return new Data(db);
         }catch(error){
             console.log(error);
         }
@@ -32,14 +33,12 @@ export class Data{
     async queryDatabase(queyType, query, params=[]){
         if(queyType === 'get'){
             try{
-                this.db = await Database.load('sqlite:gym.db');
                 return await this.db.select(query, params);
             }catch(error){
                 console.log(error);
             }
         }else if (queyType === 'set'){
             try{
-                this.db = await Database.load('sqlite:gym.db');
                 return await this.db.execute(query, params);
             }catch(error){
                 console.log(error);

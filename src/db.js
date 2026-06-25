@@ -1,5 +1,3 @@
-//const Database = window.__TAURI__.sql;
-
 export class Data{
 
     constructor(db){
@@ -14,7 +12,7 @@ export class Data{
             await db.execute(`CREATE TABLE IF NOT EXISTS users_id(
                 id INTEGER PRIMARY KEY AUTOINCREMENT ,
                 name VARCHAR(70) NOT NULL,  
-                amount_paid INT NOT NULL,
+                amount_paid INT NOT NULL DEFAULT 0,
                 last_payment TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 active BOOLEAN DEFAULT 1);`);
             await db.execute(`CREATE TABLE IF NOT EXISTS payment_records(

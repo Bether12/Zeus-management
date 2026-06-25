@@ -21,6 +21,8 @@ export const GUI = function(Data, Event){
         const responsePayments = await Database.queryDatabase('get', `
             SELECT * FROM payment_records;
             `);
+        console.log('Users:', responseUsers);
+        console.log('Payments:', responsePayments);
 
         //Render for users_id table
         responseUsers.forEach(element => {
@@ -136,7 +138,46 @@ export const GUI = function(Data, Event){
         cancelBtn.textContent = 'Cancelar';
         form.appendChild(cancelBtn);
 
-        eventMaster.resolveForm(acceptBtn,form,dialog);
+        eventMaster.resolveForm('payment',acceptBtn,form,dialog);
+        eventMaster.closeDialog(cancelBtn, dialog);
+        eventMaster.checkAddPaymentForm(form);
+
+        body.appendChild(dialog);
+        dialog.showModal();
+    };
+
+    function renderAddUserForm(){
+        const body = document.querySelector('body');
+        const dialog = document.createElement('dialog');
+        const form = document.createElement('form');
+        form.action = 'dialog';
+        form.noValidate = true;
+
+        dialog.appendChild(form);
+        
+        const nameLabel = document.createElement('label');
+        nameLabel.htmlFor = 'name-input';
+        nameLabel.textContent = 'Nombre:';
+        form.appendChild(nameLabel);
+
+        const nameInput = document.createElement('input');
+        nameInput.id = 'name-input';
+        nameInput.required = true;
+        nameInput.minLength = 3;
+        form.appendChild(nameInput);
+
+        const acceptBtn = document.createElement('button');
+        acceptBtn.className = 'accept-btn';
+        acceptBtn.type = 'submit';
+        acceptBtn.textContent = 'Aceptar';
+        form.appendChild(acceptBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'cancel-btn';
+        cancelBtn.textContent = 'Cancelar';
+        form.appendChild(cancelBtn);
+
+        eventMaster.resolveForm('user',acceptBtn,form,dialog);
         eventMaster.closeDialog(cancelBtn, dialog);
         eventMaster.checkAddPaymentForm(form);
 
@@ -145,6 +186,7 @@ export const GUI = function(Data, Event){
     };
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
+    eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
 
     return {renderTables};
 };

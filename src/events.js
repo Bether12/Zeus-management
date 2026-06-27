@@ -8,6 +8,7 @@ export const eventMaster = function(Data){
     function closeDialog(DOMElement, dialog){
         DOMElement.addEventListener('click', (e)=>{
             dialog.close();
+            dialog.remove();
         });
     }
 
@@ -61,15 +62,30 @@ export const eventMaster = function(Data){
                 await Database.setPayment(inputs[2].value, inputs[0].value, inputs[1].value);
 
                 dialog.close();
+                dialog.remove();
             }else if (type === 'user'){
                 const input = form.querySelector('#name-input');
                 await Database.queryDatabase('set', `INSERT INTO users_id(name) VALUES ($1)`, [input.value]);
                 dialog.close();
+                dialog.remove();
+            }else if (type === 'edit'){
+
+            } else{
+                return;
+            }
+        });
+    }
+
+    function editTableFields(DOMElement, func){
+        DOMElement.addEventListener('click', (e)=>{
+            const target = e.target;
+            if (e.ctrlKey === true && target === 'td'){
+                func(target);
             }else{
                 return;
             }
         });
     }
 
-    return {addClickEventListener, closeDialog, checkForm, resolveForm};
+    return {addClickEventListener, closeDialog, checkForm, resolveForm, editTableFields};
 };

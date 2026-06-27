@@ -49,8 +49,6 @@ export class Data{
 
     async setPayment(userId, amountPaid, date){
         try{
-            const date = new Date().toLocaleString('es-ES');
-
             //Begin transaction
             await this.queryDatabase('set', `BEGIN TRANSACTION`);
 

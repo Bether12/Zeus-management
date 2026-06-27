@@ -186,8 +186,118 @@ export const GUI = function(Data, Event){
         dialog.showModal();
     };
 
+    function renderEditForm(field){
+        const dialog = document.createElement('dialog');
+        const form = document.createElement('form');
+        form.noValidate = true;
+
+        const acceptBtn = document.createElement('button');
+            acceptBtn.className = 'accept-btn';
+            acceptBtn.textContent = 'Aceptar';
+            form.appendChild(acceptBtn);
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'cancel-btn';
+            cancelBtn.textContent = 'Cancelar';
+            form.appendChild(cancelBtn);
+
+            eventMaster.resolveForm('edit',acceptBtn,form,dialog);
+            eventMaster.closeDialog(cancelBtn, dialog);
+            eventMaster.checkForm(form);
+
+        if (field.dataset.name !== undefined){
+            const nameLabel = document.createElement('label');
+            nameLabel.htmlFor = 'name-input';
+            nameLabel.textContent = 'Nuevo nombre:';
+            form.insertBefore(nameLabel, acceptBtn);
+
+            const nameInput = document.createElement('input');
+            nameInput.id = 'name-input';
+            nameInput.required = true;
+            nameInput.minLength = 15;
+            form.insertBefore(nameInput, acceptBtn);
+
+            body.appendChild(dialog);
+            dialog.showModal();
+
+        } else if (field.dataset.amountPaid !== undefined){
+            const amountPaidLabel = document.createElement('label');
+            amountPaidLabel.htmlFor = 'amount-paid-input';
+            amountPaidLabel.textContent = 'Nueva cantidad pagada:';
+            form.insertBefore(amountPaidLabel, acceptBtn);
+
+            const amountPaidInput = document.createElement('input');
+            amountPaidInput.id = 'amount-paid-input';
+            amountPaidInput.type = 'number';
+            amountPaidInput.required = true;
+            amountPaidInput.step = '100';
+            form.insertBefore(amountPaidInput, acceptBtn);
+
+            body.appendChild(dialog);
+            dialog.showModal();
+
+        } else if (field.dataset.paymentDate !== undefined){
+            const paymentDateLabel = document.createElement('label');
+            paymentDateLabel.htmlFor = 'payment-date-input';
+            paymentDateLabel.textContent = 'Nueva fecha de pago:';
+            form.insertBefore(paymentDateLabel, acceptBtn);
+
+            const paymentDateInput = document.createElement('input');
+            paymentDateInput.id = 'amount-paid-input';
+            paymentDateInput.type = 'datetime-local';
+            paymentDateInput.required = true;
+            form.insertBefore(paymentDateInput, acceptBtn);
+
+            body.appendChild(dialog);
+            dialog.showModal();
+
+        } else if (field.dataset.userId !== undefined){
+            const userIdLabel = document.createElement('label');
+            userIdLabel.htmlFor = 'user-id-input';
+            userIdLabel.textContent = 'Nuevo ID de usuario:';
+            form.insertBefore(userIdLabel, acceptBtn);
+
+            const userIdInput = document.createElement('input');
+            userIdInput.id = 'user-id-input';
+            userIdInput.type = 'number';
+            userIdInput.step = '1';
+            userIdInput.required = true;
+            form.insertBefore(userIdInput, acceptBtn);
+
+            body.appendChild(dialog);
+            dialog.showModal();
+
+        }else if (field.dataset.active !== undefined){
+            const activeLabel = document.createElement('label');
+            activeLabel.htmlFor = 'active-input';
+            activeLabel.textContent = 'Nuevo estado de usuario:';
+            form.insertBefore(activeLabel, acceptBtn);
+
+            const activeInput = document.createElement('select');
+            activeInput.id = 'active-input';
+            activeInput.required = true;
+            form.insertBefore(activeInput, acceptBtn);
+            const activeOpt = document.createElement('option');
+            activeOpt.value = '1';
+            activeOpt.textContent = 'Activo';
+            activeInput.appendChild(activeOpt);
+            const inactiveOpt = document.createElement('option');
+            inactiveOpt.value = '0';
+            inactiveOpt.textContent = 'Inactivo';
+            activeInput.appendChild(inactiveOpt);
+
+            body.appendChild(dialog);
+            dialog.showModal();
+            
+        }else{
+            return;
+        }
+    };
+
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
+    eventMaster.editTableFields(usersTable, renderEditForm);
+    eventMaster.editTableFields(paymentsTable, renderEditForm);
 
     return {renderTables};
 };

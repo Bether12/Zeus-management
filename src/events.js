@@ -47,7 +47,7 @@ export const eventMaster = function(Data){
         });
     }
 
-    function resolveForm(type, DOMElement, form, dialog){
+    function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}){
         DOMElement.addEventListener('click', async (e)=>{
             e.preventDefault();
             if(!form.checkValidity()){
@@ -63,13 +63,17 @@ export const eventMaster = function(Data){
 
                 dialog.close();
                 dialog.remove();
+                renderFunc();
             }else if (type === 'user'){
                 const input = form.querySelector('#name-input');
                 await Database.queryDatabase('set', `INSERT INTO users_id(name) VALUES ($1)`, [input.value]);
                 dialog.close();
                 dialog.remove();
+                renderFunc();
             }else if (type === 'edit'){
+                const fields = {
 
+                };
             } else{
                 return;
             }
@@ -79,7 +83,7 @@ export const eventMaster = function(Data){
     function editTableFields(DOMElement, func){
         DOMElement.addEventListener('click', (e)=>{
             const target = e.target;
-            if (e.ctrlKey === true && target === 'td'){
+            if (e.ctrlKey === true && target.tagName === 'td'){
                 func(target);
             }else{
                 return;

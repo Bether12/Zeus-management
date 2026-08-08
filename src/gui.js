@@ -139,7 +139,7 @@ export const GUI = function(Data, Event){
         cancelBtn.textContent = 'Cancelar';
         form.appendChild(cancelBtn);
 
-        eventMaster.resolveForm('payment',acceptBtn,form,dialog);
+        eventMaster.resolveForm('payment',acceptBtn,form,dialog, renderTables);
         eventMaster.closeDialog(cancelBtn, dialog);
         eventMaster.checkForm(form);
 
@@ -178,7 +178,7 @@ export const GUI = function(Data, Event){
         cancelBtn.textContent = 'Cancelar';
         form.appendChild(cancelBtn);
 
-        eventMaster.resolveForm('user',acceptBtn,form,dialog);
+        eventMaster.resolveForm('user',acceptBtn,form,dialog, renderTables);
         eventMaster.closeDialog(cancelBtn, dialog);
         eventMaster.checkForm(form);
 
@@ -192,18 +192,18 @@ export const GUI = function(Data, Event){
         form.noValidate = true;
 
         const acceptBtn = document.createElement('button');
-            acceptBtn.className = 'accept-btn';
-            acceptBtn.textContent = 'Aceptar';
-            form.appendChild(acceptBtn);
+        acceptBtn.className = 'accept-btn';
+        acceptBtn.textContent = 'Aceptar';
+        form.appendChild(acceptBtn);
 
-            const cancelBtn = document.createElement('button');
-            cancelBtn.className = 'cancel-btn';
-            cancelBtn.textContent = 'Cancelar';
-            form.appendChild(cancelBtn);
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'cancel-btn';
+        cancelBtn.textContent = 'Cancelar';
+        form.appendChild(cancelBtn);
 
-            eventMaster.resolveForm('edit',acceptBtn,form,dialog);
-            eventMaster.closeDialog(cancelBtn, dialog);
-            eventMaster.checkForm(form);
+        eventMaster.resolveForm('edit',acceptBtn,form,dialog, renderTables);
+        eventMaster.closeDialog(cancelBtn, dialog);
+        eventMaster.checkForm(form);
 
         if (field.dataset.name !== undefined){
             const nameLabel = document.createElement('label');

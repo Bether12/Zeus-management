@@ -24,6 +24,10 @@ export const GUI = function(Data, Event){
         console.log('Users:', responseUsers);
         console.log('Payments:', responsePayments);
 
+        //Empty table contents if existent
+        usersTable.children.item(1).innerHTML = '';
+        paymentsTable.children.item(1).innerHTML = '';
+
         //Render for users_id table
         responseUsers.forEach(element => {
             let row = document.createElement('tr');

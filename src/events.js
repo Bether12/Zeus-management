@@ -83,7 +83,7 @@ export const eventMaster = function(Data){
     function editTableFields(DOMElement, func){
         DOMElement.addEventListener('click', (e)=>{
             const target = e.target;
-            if (e.ctrlKey === true && target.tagName === 'td'){
+            if (e.ctrlKey === true && target.tagName === 'TD'){
                 func(target);
             }else{
                 return;

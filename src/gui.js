@@ -217,7 +217,6 @@ export const GUI = function(Data, Event){
         eventMaster.checkForm(form);
 
         if (field.dataset.name !== undefined){
-            console.log('name reached!');
             const nameLabel = document.createElement('label');
             nameLabel.htmlFor = 'name-input';
             nameLabel.textContent = 'Nuevo nombre:';

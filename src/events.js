@@ -71,14 +71,26 @@ export const eventMaster = function(Data){
                 dialog.remove();
                 renderFunc();
             }else if (type === 'edit'){
-                if(field.dataset.name ==! undefined){
-                    
+                console.log('edition func reached', field.dataset);
+                if(field.dataset.name !== undefined){
+                    await Database.queryDatabase('set', 
+                        `UPDATE users_id SET name = $1 WHERE id = $2`, 
+                        [form.querySelector('#name-input').value, field.dataset.id]);
+                    dialog.close();
+                    dialog.remove();
+                    renderFunc();
                 }else if(field.dataset.amountPaid !== undefined){
-
+                    dialog.close();
+                    dialog.remove();
+                    renderFunc();
                 }else if(field.dataset.paymentDate !== undefined){
-
+                    dialog.close();
+                    dialog.remove();
+                    renderFunc();
                 }else if(field.dataset.active !== undefined){
-
+                    dialog.close();
+                    dialog.remove();
+                    renderFunc();
                 }else if(field.dataset.userId !== undefined){
 
                 }

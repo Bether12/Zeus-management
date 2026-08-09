@@ -261,22 +261,6 @@ export const GUI = function(Data, Event){
             body.appendChild(dialog);
             dialog.showModal();
 
-        } else if (field.dataset.userId !== undefined){
-            const userIdLabel = document.createElement('label');
-            userIdLabel.htmlFor = 'user-id-input';
-            userIdLabel.textContent = 'Nuevo ID de usuario:';
-            form.insertBefore(userIdLabel, acceptBtn);
-
-            const userIdInput = document.createElement('input');
-            userIdInput.id = 'user-id-input';
-            userIdInput.type = 'number';
-            userIdInput.step = '1';
-            userIdInput.required = true;
-            form.insertBefore(userIdInput, acceptBtn);
-
-            body.appendChild(dialog);
-            dialog.showModal();
-
         }else if (field.dataset.active !== undefined){
             const activeLabel = document.createElement('label');
             activeLabel.htmlFor = 'active-input';
@@ -299,6 +283,22 @@ export const GUI = function(Data, Event){
             body.appendChild(dialog);
             dialog.showModal();
             
+        } else if (field.dataset.userId !== undefined){
+            const userIdLabel = document.createElement('label');
+            userIdLabel.htmlFor = 'user-id-input';
+            userIdLabel.textContent = 'Nuevo ID de usuario:';
+            form.insertBefore(userIdLabel, acceptBtn);
+
+            const userIdInput = document.createElement('input');
+            userIdInput.id = 'user-id-input';
+            userIdInput.type = 'number';
+            userIdInput.step = '1';
+            userIdInput.required = true;
+            form.insertBefore(userIdInput, acceptBtn);
+
+            body.appendChild(dialog);
+            dialog.showModal();
+
         }else{
             return;
         }

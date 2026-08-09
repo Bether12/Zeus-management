@@ -71,8 +71,18 @@ export const eventMaster = function(Data){
                 dialog.remove();
                 renderFunc();
             }else if (type === 'edit'){
-                if
-            } else{
+                if(field.dataset.name ==! undefined){
+                    
+                }else if(field.dataset.amountPaid !== undefined){
+
+                }else if(field.dataset.paymentDate !== undefined){
+
+                }else if(field.dataset.active !== undefined){
+
+                }else if(field.dataset.userId !== undefined){
+
+                }
+            }else{
                 return;
             }
         });

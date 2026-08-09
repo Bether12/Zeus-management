@@ -47,7 +47,7 @@ export const eventMaster = function(Data){
         });
     }
 
-    function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}){
+    function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}, field=[],){
         DOMElement.addEventListener('click', async (e)=>{
             e.preventDefault();
             if(!form.checkValidity()){
@@ -71,9 +71,7 @@ export const eventMaster = function(Data){
                 dialog.remove();
                 renderFunc();
             }else if (type === 'edit'){
-                const fields = {
-
-                };
+                if
             } else{
                 return;
             }

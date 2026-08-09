@@ -39,6 +39,7 @@ export const GUI = function(Data, Event){
 
             let name = document.createElement('td');
             name.dataset.name = element.name;
+            name.dataset.id = element.id;
             name.textContent = element.name;
             row.appendChild(name);
 
@@ -54,6 +55,7 @@ export const GUI = function(Data, Event){
 
             let active = document.createElement('td');
             active.dataset.active = element.active;
+            active.dataset.id = element.id;
             active.textContent = element.active;
             row.appendChild(active);
 
@@ -71,11 +73,15 @@ export const GUI = function(Data, Event){
 
             let amountPaid = document.createElement('td');
             amountPaid.dataset.amountPaid = element.amount_paid;
+            amountPaid.dataset.id = element.id;
+            amountPaid.dataset.userId = element.user_id;
             amountPaid.textContent = element.amount_paid;
             row.appendChild(amountPaid);
 
             let paymentDate = document.createElement('td');
             paymentDate.dataset.paymentDate = element.payment_date;
+            paymentDate.dataset.userId = element.user_id;
+            paymentDate.dataset.id = element.id;
             paymentDate.textContent = element.payment_date;
             row.appendChild(paymentDate);
 
@@ -205,7 +211,7 @@ export const GUI = function(Data, Event){
         cancelBtn.textContent = 'Cancelar';
         form.appendChild(cancelBtn);
 
-        eventMaster.resolveForm('edit',acceptBtn,form,dialog, renderTables);
+        eventMaster.resolveForm('edit',acceptBtn,form,dialog, renderTables, field);
         eventMaster.closeDialog(cancelBtn, dialog);
         eventMaster.checkForm(form);
 

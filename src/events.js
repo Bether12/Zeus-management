@@ -24,8 +24,7 @@ export const eventMaster = function(Data){
             } else if(target.id === 'payment-date-input' && target.validity.valueMissing){
                 target.setCustomValidity('La fecha no puede estar vacía');
                 target.reportValidity();
-            } else if (target.id === 'payment-date-input' && target.validity.valid){
-                //TODO: needs fixing because it causes english validity messages appear
+            } else if (target.id === 'payment-date-input' && target.validity.valid === false){
                 target.setCustomValidity('Formato de fecha inválido');
                 target.reportValidity();
             } else if (target.id === 'user-id-input' && target.validity.valueMissing){
@@ -88,15 +87,22 @@ export const eventMaster = function(Data){
                     dialog.remove();
                     renderFunc();
                 }else if(field.dataset.paymentDate !== undefined){
+                    //TODO
                     dialog.close();
                     dialog.remove();
                     renderFunc();
                 }else if(field.dataset.active !== undefined){
+                    await Database.queryDatabase('set', 
+                        `UPDATE users_id SET active = $1 WHERE id = $2`, 
+                        [form.querySelector('#active-input').value, field.dataset.id]);
                     dialog.close();
                     dialog.remove();
                     renderFunc();
                 }else if(field.dataset.userId !== undefined){
-
+                    //TODO
+                    dialog.close();
+                    dialog.remove();
+                    renderFunc();
                 }
             }else{
                 return;

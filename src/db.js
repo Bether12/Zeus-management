@@ -13,7 +13,7 @@ export class Data{
                 id INTEGER PRIMARY KEY AUTOINCREMENT ,
                 name VARCHAR(70) NOT NULL,  
                 amount_paid INT NOT NULL DEFAULT 0,
-                last_payment TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                last_payment TEXT NOT NULL DEFAULT 'Ninguno',
                 active BOOLEAN DEFAULT 1);`);
             await db.execute(`CREATE TABLE IF NOT EXISTS payment_records(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 

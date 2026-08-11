@@ -100,6 +100,7 @@ export const eventMaster = function(Data){
                     renderFunc();
                 }else if(field.dataset.userId !== undefined){
                     //TODO
+                    await Database.changePaymentUser(field.dataset.userId, form.querySelector('#user-id-input').value);
                     dialog.close();
                     dialog.remove();
                     renderFunc();

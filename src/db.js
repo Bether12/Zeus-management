@@ -1,3 +1,5 @@
+import Database from "@tauri-apps/plugin-sql";
+
 export class Data{
 
     constructor(db){
@@ -65,6 +67,38 @@ export class Data{
             
             await this.queryDatabase('set', `COMMIT`);
         }catch(error){
+            await this.queryDatabase('set', `ROLLBACK`);
+            console.log('Error during transaction:', error);
+        }
+    }
+
+    async changePaymentUser(userId, newUserId, paymentId){
+        try {
+            //Begin transaction
+            await this.queryDatabase('set', `BEGIN TRANSACTION`);
+
+            //Get the amount paid and date of apyment by the previous user
+            const data = await this.queryDatabase('get', 
+                `SELECT amount_paid, payment_date FROM payment_records WHERE user_id = $1`, 
+                [userId]);
+
+            //Change the payment user's id
+            await this.queryDatabase('set', 
+                `UPDATE payment_records SET user_id = $1 WHERE id = $2`, 
+                [newUserId, paymentId]);
+
+            //Subtract the amount paid from the old user's total
+            await this.queryDatabase('set', 
+                `UPDATE users_id SET amount_paid = amount_paid - $1 WHERE id = $2`, 
+                [data.amount_paid, userId]);
+
+            //Update the values of the new user
+            await this.queryDatabase('set', 
+                `UPDATE users_id SET `, 
+                []);
+
+            await this.queryDatabase('set', `COMMIT`);
+        } catch (error) {
             await this.queryDatabase('set', `ROLLBACK`);
             console.log('Error during transaction:', error);
         }

@@ -87,6 +87,7 @@ export const GUI = function(Data, Event){
 
             let userId = document.createElement('td');
             userId.dataset.userId = element.user_id;
+            userId.dataset.id = element.id;
             userId.textContent = element.user_id;
             row.appendChild(userId);
 

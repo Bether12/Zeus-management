@@ -80,6 +80,10 @@ export const eventMaster = function(Data){
                     dialog.remove();
                     renderFunc();
                 }else if(field.dataset.amountPaid !== undefined){
+                    await Database.queryDatabase('set', 
+                        `UPDATE payment_records SET amount_paid = $1 WHERE id = $3;
+                        UPDATE users_id SET amount_paid = amount_paid + ($1 - $2) WHERE id = $4`, 
+                        [form.querySelector('#amount-paid-input').value, field.dataset.amountPaid, field.dataset.id, field.dataset.userId]);
                     dialog.close();
                     dialog.remove();
                     renderFunc();

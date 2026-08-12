@@ -1,5 +1,3 @@
-import Database from "@tauri-apps/plugin-sql";
-
 export class Data{
 
     constructor(db){
@@ -77,7 +75,7 @@ export class Data{
             //Begin transaction
             await this.queryDatabase('set', `BEGIN TRANSACTION`);
 
-            //Get the amount paid and date of apyment by the previous user
+            //Get the amount paid and date of payment by the previous user
             const data = await this.queryDatabase('get', 
                 `SELECT amount_paid, payment_date FROM payment_records WHERE user_id = $1`, 
                 [userId]);
@@ -93,6 +91,7 @@ export class Data{
                 [data.amount_paid, userId]);
 
             //Update the values of the new user
+            //TODO
             await this.queryDatabase('set', 
                 `UPDATE users_id SET `, 
                 []);
@@ -102,5 +101,31 @@ export class Data{
             await this.queryDatabase('set', `ROLLBACK`);
             console.log('Error during transaction:', error);
         }
+    }
+
+    compareDates(date1, date2){
+        //This function only works if the date format is AAAA-MM-DDTHH:mm
+        const positions = [
+            [0, 4],
+            [5, 7],
+            [8, 10],
+            [11, 13],
+            //FIXME
+            [14, ]
+        ];
+        //TODO
+        for(let position of positions){
+            let dateSeg1 = date1.slice(position[0], position[1]);
+            let dateSeg2 = date2.slice(position[0], position[1]);
+
+            //Comparison order is A-M-D-H-m
+            if (dateSeg1 > dateSeg2){
+                return date1;
+            }else if(dateSeg1 < dateSeg2){
+                return date2;
+            }
+        }
+        //If this point is reached, both dates are equal
+        return date1;
     }
 }

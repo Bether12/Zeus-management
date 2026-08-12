@@ -110,10 +110,8 @@ export class Data{
             [5, 7],
             [8, 10],
             [11, 13],
-            //FIXME
             [14, ]
         ];
-        //TODO
         for(let position of positions){
             let dateSeg1 = date1.slice(position[0], position[1]);
             let dateSeg2 = date2.slice(position[0], position[1]);

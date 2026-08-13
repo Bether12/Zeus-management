@@ -12,12 +12,12 @@ export class Data{
             await db.execute(`CREATE TABLE IF NOT EXISTS users_id(
                 id INTEGER PRIMARY KEY AUTOINCREMENT ,
                 name VARCHAR(70) NOT NULL,  
-                amount_paid INT NOT NULL DEFAULT 0,
-                last_payment TEXT NOT NULL DEFAULT 'Ninguno',
+                amount_paid INT NOT NULL DEFAULT 0 CHECK (amount_paid >= 0),
+                last_payment TEXT DEFAULT NULL,
                 active BOOLEAN DEFAULT 1);`);
             await db.execute(`CREATE TABLE IF NOT EXISTS payment_records(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                amount_paid INT NOT NULL, 
+                amount_paid INT NOT NULL CHECK (amount_paid >= 0), 
                 payment_date TEXT NOT NULL, 
                 user_id INTEGER NOT NULL, 
                 FOREIGN KEY(user_id) REFERENCES users_id(id)
@@ -77,8 +77,9 @@ export class Data{
 
             //Get the amount paid and date of payment by the previous user
             const data = await this.queryDatabase('get', 
-                `SELECT amount_paid, payment_date FROM payment_records WHERE user_id = $1`, 
-                [userId]);
+                `SELECT amount_paid, payment_date FROM payment_records WHERE id = $1`, 
+                [paymentId]);
+            console.log(data);
 
             //Change the payment user's id
             await this.queryDatabase('set', 
@@ -88,13 +89,23 @@ export class Data{
             //Subtract the amount paid from the old user's total
             await this.queryDatabase('set', 
                 `UPDATE users_id SET amount_paid = amount_paid - $1 WHERE id = $2`, 
-                [data.amount_paid, userId]);
+                [data[0].amount_paid, userId]);
 
             //Update the values of the new user
-            //TODO
             await this.queryDatabase('set', 
-                `UPDATE users_id SET `, 
-                []);
+                `UPDATE users_id SET amount_paid = amount_paid + $1, last_payment = CASE WHEN last_payment > $2 THEN last_payment ELSE $2 END WHERE id = $3`, 
+                [data[0].amount_paid, data[0].payment_date, newUserId]);
+            
+            //Get old user's most recent payment date
+            const oldUserPayDate = await this.queryDatabase('get', 
+                `SELECT MAX(payment_date) AS payment_date FROM payment_records WHERE user_id = $1`, 
+                [userId]);
+            console.log(oldUserPayDate);
+            
+            //Update old user's last payment date
+            await this.queryDatabase('set', 
+                `UPDATE users_id SET last_payment = $1 WHERE id = $2`,
+                [oldUserPayDate[0].payment_date, userId]);
 
             await this.queryDatabase('set', `COMMIT`);
         } catch (error) {
@@ -105,6 +116,11 @@ export class Data{
 
     compareDates(date1, date2){
         //This function only works if the date format is AAAA-MM-DDTHH:mm
+
+        //Data correction if the value of the date is 'Ninguno'
+        date1 = date1 === 'Ninguno' ? '0000-00-00T00:00' : date1;
+        date2 = date2 === 'Ninguno' ? '0000-00-00T00:00' : date2;
+
         const positions = [
             [0, 4],
             [5, 7],

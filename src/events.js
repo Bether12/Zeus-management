@@ -70,7 +70,6 @@ export const eventMaster = function(Data){
                 dialog.remove();
                 renderFunc();
             }else if (type === 'edit'){
-                console.log('edition func reached', field.dataset);
                 if(field.dataset.name !== undefined){
                     await Database.queryDatabase('set', 
                         `UPDATE users_id SET name = $1 WHERE id = $2`, 
@@ -99,8 +98,7 @@ export const eventMaster = function(Data){
                     dialog.remove();
                     renderFunc();
                 }else if(field.dataset.userId !== undefined){
-                    //TODO
-                    await Database.changePaymentUser(field.dataset.userId, form.querySelector('#user-id-input').value);
+                    await Database.changePaymentUser(field.dataset.userId, form.querySelector('#user-id-input').value, field.dataset.id);
                     dialog.close();
                     dialog.remove();
                     renderFunc();

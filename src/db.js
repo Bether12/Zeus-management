@@ -113,33 +113,4 @@ export class Data{
             console.log('Error during transaction:', error);
         }
     }
-
-    compareDates(date1, date2){
-        //This function only works if the date format is AAAA-MM-DDTHH:mm
-
-        //Data correction if the value of the date is 'Ninguno'
-        date1 = date1 === 'Ninguno' ? '0000-00-00T00:00' : date1;
-        date2 = date2 === 'Ninguno' ? '0000-00-00T00:00' : date2;
-
-        const positions = [
-            [0, 4],
-            [5, 7],
-            [8, 10],
-            [11, 13],
-            [14, ]
-        ];
-        for(let position of positions){
-            let dateSeg1 = date1.slice(position[0], position[1]);
-            let dateSeg2 = date2.slice(position[0], position[1]);
-
-            //Comparison order is A-M-D-H-m
-            if (dateSeg1 > dateSeg2){
-                return date1;
-            }else if(dateSeg1 < dateSeg2){
-                return date2;
-            }
-        }
-        //If this point is reached, both dates are equal
-        return date1;
-    }
 }

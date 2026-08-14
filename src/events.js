@@ -18,8 +18,8 @@ export const eventMaster = function(Data){
             if(target.id === 'amount-paid-input' && target.validity.valueMissing){
                 target.setCustomValidity('El monto a pagar no puede estar vacío');
                 target.reportValidity();
-            } else if (target.id === 'amount-paid-input' && target.validity.stepMismatch){
-                target.setCustomValidity('El monto pagado tiene que ser un múltiplo de 100');
+            } else if (target.id === 'amount-paid-input' && (target.validity.stepMismatch || target.value <= 0)){
+                target.setCustomValidity('El monto pagado tiene que ser un múltiplo positivo de 100');
                 target.reportValidity();
             } else if(target.id === 'payment-date-input' && target.validity.valueMissing){
                 target.setCustomValidity('La fecha no puede estar vacía');
@@ -30,7 +30,7 @@ export const eventMaster = function(Data){
             } else if (target.id === 'user-id-input' && target.validity.valueMissing){
                 target.setCustomValidity('Escriba el ID del usuario');
                 target.reportValidity();
-            } else if (target.id === 'user-id-input' && target.validity.stepMismatch){
+            } else if (target.id === 'user-id-input' && (target.validity.stepMismatch || target.value <= 0)){
                 target.setCustomValidity('El ID tiene que ser un número entero positivo');
                 target.reportValidity();
             } else if (target.id === 'name-input' && target.validity.valueMissing){
@@ -38,6 +38,12 @@ export const eventMaster = function(Data){
                 target.reportValidity();
             } else if (target.id === 'name-input' && target.validity.tooShort){
                 target.setCustomValidity('El nombre de usuario ha de tener al menos 15 letras');
+                target.reportValidity();
+            } else if (target.id === 'payment-id-input' && (target.validity.stepMismatch || target.value <= 0)){
+                target.setCustomValidity('El ID tiene que ser un número entero positivo');
+                target.reportValidity();
+            } else if (target.id === 'payment-id-input' && target.validity.valueMissing){
+                target.setCustomValidity('Escriba el ID de pago');
                 target.reportValidity();
             } else {
                 target.setCustomValidity('');

@@ -128,12 +128,48 @@ export class Data{
                 `SELECT MAX(payment_date) AS payment_date FROM payment_records WHERE user_id = $1`, 
                 [userId]);
 
-            //Get user's new last payment
+            //Set user's new last payment
             await this.queryDatabase('set', 
                 `UPDATE users_id SET last_payment = $1 WHERE id = $2`, 
                 [lastPayment[0].payment_date, userId]);
 
             await this.queryDatabase('set', `COMMIT`);
+        } catch (error) {
+            await this.queryDatabase('set', `ROLLBACK`);
+            console.log('Error during transaction:', error);
+        }
+    }
+
+    async deletePayment(paymentId){
+        try {
+            await this.queryDatabase('set', `BEGIN TRANSACTION`);
+
+            //Get payment data
+            const data = await this.queryDatabase('get', 
+                `SELECT * FROM payment_records WHERE id = $1`, 
+                [paymentId]);
+
+            //Delete payment
+            await this.queryDatabase('set', 
+                `DELETE FROM payment_records WHERE id = $1`, 
+                [paymentId]);
+
+            //Set new total for the user
+            await this.queryDatabase('set', 
+                `UPDATE users_id SET amount_paid = amount_paid - $1 WHERE id = $2`, 
+                [data[0].amount_paid, data[0].user_id]);
+
+            //Get user's new last payment
+            const lastPayment = await this.queryDatabase('get', 
+                `SELECT MAX(payment_date) AS payment_date FROM payment_records WHERE user_id = $1`, 
+                [data[0].user_id]);
+
+            //Set user's new last payment
+            await this.queryDatabase('set', 
+                `UPDATE users_id SET last_payment = $1 WHERE id = $2`, 
+                [lastPayment[0].payment_date, data[0].user_id]);
+
+                await this.queryDatabase('set', `COMMIT`);
         } catch (error) {
             await this.queryDatabase('set', `ROLLBACK`);
             console.log('Error during transaction:', error);

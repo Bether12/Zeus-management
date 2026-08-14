@@ -86,7 +86,6 @@ export const eventMaster = function(Data){
                     dialog.remove();
                     renderFunc();
                 }else if(field.dataset.paymentDate !== undefined){
-                    //TODO
                     await Database.changePaymentDate(form.querySelector('#payment-date-input').value, field.dataset.id, field.dataset.userId);
                     dialog.close();
                     dialog.remove();
@@ -104,6 +103,11 @@ export const eventMaster = function(Data){
                     dialog.remove();
                     renderFunc();
                 }
+            }else if (type === 'delete'){
+                await Database.deletePayment(form.querySelector('#payment-id-input').value);
+                dialog.close();
+                dialog.remove();
+                renderFunc();
             }else{
                 return;
             }

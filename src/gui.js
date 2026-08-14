@@ -7,12 +7,10 @@ export const GUI = function(Data, Event){
 
     //Users table btn
     const addPaymentBtn = document.querySelector('#add-payment-btn');
-    const editPaymentBtn = document.querySelector('#edit-payment-btn');
     const deletePaymentBtn = document.querySelector('#delete-payment-btn');
 
     //Payment table buttons
     const addUserBtn = document.querySelector('#add-user-btn');
-    const editUserBtn = document.querySelector('#edit-user-btn');
 
     async function renderTables(){
         const responseUsers = await Database.queryDatabase('get', `
@@ -306,10 +304,48 @@ export const GUI = function(Data, Event){
         }
     };
 
+    function renderDeletePaymentForm(){
+        const form = document.createElement('form');
+        const dialog = document.createElement('dialog');
+        form.noValidate = true;
+
+        const paymentIdLabel = document.createElement('label');
+        paymentIdLabel.htmlFor = 'payment-id-input';
+        paymentIdLabel.textContent = 'ID de pago:';
+        form.appendChild(paymentIdLabel);
+
+        const paymentIdInput = document.createElement('input');
+        paymentIdInput.id = 'payment-id-input';
+        paymentIdInput.type = 'number';
+        paymentIdInput.placeholder = 'Ej. 1 o 2';
+        paymentIdInput.step = '1';
+        paymentIdInput.required = true;
+        form.appendChild(paymentIdInput);
+
+        const acceptBtn = document.createElement('button');
+        acceptBtn.className = 'accept-btn';
+        acceptBtn.textContent = 'Aceptar';
+        form.appendChild(acceptBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'cancel-btn';
+        cancelBtn.textContent = 'Cancelar';
+        form.appendChild(cancelBtn);
+
+        eventMaster.resolveForm('delete', acceptBtn, form, dialog, renderTables);
+        eventMaster.closeDialog(cancelBtn, dialog);
+        eventMaster.checkForm(form);
+
+        dialog.appendChild(form);
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
     eventMaster.editTableFields(usersTable, renderEditForm);
     eventMaster.editTableFields(paymentsTable, renderEditForm);
+    eventMaster.addClickEventListener(deletePaymentBtn, renderDeletePaymentForm);
 
     return {renderTables};
 };

@@ -255,7 +255,7 @@ export const GUI = function(Data, Event){
             form.insertBefore(paymentDateLabel, acceptBtn);
 
             const paymentDateInput = document.createElement('input');
-            paymentDateInput.id = 'amount-paid-input';
+            paymentDateInput.id = 'payment-date-input';
             paymentDateInput.type = 'datetime-local';
             paymentDateInput.required = true;
             form.insertBefore(paymentDateInput, acceptBtn);

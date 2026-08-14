@@ -113,4 +113,30 @@ export class Data{
             console.log('Error during transaction:', error);
         }
     }
+
+    async changePaymentDate(newDate, paymentId, userId) {
+        try {
+            await this.queryDatabase('set', `BEGIN TRANSACTION`);
+
+            //Change the payment date
+            await this.queryDatabase('set', 
+                `UPDATE payment_records SET payment_date = $1 WHERE id = $2`, 
+                [newDate, paymentId]);
+
+            //Get user's new last payment
+            const lastPayment = await this.queryDatabase('get', 
+                `SELECT MAX(payment_date) AS payment_date FROM payment_records WHERE user_id = $1`, 
+                [userId]);
+
+            //Get user's new last payment
+            await this.queryDatabase('set', 
+                `UPDATE users_id SET last_payment = $1 WHERE id = $2`, 
+                [lastPayment[0].payment_date, userId]);
+
+            await this.queryDatabase('set', `COMMIT`);
+        } catch (error) {
+            await this.queryDatabase('set', `ROLLBACK`);
+            console.log('Error during transaction:', error);
+        }
+    }
 }

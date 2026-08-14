@@ -87,6 +87,7 @@ export const eventMaster = function(Data){
                     renderFunc();
                 }else if(field.dataset.paymentDate !== undefined){
                     //TODO
+                    await Database.changePaymentDate(form.querySelector('#payment-date-input').value, field.dataset.id, field.dataset.userId);
                     dialog.close();
                     dialog.remove();
                     renderFunc();

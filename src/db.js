@@ -175,4 +175,10 @@ export class Data{
             console.log('Error during transaction:', error);
         }
     }
+
+    async getDuePay(){
+        const usersDuePay = await this.queryDatabase('get', 
+            `SELECT last_payment, id FROM (SELECT last_payment, id FROM users_id WHERE active = 1) WHERE last_payment <= strftime('%Y-%m-%d %H:%M', datetime('now', '-31 day'))`);
+        return usersDuePay[0];
+    }
 }

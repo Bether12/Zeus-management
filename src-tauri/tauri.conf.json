@@ -10,7 +10,7 @@
     "withGlobalTauri": true,
     "windows": [
       {
-        "title": "zeus-management",
+        "title": "Zeus",
         "width": 800,
         "height": 600
       }

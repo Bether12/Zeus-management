@@ -9,15 +9,15 @@
   </head>
 
   <body>
-    <h1>Registro de pagos y clientes</h1>
     <div class="payments">
+      <h3>Registro de pagos</h3>
       <table id="payment-records">
         <thead>
           <tr>
-            <td>ID de pago</td>
-            <td>Cantidad pagada</td>
-            <td>Fecha de pago</td>
-            <td>ID de usuario</td>
+            <th>ID de pago</th>
+            <th>Cantidad pagada</th>
+            <th>Fecha de pago</th>
+            <th>ID de usuario</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -27,15 +27,30 @@
         <button id="delete-payment-btn">Eliminar pago</button>
       </div>
     </div>
+    <div class="duepays">
+      <h3>Usuarios que deben renovar su pago</h3>
+      <table id="due-pay-users">
+        <thead>
+          <tr>
+            <th>ID de usuario</th>
+            <th>Nombre</th>
+          </tr>
+        </thead>
+        <tbody>
+          
+        </tbody>
+      </table>
+    </div>
     <div class="users">
+      <h3>Registro de clientes</h3>
       <table id="users-id">
         <thead>
           <tr>
-            <td>ID</td>
-            <td>Nombre</td>
-            <td>Cantidad pagada</td>
-            <td>Fecha últ. pago</td>
-            <td>Activo</td>
+            <th>ID de usuario</th>
+            <th>Nombre</th>
+            <th>Cantidad pagada</th>
+            <th>Fecha últ. pago</th>
+            <th>Activo</th>
           </tr>
         </thead>
         <tbody>

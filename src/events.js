@@ -55,67 +55,70 @@ export const eventMaster = function(Data){
     function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}, field=[],){
         DOMElement.addEventListener('click', async (e)=>{
             e.preventDefault();
-            if(!form.checkValidity()){
-                form.reportValidity();
-                return;
-            }else if (type === 'payment'){
-                const inputs = [
-                    form.querySelector('#amount-paid-input'),
-                    form.querySelector('#payment-date-input'),
-                    form.querySelector('#user-id-input')
-                ];
-                await Database.setPayment(inputs[2].value, inputs[0].value, inputs[1].value);
-
-                dialog.close();
-                dialog.remove();
-                renderFunc();
-            }else if (type === 'user'){
-                const input = form.querySelector('#name-input');
-                await Database.queryDatabase('set', `INSERT INTO users_id(name) VALUES ($1)`, [input.value]);
-                dialog.close();
-                dialog.remove();
-                renderFunc();
-            }else if (type === 'edit'){
-                if(field.dataset.name !== undefined){
-                    await Database.queryDatabase('set', 
-                        `UPDATE users_id SET name = $1 WHERE id = $2`, 
-                        [form.querySelector('#name-input').value, field.dataset.id]);
+            try{
+                if(!form.checkValidity()){
+                    form.reportValidity();
+                    return;
+                }else if (type === 'payment'){
+                    const inputs = [
+                        form.querySelector('#amount-paid-input'),
+                        form.querySelector('#payment-date-input'),
+                        form.querySelector('#user-id-input')
+                    ];
+                    await Database.setPayment(inputs[2].value, inputs[0].value, inputs[1].value);
                     dialog.close();
                     dialog.remove();
                     renderFunc();
-                }else if(field.dataset.amountPaid !== undefined){
-                    await Database.queryDatabase('set', 
-                        `UPDATE payment_records SET amount_paid = $1 WHERE id = $3;
-                        UPDATE users_id SET amount_paid = amount_paid + ($1 - $2) WHERE id = $4`, 
-                        [form.querySelector('#amount-paid-input').value, field.dataset.amountPaid, field.dataset.id, field.dataset.userId]);
+                }else if (type === 'user'){
+                    const input = form.querySelector('#name-input');
+                    await Database.queryDatabase('set', `INSERT INTO users_id(name) VALUES ($1)`, [input.value]);
                     dialog.close();
                     dialog.remove();
                     renderFunc();
-                }else if(field.dataset.paymentDate !== undefined){
-                    await Database.changePaymentDate(form.querySelector('#payment-date-input').value, field.dataset.id, field.dataset.userId);
+                }else if (type === 'edit'){
+                    if(field.dataset.name !== undefined){
+                        await Database.queryDatabase('set',
+                            `UPDATE users_id SET name = $1 WHERE id = $2`,
+                            [form.querySelector('#name-input').value, field.dataset.id]);
+                        dialog.close();
+                        dialog.remove();
+                        renderFunc();
+                    }else if(field.dataset.amountPaid !== undefined){
+                        await Database.queryDatabase('set',
+                            `UPDATE payment_records SET amount_paid = $1 WHERE id = $3;
+                            UPDATE users_id SET amount_paid = amount_paid + ($1 - $2) WHERE id = $4`,
+                            [form.querySelector('#amount-paid-input').value, field.dataset.amountPaid, field.dataset.id, field.dataset.userId]);
+                        dialog.close();
+                        dialog.remove();
+                        renderFunc();
+                    }else if(field.dataset.paymentDate !== undefined){
+                        await Database.changePaymentDate(form.querySelector('#payment-date-input').value, field.dataset.id, field.dataset.userId);
+                        dialog.close();
+                        dialog.remove();
+                        renderFunc();
+                    }else if(field.dataset.active !== undefined){
+                        await Database.queryDatabase('set',
+                            `UPDATE users_id SET active = $1 WHERE id = $2`,
+                            [form.querySelector('#active-input').value, field.dataset.id]);
+                        dialog.close();
+                        dialog.remove();
+                        renderFunc();
+                    }else if(field.dataset.userId !== undefined){
+                        await Database.changePaymentUser(field.dataset.userId, form.querySelector('#user-id-input').value, field.dataset.id);
+                        dialog.close();
+                        dialog.remove();
+                        renderFunc();
+                    }
+                }else if (type === 'delete'){
+                    await Database.deletePayment(form.querySelector('#payment-id-input').value);
                     dialog.close();
                     dialog.remove();
                     renderFunc();
-                }else if(field.dataset.active !== undefined){
-                    await Database.queryDatabase('set', 
-                        `UPDATE users_id SET active = $1 WHERE id = $2`, 
-                        [form.querySelector('#active-input').value, field.dataset.id]);
-                    dialog.close();
-                    dialog.remove();
-                    renderFunc();
-                }else if(field.dataset.userId !== undefined){
-                    await Database.changePaymentUser(field.dataset.userId, form.querySelector('#user-id-input').value, field.dataset.id);
-                    dialog.close();
-                    dialog.remove();
-                    renderFunc();
+                }else{
+                    return;
                 }
-            }else if (type === 'delete'){
-                await Database.deletePayment(form.querySelector('#payment-id-input').value);
-                dialog.close();
-                dialog.remove();
-                renderFunc();
-            }else{
-                return;
+            }catch(error){
+                throw error;
             }
         });
     }

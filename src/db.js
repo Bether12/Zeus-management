@@ -24,7 +24,7 @@ export class Data{
                 );`);
         return new Data(db);
         }catch(error){
-            console.log(error);
+            throw error;
         }
     }
 
@@ -34,13 +34,14 @@ export class Data{
                 return await this.db.select(query, params);
             }catch(error){
                 console.log(error);
+                throw error;
             }
         }else if (queyType === 'set'){
             try{
                 return await this.db.execute(query, params);
             }catch(error){
                 console.log(error);
-                throw Error(error);
+                throw error;
             }
         }else{
             return;
@@ -67,6 +68,7 @@ export class Data{
         }catch(error){
             await this.queryDatabase('set', `ROLLBACK`);
             console.log('Error during transaction:', error);
+            throw error;
         }
     }
 
@@ -111,6 +113,7 @@ export class Data{
         } catch (error) {
             await this.queryDatabase('set', `ROLLBACK`);
             console.log('Error during transaction:', error);
+            throw error;
         }
     }
 
@@ -137,6 +140,7 @@ export class Data{
         } catch (error) {
             await this.queryDatabase('set', `ROLLBACK`);
             console.log('Error during transaction:', error);
+            throw error;
         }
     }
 
@@ -173,12 +177,18 @@ export class Data{
         } catch (error) {
             await this.queryDatabase('set', `ROLLBACK`);
             console.log('Error during transaction:', error);
+            throw error;
         }
     }
 
     async getDuePay(){
-        const usersDuePay = await this.queryDatabase('get', 
+        try{
+            const usersDuePay = await this.queryDatabase('get', 
             `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE last_payment <= strftime('%Y-%m-%d %H:%M', datetime('now', '-31 day'))`);
-        return usersDuePay;
+            return usersDuePay;
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
     }
 }

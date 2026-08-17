@@ -58,7 +58,11 @@ export const GUI = function(Data, Event){
             let active = document.createElement('td');
             active.dataset.active = element.active;
             active.dataset.id = element.id;
-            active.textContent = element.active;
+            if(element.active === 1){
+                active.textContent = 'Sí';
+            }else{
+                active.textContent = 'No';
+            }
             row.appendChild(active);
 
             usersTable.children.item(1).appendChild(row);

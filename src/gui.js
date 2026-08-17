@@ -368,11 +368,31 @@ export const GUI = function(Data, Event){
         dialog.showModal();
     }
 
+    function renderErrorMsg(error){
+        const dialog = document.createElement('dialog');
+
+        const text = document.createElement('p');
+        text.textContent = 'Ha ocurrido un error: ';
+        dialog.appendChild(text);
+
+        const div = document.createElement('div');
+        div.textContent = error;
+        dialog.appendChild(div);
+
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent = 'Cerrar';
+        dialog.appendChild(closeBtn);
+        eventMaster.closeDialog(closeBtn, dialog);
+
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
     eventMaster.editTableFields(usersTable, renderEditForm);
     eventMaster.editTableFields(paymentsTable, renderEditForm);
     eventMaster.addClickEventListener(deletePaymentBtn, renderDeletePaymentForm);
 
-    return {renderTables};
+    return {renderTables, renderErrorMsg};
 };

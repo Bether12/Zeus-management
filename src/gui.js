@@ -4,6 +4,7 @@ export const GUI = function(Data, Event){
     const body = document.querySelector('body');
     const usersTable = document.querySelector('#users-id');
     const paymentsTable = document.querySelector('#payment-records');
+    const duePayTable = document.querySelector('#due-pay-users');
 
     //Users table btn
     const addPaymentBtn = document.querySelector('#add-payment-btn');
@@ -19,12 +20,15 @@ export const GUI = function(Data, Event){
         const responsePayments = await Database.queryDatabase('get', `
             SELECT * FROM payment_records;
             `);
-        console.log('Users:', responseUsers);
-        console.log('Payments:', responsePayments);
+        const responseDuePay = await Database.getDuePay();
+        console.log('Users response:', responseUsers);
+        console.log('Payments response:', responsePayments);
+        console.log('Due pay response:', responseDuePay);
 
-        //Empty table contents if existent
+        //Empty tables contents if existent
         usersTable.children.item(1).innerHTML = '';
         paymentsTable.children.item(1).innerHTML = '';
+        duePayTable.children.item(1).innerHTML = '';
 
         //Render for users_id table
         responseUsers.forEach(element => {
@@ -90,6 +94,25 @@ export const GUI = function(Data, Event){
             row.appendChild(userId);
 
             paymentsTable.children.item(1).appendChild(row);
+        });
+
+        //Render for due-pay-users
+        responseDuePay.forEach(element => {
+            let row = document.createElement('tr');
+
+            let id = document.createElement('td');
+            id.textContent = element.id
+            row.appendChild(id);
+
+            let name = document.createElement('td');
+            name.textContent = element.name;
+            row.appendChild(name);
+
+            let lastPayment = document.createElement('td');
+            lastPayment.textContent = element.last_payment;
+            row.appendChild(lastPayment);
+
+            duePayTable.children.item(1).appendChild(row);
         });
     };
 

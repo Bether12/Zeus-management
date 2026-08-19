@@ -55,6 +55,12 @@ export const eventMaster = function(Data){
             } else if (target.id === 'payment-id-input' && target.validity.valueMissing){
                 target.setCustomValidity('Escriba el ID de pago');
                 target.reportValidity();
+            } else if (target.id === 'date-input' && target.validity.rangeOverflow){
+                target.setCustomValidity('La fecha seleccionada no puede ser mayor que la fecha actual');
+                target.reportValidity();
+            } else if (target.id === 'date-input' && target.validity.valueMissing){
+                target.setCustomValidity('La fecha no puede estar vacía');
+                target.reportValidity();
             } else {
                 target.setCustomValidity('');
                 target.reportValidity();

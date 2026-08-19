@@ -391,65 +391,69 @@ export const GUI = function(Data, Event){
     }
 
     function renderResumeForm(){
-        const dialog = document.createElement('dialog');
-        const form = document.createElement('form');
-        form.noValidate = true;
-        dialog.appendChild(form);
+        try{
+            const dialog = document.createElement('dialog');
+            const form = document.createElement('form');
+            form.noValidate = true;
+            dialog.appendChild(form);
 
-        //Element generation
-        const selectLabel = document.createElement('label');
-        selectLabel.htmlFor = 'select-input';
-        selectLabel.textContent = 'Tipo de resumen:';
-        form.appendChild(selectLabel);
+            //Element generation
+            const selectLabel = document.createElement('label');
+            selectLabel.htmlFor = 'select-input';
+            selectLabel.textContent = 'Tipo de resumen:';
+            form.appendChild(selectLabel);
 
-        const selectInput = document.createElement('select');
-        selectInput.id = 'select-input';
-        selectInput.required = true;
-        form.appendChild(selectInput);
+            const selectInput = document.createElement('select');
+            selectInput.id = 'select-input';
+            selectInput.required = true;
+            form.appendChild(selectInput);
 
-        const dayOption = document.createElement('option');
-        dayOption.value = 'day';
-        dayOption.textContent = 'Diario';
-        selectInput.appendChild(dayOption);
+            const dayOption = document.createElement('option');
+            dayOption.value = 'day';
+            dayOption.textContent = 'Diario';
+            selectInput.appendChild(dayOption);
 
-        const monthOption = document.createElement('option');
-        monthOption.value = 'month';
-        monthOption.textContent = 'Mensual';
-        selectInput.appendChild(monthOption);
+            const monthOption = document.createElement('option');
+            monthOption.value = 'month';
+            monthOption.textContent = 'Mensual';
+            selectInput.appendChild(monthOption);
 
-        const yearOption = document.createElement('option');
-        yearOption.value = 'year';
-        yearOption.textContent = 'Anual';
-        selectInput.appendChild(yearOption);
+            const yearOption = document.createElement('option');
+            yearOption.value = 'year';
+            yearOption.textContent = 'Anual';
+            selectInput.appendChild(yearOption);
 
-        const dateLabel = document.createElement('label');
-        dateLabel.htmlFor = 'date-input';
-        form.appendChild(dateLabel);
+            const dateLabel = document.createElement('label');
+            dateLabel.htmlFor = 'date-input';
+            form.appendChild(dateLabel);
 
-        const dateInput = document.createElement('input');
-        dateInput.id = 'date-input';
-        dateInput.required = true;
-        form.appendChild(dateInput);
+            const dateInput = document.createElement('input');
+            dateInput.id = 'date-input';
+            dateInput.required = true;
+            form.appendChild(dateInput);
 
-        const acceptBtn = document.createElement('button');
-        acceptBtn.className = 'accept-btn';
-        acceptBtn.textContent = 'Generar Resumen';
-        form.appendChild(acceptBtn);
+            const acceptBtn = document.createElement('button');
+            acceptBtn.className = 'accept-btn';
+            acceptBtn.textContent = 'Generar Resumen';
+            form.appendChild(acceptBtn);
 
-        const cancelBtn = document.createElement('button');
-        cancelBtn.className = 'cancel-btn';
-        cancelBtn.textContent = 'Cancelar';
-        form.appendChild(cancelBtn);
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'cancel-btn';
+            cancelBtn.textContent = 'Cancelar';
+            form.appendChild(cancelBtn);
 
-        eventMaster.addChangeEventListener(selectInput, generateDatePicker, [selectInput, dateInput, dateLabel]);
-        eventMaster.addClickEventListener(acceptBtn, generateResume);
-        eventMaster.closeDialog(cancelBtn, dialog);
-        eventMaster.checkForm(form);
+            eventMaster.addChangeEventListener(selectInput, generateDatePicker, [selectInput, dateInput, dateLabel]);
+            eventMaster.addClickEventListener(acceptBtn, generateResume);
+            eventMaster.closeDialog(cancelBtn, dialog);
+            eventMaster.checkForm(form);
 
-        generateDatePicker(selectInput, dateInput, dateLabel);
+            generateDatePicker(selectInput, dateInput, dateLabel);
 
-        body.appendChild(dialog);
-        dialog.showModal();
+            body.appendChild(dialog);
+            dialog.showModal();
+        }catch(error){
+            renderErrorMsg(error);
+        }
     }
 
     function generateDatePicker(select, input, label){
@@ -467,7 +471,6 @@ export const GUI = function(Data, Event){
         }else if(value === 'year'){
             label.textContent = 'Seleccione el año deseado:';
             input.type = 'number';
-            input.min = 2026;
             input.max = date.getFullYear();
         }else{
             return;

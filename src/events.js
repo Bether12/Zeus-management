@@ -49,6 +49,12 @@ export const eventMaster = function(Data){
             } else if (target.id === 'name-input' && target.validity.tooShort){
                 target.setCustomValidity('El nombre de usuario ha de tener al menos 15 letras');
                 target.reportValidity();
+            } else if (target.id === 'ci-input' && target.validity.valueMissing){
+                target.setCustomValidity('El CI no puede estar vacío');
+                target.reportValidity();
+            }else if (target.id === 'ci-input' && target.validity.patternMismatch){
+                target.setCustomValidity('El CI tiene que ser un número de 11 dígitos');
+                target.reportValidity();
             } else if (target.id === 'payment-id-input' && (target.validity.stepMismatch || target.value <= 0)){
                 target.setCustomValidity('El ID tiene que ser un número entero positivo');
                 target.reportValidity();
@@ -86,8 +92,13 @@ export const eventMaster = function(Data){
                     dialog.remove();
                     renderFunc();
                 }else if (type === 'user'){
-                    const input = form.querySelector('#name-input');
-                    await Database.queryDatabase('set', `INSERT INTO users_id(name) VALUES ($1)`, [input.value]);
+                    const inputs = [
+                        form.querySelector('#name-input'),
+                        form.querySelector('#ci-input')
+                    ];
+                    await Database.queryDatabase('set', 
+                        `INSERT INTO users_id(name, ci) VALUES ($1, $2)`, 
+                        [inputs[0].value, inputs[1].value]);
                     dialog.close();
                     dialog.remove();
                     renderFunc();

@@ -203,6 +203,17 @@ export const GUI = function(Data, Event){
             nameInput.minLength = 15;
             form.appendChild(nameInput);
 
+            const ciLabel = document.createElement('label');
+            ciLabel.htmlFor = 'ci-input';
+            ciLabel.textContent = 'CI:';
+            form.appendChild(ciLabel);
+
+            const ciInput = document.createElement('input');
+            ciInput.id = 'ci-input';
+            ciInput.required = true;
+            ciInput.pattern = '\d{11}';
+            form.appendChild(ciInput);
+
             const acceptBtn = document.createElement('button');
             acceptBtn.className = 'accept-btn';
             acceptBtn.type = 'submit';

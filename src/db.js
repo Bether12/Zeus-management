@@ -62,8 +62,9 @@ export class Data{
             //Update user data
             await this.queryDatabase('set', 
                 `UPDATE users_id
-                SET last_payment = $2,
-                amount_paid = amount_paid + $3
+                SET last_payment = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN last_payment ELSE $2 END,
+                amount_paid = amount_paid + $3,
+                last_amount_paid = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN last_amount_paid ELSE $3 END
                 WHERE id = $1`, [userId, date, amountPaid]);
             
             await this.queryDatabase('set', `COMMIT`);

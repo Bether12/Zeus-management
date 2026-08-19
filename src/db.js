@@ -185,7 +185,7 @@ export class Data{
     async getDuePay(){
         try{
             const usersDuePay = await this.queryDatabase('get', 
-            `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE last_payment <= strftime('%Y-%m-%d %H:%M', datetime('now', '-31 day'))`);
+            `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE last_payment <= strftime('%Y-%m-%dT%H:%M', datetime('now', '-31 day'))`);
             return usersDuePay;
         }catch(error){
             console.log(error);

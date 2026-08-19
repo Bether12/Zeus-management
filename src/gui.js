@@ -272,6 +272,21 @@ export const GUI = function(Data, Event){
                 body.appendChild(dialog);
                 dialog.showModal();
 
+            } else if (field.dataset.ci !== undefined){
+                const ciLabel = document.createElement('label');
+                ciLabel.htmlFor = 'ci-input';
+                ciLabel.textContent = 'Nuevo CI:';
+                form.insertBefore(ciLabel, acceptBtn);
+
+                const ciInput = document.createElement('input');
+                ciInput.id = 'ci-input';
+                ciInput.required = true;
+                ciInput.pattern = '\d{11}';
+                form.insertBefore(ciInput, acceptBtn);
+
+                body.appendChild(dialog);
+                dialog.showModal();
+                
             } else if (field.dataset.amountPaid !== undefined){
                 const amountPaidLabel = document.createElement('label');
                 amountPaidLabel.htmlFor = 'amount-paid-input';

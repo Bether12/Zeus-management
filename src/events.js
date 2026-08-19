@@ -110,6 +110,13 @@ export const eventMaster = function(Data){
                         dialog.close();
                         dialog.remove();
                         renderFunc();
+                    }else if(field.dataset.ci !== undefined){
+                        await Database.queryDatabase('set',
+                            `UPDATE users_id SET ci = $1 WHERE id = $2`,
+                            [form.querySelector('#ci-input').value, field.dataset.id]);
+                        dialog.close();
+                        dialog.remove();
+                        renderFunc();
                     }else if(field.dataset.amountPaid !== undefined){
                         await Database.queryDatabase('set',
                             `UPDATE payment_records SET amount_paid = $1 WHERE id = $3;

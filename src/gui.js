@@ -27,9 +27,9 @@ export const GUI = function(Data, Event){
             console.log('Payments response:', responsePayments);
             console.log('Due pay response:', responseDuePay);
             //Empty tables contents if existent
-            usersTable.children.item(1).innerHTML = '';
-            paymentsTable.children.item(1).innerHTML = '';
-            duePayTable.children.item(1).innerHTML = '';
+            usersTable.querySelector('tbody').innerHTML = '';
+            paymentsTable.querySelector('tbody').innerHTML = '';
+            duePayTable.querySelector('tbody').innerHTML = '';
             //Render for users_id table
             responseUsers.forEach(element => {
                 let row = document.createElement('tr');

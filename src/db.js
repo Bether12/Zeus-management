@@ -96,7 +96,7 @@ export class Data{
 
             //Update the values of the new user
             await this.queryDatabase('set', 
-                `UPDATE users_id SET amount_paid = amount_paid + $1, last_payment = CASE WHEN last_payment > $2 THEN last_payment ELSE $2 END WHERE id = $3`, 
+                `UPDATE users_id SET amount_paid = amount_paid + $1, last_payment = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN last_payment ELSE $2 END WHERE id = $3`, 
                 [data[0].amount_paid, data[0].payment_date, newUserId]);
             
             //Get old user's most recent payment date

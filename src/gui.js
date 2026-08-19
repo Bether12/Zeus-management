@@ -12,6 +12,7 @@ export const GUI = function(Data, Event){
 
     //Payment table buttons
     const addUserBtn = document.querySelector('#add-user-btn');
+    const generateResumeBtn = document.querySelector('#generate-resume-btn');
 
     async function renderTables(){
         try{
@@ -389,11 +390,103 @@ export const GUI = function(Data, Event){
         dialog.showModal();
     }
 
+    function renderResumeForm(){
+        const dialog = document.createElement('dialog');
+        const form = document.createElement('form');
+        form.noValidate = true;
+        dialog.appendChild(form);
+
+        //Element generation
+        const selectLabel = document.createElement('label');
+        selectLabel.htmlFor = 'select-input';
+        selectLabel.textContent = 'Tipo de resumen:';
+        form.appendChild(selectLabel);
+
+        const selectInput = document.createElement('select');
+        selectInput.id = 'select-input';
+        selectInput.required = true;
+        form.appendChild(selectInput);
+
+        const dayOption = document.createElement('option');
+        dayOption.value = 'day';
+        dayOption.textContent = 'Diario';
+        selectInput.appendChild(dayOption);
+
+        const monthOption = document.createElement('option');
+        monthOption.value = 'month';
+        monthOption.textContent = 'Mensual';
+        selectInput.appendChild(monthOption);
+
+        const yearOption = document.createElement('option');
+        yearOption.value = 'year';
+        yearOption.textContent = 'Anual';
+        selectInput.appendChild(yearOption);
+
+        const dateLabel = document.createElement('label');
+        dateLabel.htmlFor = 'date-input';
+        form.appendChild(dateLabel);
+
+        const dateInput = document.createElement('input');
+        dateInput.id = 'date-input';
+        dateInput.required = true;
+        form.appendChild(dateInput);
+
+        const acceptBtn = document.createElement('button');
+        acceptBtn.className = 'accept-btn';
+        acceptBtn.textContent = 'Generar Resumen';
+        form.appendChild(acceptBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'cancel-btn';
+        cancelBtn.textContent = 'Cancelar';
+        form.appendChild(cancelBtn);
+
+        eventMaster.addChangeEventListener(selectInput, generateDatePicker, [selectInput, dateInput, dateLabel]);
+        eventMaster.addClickEventListener(acceptBtn, generateResume);
+        eventMaster.closeDialog(cancelBtn, dialog);
+        eventMaster.checkForm(form);
+
+        generateDatePicker(selectInput, dateInput, dateLabel);
+
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
+    function generateDatePicker(select, input, label){
+        const value = select.value;
+        const date = new Date();
+        
+        if(value === 'day'){
+            label.textContent = 'Seleccione el día deseado:';
+            input.type = 'date';
+            input.max = date.toISOString(date.getTime).split('T')[0];
+        }else if(value === 'month'){
+            label.textContent = 'Seleccione el mes deseado:';
+            input.type = 'month';
+            input.max = date.toISOString(date.getTime).substring(0, 7);
+        }else if(value === 'year'){
+            label.textContent = 'Seleccione el año deseado:';
+            input.type = 'number';
+            input.min = 2026;
+            input.max = date.getFullYear();
+        }else{
+            return;
+        }
+    }
+
+    function generateResume(){
+        /*
+        De tener:
+        Total de pagos, numero de clientes en el espacio de tiempo que entraron y los que pagaron
+        */
+    }
+
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
     eventMaster.editTableFields(usersTable, renderEditForm);
     eventMaster.editTableFields(paymentsTable, renderEditForm);
     eventMaster.addClickEventListener(deletePaymentBtn, renderDeletePaymentForm);
+    eventMaster.addClickEventListener(generateResumeBtn, renderResumeForm)
 
     return {renderTables, renderErrorMsg};
 };

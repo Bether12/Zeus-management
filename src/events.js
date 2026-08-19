@@ -5,6 +5,16 @@ export const eventMaster = function(Data){
         DOMElement.addEventListener('click', (e)=>{fun()});
     }
 
+    function addChangeEventListener(DOMElement, fun, params=[]){
+        DOMElement.addEventListener('change', e=>{
+            if(params.length > 0){
+                fun(...params);
+            }else{
+                fun();
+            }
+        });
+    }
+
     function closeDialog(DOMElement, dialog){
         DOMElement.addEventListener('click', (e)=>{
             dialog.close();
@@ -134,5 +144,5 @@ export const eventMaster = function(Data){
         });
     }
 
-    return {addClickEventListener, closeDialog, checkForm, resolveForm, editTableFields};
+    return {addClickEventListener, addChangeEventListener, closeDialog, checkForm, resolveForm, editTableFields};
 };

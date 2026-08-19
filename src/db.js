@@ -9,6 +9,7 @@ export class Data{
         try{
             const db = await window.__TAURI__.sql.load('sqlite:gym.db');
             //Create users id table with their last payment data
+            // TODO Para la tabla de usuarios agregar CI, y ultima cantidad pagada
             await db.execute(`CREATE TABLE IF NOT EXISTS users_id(
                 id INTEGER PRIMARY KEY AUTOINCREMENT ,
                 name VARCHAR(70) NOT NULL,  

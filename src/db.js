@@ -192,4 +192,11 @@ export class Data{
             throw error;
         }
     }
+    //FIXME
+    async getDateResume(date){
+        const dateResponse = await this.queryDatabase('get', 
+            `SELECT id, SUM(amount_paid) as total FROM (SELECT * FROM payment_records WHERE payment_date LIKE '$1%')`, 
+            [date]);
+        console.log(dateResponse);
+    }
 }

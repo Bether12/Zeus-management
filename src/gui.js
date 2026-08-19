@@ -482,6 +482,7 @@ export const GUI = function(Data, Event){
         De tener:
         Total de pagos, numero de clientes en el espacio de tiempo que entraron y los que pagaron
         */
+       Database.getDateResume();
     }
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);

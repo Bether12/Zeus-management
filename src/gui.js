@@ -51,7 +51,7 @@ export const GUI = function(Data, Event){
                 amountPaid.dataset.amountPaid = element.amount_paid;
                 amountPaid.textContent = element.amount_paid;
                 row.appendChild(amountPaid);
-                let lastAmountPaid = document.querySelector('td');
+                let lastAmountPaid = document.createElement('td');
                 lastAmountPaid.dataset.lastAmountPaid = element.last_amount_paid;
                 lastAmountPaid.textContent = element.last_amount_paid;
                 row.appendChild(lastAmountPaid);
@@ -211,7 +211,7 @@ export const GUI = function(Data, Event){
             const ciInput = document.createElement('input');
             ciInput.id = 'ci-input';
             ciInput.required = true;
-            ciInput.pattern = '\d{11}';
+            ciInput.pattern = '[0-9]{11}';
             form.appendChild(ciInput);
 
             const acceptBtn = document.createElement('button');
@@ -281,12 +281,12 @@ export const GUI = function(Data, Event){
                 const ciInput = document.createElement('input');
                 ciInput.id = 'ci-input';
                 ciInput.required = true;
-                ciInput.pattern = '\d{11}';
+                ciInput.pattern = '[0-9]{11}';
                 form.insertBefore(ciInput, acceptBtn);
 
                 body.appendChild(dialog);
                 dialog.showModal();
-                
+
             } else if (field.dataset.amountPaid !== undefined){
                 const amountPaidLabel = document.createElement('label');
                 amountPaidLabel.htmlFor = 'amount-paid-input';

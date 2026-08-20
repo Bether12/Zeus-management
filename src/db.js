@@ -149,6 +149,11 @@ export class Data{
                 `UPDATE users_id SET last_payment = $1 WHERE id = $2`, 
                 [lastPayment[0].payment_date, userId]);
 
+            //Update the last amount paid of the user
+            await this.queryDatabase('set', 
+                `UPDATE users_id SET last_amount_paid = COALESCE((SELECT amount_paid FROM payment_records WHERE payment_date = (SELECT last_payment FROM users_id WHERE id = $1)), 0) WHERE id = $1`, 
+                [userId]);
+
             await this.queryDatabase('set', `COMMIT`);
         } catch (error) {
             await this.queryDatabase('set', `ROLLBACK`);

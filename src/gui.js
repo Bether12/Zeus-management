@@ -478,7 +478,7 @@ export const GUI = function(Data, Event){
             form.appendChild(cancelBtn);
 
             eventMaster.addChangeEventListener(selectInput, generateDatePicker, [selectInput, dateInput, dateLabel]);
-            eventMaster.addClickEventListener(acceptBtn, generateResume);
+            eventMaster.addClickEventListener(acceptBtn, generateResume, true);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 

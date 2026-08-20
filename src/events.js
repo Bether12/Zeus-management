@@ -1,8 +1,14 @@
 export const eventMaster = function(Data){
     const Database = Data;
 
-    function addClickEventListener(DOMElement, fun){
-        DOMElement.addEventListener('click', (e)=>{fun()});
+    function addClickEventListener(DOMElement, fun, generateResume = false){
+        DOMElement.addEventListener('click', (e)=>{
+            if(generateResume){
+                e.preventDefault();
+                fun();
+            }else{
+                fun();
+            }});
     }
 
     function addChangeEventListener(DOMElement, fun, params=[]){

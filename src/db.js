@@ -214,11 +214,22 @@ export class Data{
             throw error;
         }
     }
-    //FIXME
+
     async getDateResume(date){
-        const dateResponse = await this.queryDatabase('get', 
-            `SELECT id, SUM(amount_paid) as total FROM (SELECT * FROM payment_records WHERE payment_date LIKE '$1%')`, 
-            [date]);
-        console.log(dateResponse);
+        try{
+            const dateResponse ={
+                resume: await this.queryDatabase('get', 
+                `SELECT COUNT(DISTINCT user_id) as users_total, SUM(amount_paid) as paid_total FROM payment_records WHERE payment_date LIKE $1`, 
+                [date + '%']),
+                usersResume: await this.queryDatabase('get', 
+                `SELECT user_id, amount_paid FROM payment_records WHERE payment_date LIKE $1`, 
+                [date + '%'])
+            };
+
+            return dateResponse;
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
     }
 }

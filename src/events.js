@@ -1,11 +1,11 @@
 export const eventMaster = function(Data){
     const Database = Data;
 
-    function addClickEventListener(DOMElement, fun, generateResume = false){
+    function addClickEventListener(DOMElement, fun, generateResume = false, dateInput=undefined){
         DOMElement.addEventListener('click', (e)=>{
             if(generateResume){
                 e.preventDefault();
-                fun();
+                fun(dateInput.value);
             }else{
                 fun();
             }});

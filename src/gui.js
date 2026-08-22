@@ -478,7 +478,7 @@ export const GUI = function(Data, Event){
             form.appendChild(cancelBtn);
 
             eventMaster.addChangeEventListener(selectInput, generateDatePicker, [selectInput, dateInput, dateLabel]);
-            eventMaster.addClickEventListener(acceptBtn, generateResume, true);
+            eventMaster.addClickEventListener(acceptBtn, generateResume, true, dateInput);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 
@@ -512,12 +512,82 @@ export const GUI = function(Data, Event){
         }
     }
 
-    function generateResume(){
+    async function generateResume(date){
         /*
         De tener:
-        Total de pagos, numero de clientes en el espacio de tiempo que entraron y los que pagaron
+        Total de pagos, (numero de clientes en el espacio de tiempo que entraron) y los que pagaron
         */
-       Database.getDateResume();
+        try{
+            const resume = await Database.getDateResume(date);
+            console.log(resume);
+            //Generate GUI elements
+            const dialog = document.createElement('dialog');
+
+            const numberOfUsersLabel = document.createElement('label');
+            numberOfUsersLabel.htmlFor = 'number-of-users-text';
+            numberOfUsersLabel.textContent = 'Número de usuarios que pagaron:';
+            dialog.appendChild(numberOfUsersLabel);
+
+            const numberOfUsersText = document.createElement('p');
+            numberOfUsersText.id = 'number-of-users-text';
+            numberOfUsersText.textContent = resume.resume[0].users_total;
+            dialog.appendChild(numberOfUsersText);
+
+            const paymentRecordsLabel = document.createElement('label');
+            paymentRecordsLabel.htmlFor = 'payment-records-table';
+            paymentRecordsLabel.textContent = 'Registro de pagos:';
+            dialog.appendChild(paymentRecordsLabel);
+
+            const paymentRecordsTable = document.createElement('table');
+            paymentRecordsTable.id = 'payment-records-table';
+            const tbody = document.createElement('tbody');
+            const hRow = document.createElement('tr');
+            const thId = document.createElement('th');
+            thId.textContent = 'ID';
+            hRow.appendChild(thId);
+            const thPaid = document.createElement('th');
+            thPaid.textContent = 'Pago';
+            hRow.appendChild(thPaid);
+            tbody.appendChild(hRow);
+            resume.usersResume.forEach(element =>{
+                let row = document.createElement('tr');
+
+                let id = document.createElement('td');
+                id.textContent = element.user_id;
+                row.appendChild(id);
+
+                let paid = document.createElement('td');
+                paid.textContent = element.amount_paid;
+                row.appendChild(paid);
+
+                tbody.appendChild(row);
+            });
+
+            paymentRecordsTable.appendChild(tbody);
+            dialog.appendChild(paymentRecordsTable);
+
+            const totalPaidLabel = document.createElement('label');
+            totalPaidLabel.htmlFor = 'total-paid-text';
+            totalPaidLabel.textContent = 'Total pagado:';
+            dialog.appendChild(totalPaidLabel);
+
+            const totalPaidText = document.createElement('p');
+            totalPaidText.id = 'total-paid-text';
+            totalPaidText.textContent = resume.resume[0].paid_total !== null ? resume.resume[0].paid_total : 0;
+            dialog.appendChild(totalPaidText);
+
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'close-btn';
+            closeBtn.textContent = 'Cerrar';
+            dialog.appendChild(closeBtn);
+
+            eventMaster.closeDialog(closeBtn, dialog);
+
+            body.appendChild(dialog);
+            dialog.showModal();
+        }catch(error){
+            throw error;
+        }
     }
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);

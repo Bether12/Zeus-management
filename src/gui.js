@@ -40,32 +40,40 @@ export const GUI = function(Data, Event){
         try {
             const paymentsOffset = (currentPaymentPage - 1) * rowsPerPage;
             const responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
+            console.log(responsePayments);
             paymentsTable.querySelector('tbody').innerHTML = '';
-            responsePayments.forEach(element => {
+            if (responsePayments.length === 0) {
                 let row = document.createElement('tr');
-                let id = document.createElement('td');
-                id.dataset.id =  element.id;
-                id.textContent = element.id;
-                row.appendChild(id);
-                let amountPaid = document.createElement('td');
-                amountPaid.dataset.amountPaid = element.amount_paid;
-                amountPaid.dataset.id = element.id;
-                amountPaid.dataset.userId = element.user_id;
-                amountPaid.textContent = element.amount_paid;
-                row.appendChild(amountPaid);
-                let paymentDate = document.createElement('td');
-                paymentDate.dataset.paymentDate = element.payment_date;
-                paymentDate.dataset.userId = element.user_id;
-                paymentDate.dataset.id = element.id;
-                paymentDate.textContent = element.payment_date;
-                row.appendChild(paymentDate);
-                let userId = document.createElement('td');
-                userId.dataset.userId = element.user_id;
-                userId.dataset.id = element.id;
-                userId.textContent = element.user_id;
-                row.appendChild(userId);
-                paymentsTable.children.item(1).appendChild(row);
-            });
+                row.textContent = 'No hay elementos para mostrar';
+                paymentsTable.querySelector('tbody').appendChild(row);
+            } else {
+                responsePayments.forEach(element => {
+                    let row = document.createElement('tr');
+                    let id = document.createElement('td');
+                    id.dataset.id =  element.id;
+                    id.textContent = element.id;
+                    row.appendChild(id);
+                    let amountPaid = document.createElement('td');
+                    amountPaid.dataset.amountPaid = element.amount_paid;
+                    amountPaid.dataset.id = element.id;
+                    amountPaid.dataset.userId = element.user_id;
+                    amountPaid.textContent = element.amount_paid;
+                    row.appendChild(amountPaid);
+                    let paymentDate = document.createElement('td');
+                    paymentDate.dataset.paymentDate = element.payment_date;
+                    paymentDate.dataset.userId = element.user_id;
+                    paymentDate.dataset.id = element.id;
+                    paymentDate.textContent = element.payment_date;
+                    row.appendChild(paymentDate);
+                    let userId = document.createElement('td');
+                    userId.dataset.userId = element.user_id;
+                    userId.dataset.id = element.id;
+                    userId.textContent = element.user_id;
+                    row.appendChild(userId);
+                    paymentsTable.querySelector('tbody').appendChild(row);
+                });
+            }
+            
         } catch (error) {
             renderErrorMsg(error);
         }
@@ -75,46 +83,54 @@ export const GUI = function(Data, Event){
         try {
             const usersOffset = (currentUsersPage - 1) * rowsPerPage;
             const responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
+            console.log(responseUsers);
             usersTable.querySelector('tbody').innerHTML = '';
-            responseUsers.forEach(element => {
+            if (responseUsers.length === 0) {
                 let row = document.createElement('tr');
-                let id = document.createElement('td');
-                id.dataset.id =  element.id;
-                id.textContent = element.id;
-                row.appendChild(id);
-                let name = document.createElement('td');
-                name.dataset.name = element.name;
-                name.dataset.id = element.id;
-                name.textContent = element.name;
-                row.appendChild(name);
-                let ci = document.createElement('td');
-                ci.dataset.ci = element.ci;
-                ci.dataset.id = element.id;
-                ci.textContent = element.ci;
-                row.appendChild(ci);
-                let amountPaid = document.createElement('td');
-                amountPaid.dataset.amountPaid = element.amount_paid;
-                amountPaid.textContent = element.amount_paid;
-                row.appendChild(amountPaid);
-                let lastAmountPaid = document.createElement('td');
-                lastAmountPaid.dataset.lastAmountPaid = element.last_amount_paid;
-                lastAmountPaid.textContent = element.last_amount_paid;
-                row.appendChild(lastAmountPaid);
-                let lastPayment = document.createElement('td');
-                lastPayment.dataset.lastPayment = element.last_payment;
-                lastPayment.textContent = element.last_payment;
-                row.appendChild(lastPayment);
-                let active = document.createElement('td');
-                active.dataset.active = element.active;
-                active.dataset.id = element.id;
-                if(element.active === 1){
-                    active.textContent = 'Sí';
-                }else{
-                    active.textContent = 'No';
-                }
-                row.appendChild(active);
-                usersTable.children.item(1).appendChild(row);
-            });
+                row.textContent = 'No hay elementos para mostrar';
+                usersTable.querySelector('tbody').appendChild(row);
+            } else {
+                responseUsers.forEach(element => {
+                    let row = document.createElement('tr');
+                    let id = document.createElement('td');
+                    id.dataset.id =  element.id;
+                    id.textContent = element.id;
+                    row.appendChild(id);
+                    let name = document.createElement('td');
+                    name.dataset.name = element.name;
+                    name.dataset.id = element.id;
+                    name.textContent = element.name;
+                    row.appendChild(name);
+                    let ci = document.createElement('td');
+                    ci.dataset.ci = element.ci;
+                    ci.dataset.id = element.id;
+                    ci.textContent = element.ci;
+                    row.appendChild(ci);
+                    let amountPaid = document.createElement('td');
+                    amountPaid.dataset.amountPaid = element.amount_paid;
+                    amountPaid.textContent = element.amount_paid;
+                    row.appendChild(amountPaid);
+                    let lastAmountPaid = document.createElement('td');
+                    lastAmountPaid.dataset.lastAmountPaid = element.last_amount_paid;
+                    lastAmountPaid.textContent = element.last_amount_paid;
+                    row.appendChild(lastAmountPaid);
+                    let lastPayment = document.createElement('td');
+                    lastPayment.dataset.lastPayment = element.last_payment;
+                    lastPayment.textContent = element.last_payment;
+                    row.appendChild(lastPayment);
+                    let active = document.createElement('td');
+                    active.dataset.active = element.active;
+                    active.dataset.id = element.id;
+                    if(element.active === 1){
+                        active.textContent = 'Sí';
+                    }else{
+                        active.textContent = 'No';
+                    }
+                    row.appendChild(active);
+                    usersTable.querySelector('tbody').appendChild(row);
+                });
+            }
+            
         } catch (error) {
             renderErrorMsg(error);
         }
@@ -124,129 +140,37 @@ export const GUI = function(Data, Event){
         try {
             const duePaysOffset = (currentDuePayPage - 1) * rowsPerPage;
             const responseDuePay = await Database.getPaginatedDuePay(rowsPerPage, duePaysOffset);
+            console.log(responseDuePay);
             duePayTable.querySelector('tbody').innerHTML = '';
-            responseDuePay.forEach(element => {
+            if (responseDuePay.length === 0) {
                 let row = document.createElement('tr');
-                let id = document.createElement('td');
-                id.textContent = element.id
-                row.appendChild(id);
-                let name = document.createElement('td');
-                name.textContent = element.name;
-                row.appendChild(name);
-                let lastPayment = document.createElement('td');
-                lastPayment.textContent = element.last_payment;
-                row.appendChild(lastPayment);
-                duePayTable.children.item(1).appendChild(row);
-            });
+                row.textContent = 'No hay elementos para mostrar';
+                duePayTable.querySelector('tbody').appendChild(row);
+            } else {
+                responseDuePay.forEach(element => {
+                    let row = document.createElement('tr');
+                    let id = document.createElement('td');
+                    id.textContent = element.id
+                    row.appendChild(id);
+                    let name = document.createElement('td');
+                    name.textContent = element.name;
+                    row.appendChild(name);
+                    let lastPayment = document.createElement('td');
+                    lastPayment.textContent = element.last_payment;
+                    row.appendChild(lastPayment);
+                    duePayTable.querySelector('tbody').appendChild(row);
+                });
+            }
+            
         } catch (error) {
             renderErrorMsg(error);
         }
     }
 
     async function renderTables(){
-        try{
-            const paymentsOffset = (currentPaymentPage - 1) * rowsPerPage; 
-            const usersOffset = (currentUsersPage - 1) * rowsPerPage;
-            const duePaysOffset = (currentDuePayPage - 1) * rowsPerPage;
-            
-            const responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
-
-            const responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
-
-            const responseDuePay = await Database.getPaginatedDuePay(rowsPerPage, duePaysOffset);
-
-            console.log('Users response:', responseUsers);
-            console.log('Payments response:', responsePayments);
-            console.log('Due pay response:', responseDuePay);
-
-            //Empty tables contents if existent
-            usersTable.querySelector('tbody').innerHTML = '';
-            paymentsTable.querySelector('tbody').innerHTML = '';
-            duePayTable.querySelector('tbody').innerHTML = '';
-
-            //Render for users_id table
-            responseUsers.forEach(element => {
-                let row = document.createElement('tr');
-                let id = document.createElement('td');
-                id.dataset.id =  element.id;
-                id.textContent = element.id;
-                row.appendChild(id);
-                let name = document.createElement('td');
-                name.dataset.name = element.name;
-                name.dataset.id = element.id;
-                name.textContent = element.name;
-                row.appendChild(name);
-                let ci = document.createElement('td');
-                ci.dataset.ci = element.ci;
-                ci.dataset.id = element.id;
-                ci.textContent = element.ci;
-                row.appendChild(ci);
-                let amountPaid = document.createElement('td');
-                amountPaid.dataset.amountPaid = element.amount_paid;
-                amountPaid.textContent = element.amount_paid;
-                row.appendChild(amountPaid);
-                let lastAmountPaid = document.createElement('td');
-                lastAmountPaid.dataset.lastAmountPaid = element.last_amount_paid;
-                lastAmountPaid.textContent = element.last_amount_paid;
-                row.appendChild(lastAmountPaid);
-                let lastPayment = document.createElement('td');
-                lastPayment.dataset.lastPayment = element.last_payment;
-                lastPayment.textContent = element.last_payment;
-                row.appendChild(lastPayment);
-                let active = document.createElement('td');
-                active.dataset.active = element.active;
-                active.dataset.id = element.id;
-                if(element.active === 1){
-                    active.textContent = 'Sí';
-                }else{
-                    active.textContent = 'No';
-                }
-                row.appendChild(active);
-                usersTable.children.item(1).appendChild(row);
-            });
-            //Render for payment_records table
-            responsePayments.forEach(element => {
-                let row = document.createElement('tr');
-                let id = document.createElement('td');
-                id.dataset.id =  element.id;
-                id.textContent = element.id;
-                row.appendChild(id);
-                let amountPaid = document.createElement('td');
-                amountPaid.dataset.amountPaid = element.amount_paid;
-                amountPaid.dataset.id = element.id;
-                amountPaid.dataset.userId = element.user_id;
-                amountPaid.textContent = element.amount_paid;
-                row.appendChild(amountPaid);
-                let paymentDate = document.createElement('td');
-                paymentDate.dataset.paymentDate = element.payment_date;
-                paymentDate.dataset.userId = element.user_id;
-                paymentDate.dataset.id = element.id;
-                paymentDate.textContent = element.payment_date;
-                row.appendChild(paymentDate);
-                let userId = document.createElement('td');
-                userId.dataset.userId = element.user_id;
-                userId.dataset.id = element.id;
-                userId.textContent = element.user_id;
-                row.appendChild(userId);
-                paymentsTable.children.item(1).appendChild(row);
-            });
-            //Render for due-pay-users
-            responseDuePay.forEach(element => {
-                let row = document.createElement('tr');
-                let id = document.createElement('td');
-                id.textContent = element.id
-                row.appendChild(id);
-                let name = document.createElement('td');
-                name.textContent = element.name;
-                row.appendChild(name);
-                let lastPayment = document.createElement('td');
-                lastPayment.textContent = element.last_payment;
-                row.appendChild(lastPayment);
-                duePayTable.children.item(1).appendChild(row);
-            });
-        }catch(error){
-            renderErrorMsg(error);
-        }
+        renderUsersTable();
+        renderPaymentsTable();
+        renderDuePayTable();
     };
 
     function renderAddPaymentForm(){

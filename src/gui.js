@@ -1,10 +1,32 @@
 export const GUI = function(Data, Event){
     const Database = Data;
     const eventMaster = Event;
+
+    //State variables
+    let currentPaymentPage = 1;
+    let currentUsersPage = 1;
+    let currentDuePayPage = 1;
+    const rowsPerPage = 50;
+
     const body = document.querySelector('body');
     const usersTable = document.querySelector('#users-id');
     const paymentsTable = document.querySelector('#payment-records');
     const duePayTable = document.querySelector('#due-pay-users');
+
+    //Payments table page controls
+    const payPrevBtn = document.querySelector('#pay-prev-page-btn');
+    const payNextBtn = document.querySelector('#pay-next-page-btn');
+    const payPageIndicator = document.querySelector('#pay-page-indicator');
+
+    //Users table page controls
+    const usersPrevBtn = document.querySelector('#users-prev-page-btn');
+    const usersNextBtn = document.querySelector('#users-next-page-btn');
+    const usersPageIndicator = document.querySelector('#users-page-indicator');
+
+    //Due pays table page controls
+    const duePaysPrevBtn = document.querySelector('#due-prev-page-btn');
+    const duePaysNextBtn = document.querySelector('#due-next-page-btn');
+    const duePaysPageIndicator = document.querySelector('#due-page-indicator');
 
     //Users table btn
     const addPaymentBtn = document.querySelector('#add-payment-btn');
@@ -14,22 +36,134 @@ export const GUI = function(Data, Event){
     const addUserBtn = document.querySelector('#add-user-btn');
     const generateResumeBtn = document.querySelector('#generate-resume-btn');
 
+    async function renderPaymentsTable() {
+        try {
+            const paymentsOffset = (currentPaymentPage - 1) * rowsPerPage;
+            const responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
+            paymentsTable.querySelector('tbody').innerHTML = '';
+            responsePayments.forEach(element => {
+                let row = document.createElement('tr');
+                let id = document.createElement('td');
+                id.dataset.id =  element.id;
+                id.textContent = element.id;
+                row.appendChild(id);
+                let amountPaid = document.createElement('td');
+                amountPaid.dataset.amountPaid = element.amount_paid;
+                amountPaid.dataset.id = element.id;
+                amountPaid.dataset.userId = element.user_id;
+                amountPaid.textContent = element.amount_paid;
+                row.appendChild(amountPaid);
+                let paymentDate = document.createElement('td');
+                paymentDate.dataset.paymentDate = element.payment_date;
+                paymentDate.dataset.userId = element.user_id;
+                paymentDate.dataset.id = element.id;
+                paymentDate.textContent = element.payment_date;
+                row.appendChild(paymentDate);
+                let userId = document.createElement('td');
+                userId.dataset.userId = element.user_id;
+                userId.dataset.id = element.id;
+                userId.textContent = element.user_id;
+                row.appendChild(userId);
+                paymentsTable.children.item(1).appendChild(row);
+            });
+        } catch (error) {
+            renderErrorMsg(error);
+        }
+    }
+
+    async function renderUsersTable() {
+        try {
+            const usersOffset = (currentUsersPage - 1) * rowsPerPage;
+            const responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
+            usersTable.querySelector('tbody').innerHTML = '';
+            responseUsers.forEach(element => {
+                let row = document.createElement('tr');
+                let id = document.createElement('td');
+                id.dataset.id =  element.id;
+                id.textContent = element.id;
+                row.appendChild(id);
+                let name = document.createElement('td');
+                name.dataset.name = element.name;
+                name.dataset.id = element.id;
+                name.textContent = element.name;
+                row.appendChild(name);
+                let ci = document.createElement('td');
+                ci.dataset.ci = element.ci;
+                ci.dataset.id = element.id;
+                ci.textContent = element.ci;
+                row.appendChild(ci);
+                let amountPaid = document.createElement('td');
+                amountPaid.dataset.amountPaid = element.amount_paid;
+                amountPaid.textContent = element.amount_paid;
+                row.appendChild(amountPaid);
+                let lastAmountPaid = document.createElement('td');
+                lastAmountPaid.dataset.lastAmountPaid = element.last_amount_paid;
+                lastAmountPaid.textContent = element.last_amount_paid;
+                row.appendChild(lastAmountPaid);
+                let lastPayment = document.createElement('td');
+                lastPayment.dataset.lastPayment = element.last_payment;
+                lastPayment.textContent = element.last_payment;
+                row.appendChild(lastPayment);
+                let active = document.createElement('td');
+                active.dataset.active = element.active;
+                active.dataset.id = element.id;
+                if(element.active === 1){
+                    active.textContent = 'Sí';
+                }else{
+                    active.textContent = 'No';
+                }
+                row.appendChild(active);
+                usersTable.children.item(1).appendChild(row);
+            });
+        } catch (error) {
+            renderErrorMsg(error);
+        }
+    }
+
+    async function renderDuePayTable() {
+        try {
+            const duePaysOffset = (currentDuePayPage - 1) * rowsPerPage;
+            const responseDuePay = await Database.getPaginatedDuePay(rowsPerPage, duePaysOffset);
+            duePayTable.querySelector('tbody').innerHTML = '';
+            responseDuePay.forEach(element => {
+                let row = document.createElement('tr');
+                let id = document.createElement('td');
+                id.textContent = element.id
+                row.appendChild(id);
+                let name = document.createElement('td');
+                name.textContent = element.name;
+                row.appendChild(name);
+                let lastPayment = document.createElement('td');
+                lastPayment.textContent = element.last_payment;
+                row.appendChild(lastPayment);
+                duePayTable.children.item(1).appendChild(row);
+            });
+        } catch (error) {
+            renderErrorMsg(error);
+        }
+    }
+
     async function renderTables(){
         try{
-            const responseUsers = await Database.queryDatabase('get', `
-                SELECT * FROM users_id;
-                `);
-            const responsePayments = await Database.queryDatabase('get', `
-                SELECT * FROM payment_records;
-                `);
-            const responseDuePay = await Database.getDuePay();
+            const paymentsOffset = (currentPaymentPage - 1) * rowsPerPage; 
+            const usersOffset = (currentUsersPage - 1) * rowsPerPage;
+            const duePaysOffset = (currentDuePayPage - 1) * rowsPerPage;
+            
+            const responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
+
+            const responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
+
+            const responseDuePay = await Database.getPaginatedDuePay(rowsPerPage, duePaysOffset);
+
             console.log('Users response:', responseUsers);
             console.log('Payments response:', responsePayments);
             console.log('Due pay response:', responseDuePay);
+
             //Empty tables contents if existent
             usersTable.querySelector('tbody').innerHTML = '';
             paymentsTable.querySelector('tbody').innerHTML = '';
             duePayTable.querySelector('tbody').innerHTML = '';
+
             //Render for users_id table
             responseUsers.forEach(element => {
                 let row = document.createElement('tr');
@@ -595,7 +729,48 @@ export const GUI = function(Data, Event){
     eventMaster.editTableFields(usersTable, renderEditForm);
     eventMaster.editTableFields(paymentsTable, renderEditForm);
     eventMaster.addClickEventListener(deletePaymentBtn, renderDeletePaymentForm);
-    eventMaster.addClickEventListener(generateResumeBtn, renderResumeForm)
+    eventMaster.addClickEventListener(generateResumeBtn, renderResumeForm);
+
+    //Pagination controls event listeners
+    //Payments
+    eventMaster.addClickEventListener(payPrevBtn, () => {
+        if (currentPaymentPage > 1) {
+            currentPaymentPage--;
+            payPageIndicator.textContent = `Página ${currentPaymentPage}`;
+            renderPaymentsTable();
+        }
+    });
+    eventMaster.addClickEventListener(payNextBtn, () => {
+        currentPaymentPage++;
+        payPageIndicator.textContent = `Página ${currentPaymentPage}`;
+        renderPaymentsTable();
+    });
+    //Users
+    eventMaster.addClickEventListener(usersPrevBtn, () => {
+        if (currentUsersPage > 1) {
+            currentUsersPage--;
+            usersPageIndicator.textContent = `Página ${currentUsersPage}`;
+            renderUsersTable();
+        }
+    });
+    eventMaster.addClickEventListener(usersNextBtn, () => {
+        currentUsersPage++;
+        usersPageIndicator.textContent = `Página ${currentUsersPage}`;
+        renderUsersTable();
+    });
+    //Due Payments
+    eventMaster.addClickEventListener(duePaysPrevBtn, () => {
+        if (currentDuePayPage > 1) {
+            currentDuePayPage--;
+            duePaysPageIndicator.textContent = `Página ${currentDuePayPage}`;
+            renderDuePayTable();
+        }
+    });
+    eventMaster.addClickEventListener(duePaysNextBtn, () => {
+        currentDuePayPage++;
+        duePaysPageIndicator.textContent = `Página ${currentDuePayPage}`;
+        renderDuePayTable();
+    });
 
     return {renderTables, renderErrorMsg};
 };

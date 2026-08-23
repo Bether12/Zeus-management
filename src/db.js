@@ -50,6 +50,30 @@ export class Data{
         } 
     }
 
+    async getPaginatedPayments(limit, offset){
+         try {
+            // Recent payments first
+            return await this.queryDatabase('get', 
+                `SELECT * FROM payment_records ORDER BY id DESC LIMIT $1 OFFSET $2`, 
+                [limit, offset]);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async getPaginatedUsers(limit, offset){
+        try{
+            //Ordered by ascending id
+            return await this.queryDatabase('get', 
+                `SELECT * FROM users_id ORDER BY id LIMIT $1 OFFSET $2`, 
+                [limit, offset]);
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
+
     async setPayment(userId, amountPaid, date){
         try{
             //Begin transaction
@@ -204,11 +228,11 @@ export class Data{
         }
     }
 
-    async getDuePay(){
+    async getPaginatedDuePay(limit, offset){
         try{
-            const usersDuePay = await this.queryDatabase('get', 
-            `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE last_payment <= strftime('%Y-%m-%dT%H:%M', datetime('now', '-31 day'))`);
-            return usersDuePay;
+            return await this.queryDatabase('get', 
+            `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE last_payment <= strftime('%Y-%m-%dT%H:%M', datetime('now', '-31 day')) LIMIT $1 OFFSET $2`, 
+            [limit, offset]);
         }catch(error){
             console.log(error);
             throw error;

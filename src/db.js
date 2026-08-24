@@ -46,6 +46,7 @@ export class Data{
                 throw error;
             }
         }else{
+            throw new Error('Unknown queryType parameter');
             return;
         } 
     }

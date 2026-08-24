@@ -1,5 +1,20 @@
 export const eventMaster = function(Data){
     const Database = Data;
+    let queue = [];
+
+    async function resolveQueue(){
+        while(queue.length !== 0) {
+            try {
+                //Execute the first query of the queue
+                await queue[0]();
+
+                //Shifts every query position index to the left, erasing the first one
+                queue.shift();
+            } catch (error) {
+                throw error;
+            } 
+        }
+    }
 
     function addClickEventListener(DOMElement, fun, generateResume = false, dateInput=undefined){
         DOMElement.addEventListener('click', (e)=>{
@@ -102,32 +117,23 @@ export const eventMaster = function(Data){
                         form.querySelector('#name-input'),
                         form.querySelector('#ci-input')
                     ];
-                    await Database.queryDatabase('set', 
-                        `INSERT INTO users_id(name, ci) VALUES ($1, $2)`, 
-                        [inputs[0].value, inputs[1].value]);
+                    await Database.addUser(inputs[0].value, inputs[1].value);
                     dialog.close();
                     dialog.remove();
                     renderFunc();
                 }else if (type === 'edit'){
                     if(field.dataset.name !== undefined){
-                        await Database.queryDatabase('set',
-                            `UPDATE users_id SET name = $1 WHERE id = $2`,
-                            [form.querySelector('#name-input').value, field.dataset.id]);
+                        await Database.changeUserName(form.querySelector('#name-input').value, field.dataset.id);
                         dialog.close();
                         dialog.remove();
                         renderFunc();
                     }else if(field.dataset.ci !== undefined){
-                        await Database.queryDatabase('set',
-                            `UPDATE users_id SET ci = $1 WHERE id = $2`,
-                            [form.querySelector('#ci-input').value, field.dataset.id]);
+                        await Database.changeUserCI(form.querySelector('#ci-input').value, field.dataset.id);
                         dialog.close();
                         dialog.remove();
                         renderFunc();
                     }else if(field.dataset.amountPaid !== undefined){
-                        await Database.queryDatabase('set',
-                            `UPDATE payment_records SET amount_paid = $1 WHERE id = $3;
-                            UPDATE users_id SET amount_paid = amount_paid + ($1 - $2) WHERE id = $4`,
-                            [form.querySelector('#amount-paid-input').value, field.dataset.amountPaid, field.dataset.id, field.dataset.userId]);
+                        await Database.changeAmountPaid(form.querySelector('#amount-paid-input').value, field.dataset.amountPaid, field.dataset.id, field.dataset.userId);
                         dialog.close();
                         dialog.remove();
                         renderFunc();
@@ -137,9 +143,7 @@ export const eventMaster = function(Data){
                         dialog.remove();
                         renderFunc();
                     }else if(field.dataset.active !== undefined){
-                        await Database.queryDatabase('set',
-                            `UPDATE users_id SET active = $1 WHERE id = $2`,
-                            [form.querySelector('#active-input').value, field.dataset.id]);
+                        await Database.changeUserStatus(form.querySelector('#active-input').value, field.dataset.id);
                         dialog.close();
                         dialog.remove();
                         renderFunc();

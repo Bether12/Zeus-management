@@ -74,14 +74,26 @@ export class Data{
         }
     }
 
+    async getPaginatedDuePay(limit, offset){
+        try{
+            return await this.queryDatabase('get', 
+                `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE last_payment <= strftime('%Y-%m-%dT%H:%M', datetime('now', '-31 day')) LIMIT $1 OFFSET $2`, 
+                [limit, offset]);
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
+
     async setPayment(userId, amountPaid, date){
         try{
             //Begin transaction
             await this.queryDatabase('set', `BEGIN TRANSACTION`);
 
             //Insert payment data
-            await this.queryDatabase('set',`INSERT INTO payment_records (amount_paid, payment_date, user_id) VALUES ($1, $2, $3);`,
-            [amountPaid, date, userId]);
+            await this.queryDatabase('set', 
+                `INSERT INTO payment_records (amount_paid, payment_date, user_id) VALUES ($1, $2, $3);`,
+                [amountPaid, date, userId]);
 
             //Update user data
             await this.queryDatabase('set', 
@@ -95,6 +107,73 @@ export class Data{
         }catch(error){
             await this.queryDatabase('set', `ROLLBACK`);
             console.log('Error during transaction:', error);
+            throw error;
+        }
+    }
+
+    async addUser(name, ci){
+        try {
+            await this.queryDatabase('set', 
+                `INSERT INTO users_id(name, ci) VALUES ($1, $2)`, 
+                [name, ci]);
+        } catch (error) {
+           console.log(error);
+           throw error; 
+        }
+    }
+
+    async changeUserName(name, id){
+        try {
+            await this.queryDatabase('set',
+                `UPDATE users_id SET name = $1 WHERE id = $2`,
+                [name, id]);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async changeUserCI(ci, id){
+        try {
+            await this.queryDatabase('set',
+                `UPDATE users_id SET ci = $1 WHERE id = $2`,
+                [ci, id]);
+        } catch (error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async changeAmountPaid(newAmountPaid, oldAmountPaid, paymentId, userId){
+        try {
+            //Begin transaction
+            await this.queryDatabase('set', `BEGIN TRANSACTION`);
+
+            //Set new amount paid
+            await this.queryDatabase('set',
+                `UPDATE payment_records SET amount_paid = $1 WHERE id = $2`, 
+                [newAmountPaid, paymentId]);
+
+            //Sum the difference of the old and new amount paid to the total paid by the user
+            await this.queryDatabase('set',
+                `UPDATE users_id SET amount_paid = amount_paid + ($1 - $2) WHERE id = $3`,
+                [newAmountPaid, oldAmountPaid, userId]);
+
+            await this.queryDatabase('set', `COMMIT`);
+        } catch (error) {
+            await this.queryDatabase('set', `ROLLBACK`);
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async changeUserStatus(newStatus, id){
+        try {
+            await this.queryDatabase('set',
+                `UPDATE users_id SET active = $1 WHERE id = $2`,
+                [newStatus, id]);
+        } catch (error) {
+            console.log(error);
             throw error;
         }
     }
@@ -224,17 +303,6 @@ export class Data{
         } catch (error) {
             await this.queryDatabase('set', `ROLLBACK`);
             console.log('Error during transaction:', error);
-            throw error;
-        }
-    }
-
-    async getPaginatedDuePay(limit, offset){
-        try{
-            return await this.queryDatabase('get', 
-            `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE last_payment <= strftime('%Y-%m-%dT%H:%M', datetime('now', '-31 day')) LIMIT $1 OFFSET $2`, 
-            [limit, offset]);
-        }catch(error){
-            console.log(error);
             throw error;
         }
     }

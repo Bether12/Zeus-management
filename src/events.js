@@ -68,7 +68,7 @@ export const eventMaster = function(Data){
                 target.setCustomValidity('El nombre de usuario no puede estar vacío');
                 target.reportValidity();
             } else if (target.id === 'name-input' && target.validity.tooShort){
-                target.setCustomValidity('El nombre de usuario ha de tener al menos 15 letras');
+                target.setCustomValidity('El nombre de usuario ha de tener al menos 5 letras');
                 target.reportValidity();
             } else if (target.id === 'ci-input' && target.validity.valueMissing){
                 target.setCustomValidity('El CI no puede estar vacío');

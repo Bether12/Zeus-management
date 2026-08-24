@@ -258,7 +258,7 @@ export const GUI = function(Data, Event){
             const nameInput = document.createElement('input');
             nameInput.id = 'name-input';
             nameInput.required = true;
-            nameInput.minLength = 15;
+            nameInput.minLength = 5;
             form.appendChild(nameInput);
 
             const ciLabel = document.createElement('label');
@@ -324,7 +324,7 @@ export const GUI = function(Data, Event){
                 const nameInput = document.createElement('input');
                 nameInput.id = 'name-input';
                 nameInput.required = true;
-                nameInput.minLength = 15;
+                nameInput.minLength = 5;
                 form.insertBefore(nameInput, acceptBtn);
 
                 body.appendChild(dialog);

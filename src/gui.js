@@ -41,12 +41,10 @@ export const GUI = function(Data, Event){
             const paymentsOffset = (currentPaymentPage - 1) * rowsPerPage;
             const responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
             console.log(responsePayments);
-            paymentsTable.querySelector('tbody').innerHTML = '';
             if (responsePayments.length === 0) {
-                let row = document.createElement('tr');
-                row.textContent = 'No hay elementos para mostrar';
-                paymentsTable.querySelector('tbody').appendChild(row);
+                return false;
             } else {
+                paymentsTable.querySelector('tbody').innerHTML = '';
                 responsePayments.forEach(element => {
                     let row = document.createElement('tr');
                     let id = document.createElement('td');
@@ -72,6 +70,7 @@ export const GUI = function(Data, Event){
                     row.appendChild(userId);
                     paymentsTable.querySelector('tbody').appendChild(row);
                 });
+                return true;
             }
             
         } catch (error) {
@@ -84,12 +83,10 @@ export const GUI = function(Data, Event){
             const usersOffset = (currentUsersPage - 1) * rowsPerPage;
             const responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
             console.log(responseUsers);
-            usersTable.querySelector('tbody').innerHTML = '';
             if (responseUsers.length === 0) {
-                let row = document.createElement('tr');
-                row.textContent = 'No hay elementos para mostrar';
-                usersTable.querySelector('tbody').appendChild(row);
+                return false;
             } else {
+                usersTable.querySelector('tbody').innerHTML = '';
                 responseUsers.forEach(element => {
                     let row = document.createElement('tr');
                     let id = document.createElement('td');
@@ -129,6 +126,7 @@ export const GUI = function(Data, Event){
                     row.appendChild(active);
                     usersTable.querySelector('tbody').appendChild(row);
                 });
+                return true;
             }
             
         } catch (error) {
@@ -143,9 +141,7 @@ export const GUI = function(Data, Event){
             console.log(responseDuePay);
             duePayTable.querySelector('tbody').innerHTML = '';
             if (responseDuePay.length === 0) {
-                let row = document.createElement('tr');
-                row.textContent = 'No hay elementos para mostrar';
-                duePayTable.querySelector('tbody').appendChild(row);
+                return false;
             } else {
                 responseDuePay.forEach(element => {
                     let row = document.createElement('tr');
@@ -160,6 +156,7 @@ export const GUI = function(Data, Event){
                     row.appendChild(lastPayment);
                     duePayTable.querySelector('tbody').appendChild(row);
                 });
+                return true;
             }
             
         } catch (error) {
@@ -666,8 +663,13 @@ export const GUI = function(Data, Event){
     });
     eventMaster.addClickEventListener(payNextBtn, () => {
         currentPaymentPage++;
-        payPageIndicator.textContent = `Página ${currentPaymentPage}`;
-        renderPaymentsTable();
+        renderPaymentsTable().then(result =>{
+            if(result){
+                payPageIndicator.textContent = `Página ${currentPaymentPage}`;
+            }else{
+                currentPaymentPage--;
+            }
+        });
     });
     //Users
     eventMaster.addClickEventListener(usersPrevBtn, () => {
@@ -679,8 +681,13 @@ export const GUI = function(Data, Event){
     });
     eventMaster.addClickEventListener(usersNextBtn, () => {
         currentUsersPage++;
-        usersPageIndicator.textContent = `Página ${currentUsersPage}`;
-        renderUsersTable();
+        renderUsersTable().then(result => {
+            if (result) {
+                usersPageIndicator.textContent = `Página ${currentUsersPage}`;
+            } else {
+                currentUsersPage--;
+            }
+        });
     });
     //Due Payments
     eventMaster.addClickEventListener(duePaysPrevBtn, () => {
@@ -692,8 +699,13 @@ export const GUI = function(Data, Event){
     });
     eventMaster.addClickEventListener(duePaysNextBtn, () => {
         currentDuePayPage++;
-        duePaysPageIndicator.textContent = `Página ${currentDuePayPage}`;
-        renderDuePayTable();
+        renderDuePayTable().then(result => {
+            if (result) {
+                duePaysPageIndicator.textContent = `Página ${currentDuePayPage}`;
+            } else {
+                currentDuePayPage--;
+            }
+        });
     });
 
     return {renderTables, renderErrorMsg};

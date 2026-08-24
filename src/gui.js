@@ -556,11 +556,11 @@ export const GUI = function(Data, Event){
         if(value === 'day'){
             label.textContent = 'Seleccione el día deseado:';
             input.type = 'date';
-            input.max = date.toISOString(date.getTime).split('T')[0];
+            input.max = date.toISOString().split('T')[0];
         }else if(value === 'month'){
             label.textContent = 'Seleccione el mes deseado:';
             input.type = 'month';
-            input.max = date.toISOString(date.getTime).substring(0, 7);
+            input.max = date.toISOString().substring(0, 7);
         }else if(value === 'year'){
             label.textContent = 'Seleccione el año deseado:';
             input.type = 'number';

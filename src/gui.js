@@ -113,7 +113,7 @@ export const GUI = function(Data, Event){
                     row.appendChild(lastAmountPaid);
                     let lastPayment = document.createElement('td');
                     lastPayment.dataset.lastPayment = element.last_payment;
-                    lastPayment.textContent = element.last_payment;
+                    lastPayment.textContent = element.last_payment !== null ? element.last_payment : 'Nunca';
                     row.appendChild(lastPayment);
                     let active = document.createElement('td');
                     active.dataset.active = element.active;
@@ -139,10 +139,10 @@ export const GUI = function(Data, Event){
             const duePaysOffset = (currentDuePayPage - 1) * rowsPerPage;
             const responseDuePay = await Database.getPaginatedDuePay(rowsPerPage, duePaysOffset);
             console.log(responseDuePay);
-            duePayTable.querySelector('tbody').innerHTML = '';
             if (responseDuePay.length === 0) {
                 return false;
             } else {
+                duePayTable.querySelector('tbody').innerHTML = '';
                 responseDuePay.forEach(element => {
                     let row = document.createElement('tr');
                     let id = document.createElement('td');
@@ -152,7 +152,7 @@ export const GUI = function(Data, Event){
                     name.textContent = element.name;
                     row.appendChild(name);
                     let lastPayment = document.createElement('td');
-                    lastPayment.textContent = element.last_payment;
+                    lastPayment.textContent = element.last_payment !== null ? element.last_payment : 'Nunca';
                     row.appendChild(lastPayment);
                     duePayTable.querySelector('tbody').appendChild(row);
                 });

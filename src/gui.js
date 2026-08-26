@@ -41,38 +41,32 @@ export const GUI = function(Data, Event){
             const paymentsOffset = (currentPaymentPage - 1) * rowsPerPage;
             const responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
             console.log(responsePayments);
-            if (responsePayments.length === 0) {
-                return false;
-            } else {
-                paymentsTable.querySelector('tbody').innerHTML = '';
-                responsePayments.forEach(element => {
-                    let row = document.createElement('tr');
-                    let id = document.createElement('td');
-                    id.dataset.id =  element.id;
-                    id.textContent = element.id;
-                    row.appendChild(id);
-                    let amountPaid = document.createElement('td');
-                    amountPaid.dataset.amountPaid = element.amount_paid;
-                    amountPaid.dataset.id = element.id;
-                    amountPaid.dataset.userId = element.user_id;
-                    amountPaid.textContent = element.amount_paid;
-                    row.appendChild(amountPaid);
-                    let paymentDate = document.createElement('td');
-                    paymentDate.dataset.paymentDate = element.payment_date;
-                    paymentDate.dataset.userId = element.user_id;
-                    paymentDate.dataset.id = element.id;
-                    paymentDate.textContent = element.payment_date;
-                    row.appendChild(paymentDate);
-                    let userId = document.createElement('td');
-                    userId.dataset.userId = element.user_id;
-                    userId.dataset.id = element.id;
-                    userId.textContent = element.user_id;
-                    row.appendChild(userId);
-                    paymentsTable.querySelector('tbody').appendChild(row);
-                });
-                return true;
-            }
-            
+            paymentsTable.querySelector('tbody').innerHTML = '';
+            responsePayments.forEach(element => {
+                let row = document.createElement('tr');
+                let id = document.createElement('td');
+                id.dataset.id =  element.id;
+                id.textContent = element.id;
+                row.appendChild(id);
+                let amountPaid = document.createElement('td');
+                amountPaid.dataset.amountPaid = element.amount_paid;
+                amountPaid.dataset.id = element.id;
+                amountPaid.dataset.userId = element.user_id;
+                amountPaid.textContent = element.amount_paid;
+                row.appendChild(amountPaid);
+                let paymentDate = document.createElement('td');
+                paymentDate.dataset.paymentDate = element.payment_date;
+                paymentDate.dataset.userId = element.user_id;
+                paymentDate.dataset.id = element.id;
+                paymentDate.textContent = element.payment_date;
+                row.appendChild(paymentDate);
+                let userId = document.createElement('td');
+                userId.dataset.userId = element.user_id;
+                userId.dataset.id = element.id;
+                userId.textContent = element.user_id;
+                row.appendChild(userId);
+                paymentsTable.querySelector('tbody').appendChild(row);
+            });
         } catch (error) {
             renderErrorMsg(error);
         }
@@ -83,52 +77,46 @@ export const GUI = function(Data, Event){
             const usersOffset = (currentUsersPage - 1) * rowsPerPage;
             const responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
             console.log(responseUsers);
-            if (responseUsers.length === 0) {
-                return false;
-            } else {
-                usersTable.querySelector('tbody').innerHTML = '';
-                responseUsers.forEach(element => {
-                    let row = document.createElement('tr');
-                    let id = document.createElement('td');
-                    id.dataset.id =  element.id;
-                    id.textContent = element.id;
-                    row.appendChild(id);
-                    let name = document.createElement('td');
-                    name.dataset.name = element.name;
-                    name.dataset.id = element.id;
-                    name.textContent = element.name;
-                    row.appendChild(name);
-                    let ci = document.createElement('td');
-                    ci.dataset.ci = element.ci;
-                    ci.dataset.id = element.id;
-                    ci.textContent = element.ci;
-                    row.appendChild(ci);
-                    let amountPaid = document.createElement('td');
-                    amountPaid.dataset.amountPaid = element.amount_paid;
-                    amountPaid.textContent = element.amount_paid;
-                    row.appendChild(amountPaid);
-                    let lastAmountPaid = document.createElement('td');
-                    lastAmountPaid.dataset.lastAmountPaid = element.last_amount_paid;
-                    lastAmountPaid.textContent = element.last_amount_paid;
-                    row.appendChild(lastAmountPaid);
-                    let lastPayment = document.createElement('td');
-                    lastPayment.dataset.lastPayment = element.last_payment;
-                    lastPayment.textContent = element.last_payment !== null ? element.last_payment : 'Nunca';
-                    row.appendChild(lastPayment);
-                    let active = document.createElement('td');
-                    active.dataset.active = element.active;
-                    active.dataset.id = element.id;
-                    if(element.active === 1){
-                        active.textContent = 'Sí';
-                    }else{
-                        active.textContent = 'No';
-                    }
-                    row.appendChild(active);
-                    usersTable.querySelector('tbody').appendChild(row);
-                });
-                return true;
-            }
-            
+            usersTable.querySelector('tbody').innerHTML = '';
+            responseUsers.forEach(element => {
+                let row = document.createElement('tr');
+                let id = document.createElement('td');
+                id.dataset.id =  element.id;
+                id.textContent = element.id;
+                row.appendChild(id);
+                let name = document.createElement('td');
+                name.dataset.name = element.name;
+                name.dataset.id = element.id;
+                name.textContent = element.name;
+                row.appendChild(name);
+                let ci = document.createElement('td');
+                ci.dataset.ci = element.ci;
+                ci.dataset.id = element.id;
+                ci.textContent = element.ci;
+                row.appendChild(ci);
+                let amountPaid = document.createElement('td');
+                amountPaid.dataset.amountPaid = element.amount_paid;
+                amountPaid.textContent = element.amount_paid;
+                row.appendChild(amountPaid);
+                let lastAmountPaid = document.createElement('td');
+                lastAmountPaid.dataset.lastAmountPaid = element.last_amount_paid;
+                lastAmountPaid.textContent = element.last_amount_paid;
+                row.appendChild(lastAmountPaid);
+                let lastPayment = document.createElement('td');
+                lastPayment.dataset.lastPayment = element.last_payment;
+                lastPayment.textContent = element.last_payment !== null ? element.last_payment : 'Nunca';
+                row.appendChild(lastPayment);
+                let active = document.createElement('td');
+                active.dataset.active = element.active;
+                active.dataset.id = element.id;
+                if(element.active === 1){
+                    active.textContent = 'Sí';
+                }else{
+                    active.textContent = 'No';
+                }
+                row.appendChild(active);
+                usersTable.querySelector('tbody').appendChild(row);
+            });
         } catch (error) {
             renderErrorMsg(error);
         }
@@ -139,26 +127,20 @@ export const GUI = function(Data, Event){
             const duePaysOffset = (currentDuePayPage - 1) * rowsPerPage;
             const responseDuePay = await Database.getPaginatedDuePay(rowsPerPage, duePaysOffset);
             console.log(responseDuePay);
-            if (responseDuePay.length === 0) {
-                return false;
-            } else {
-                duePayTable.querySelector('tbody').innerHTML = '';
-                responseDuePay.forEach(element => {
-                    let row = document.createElement('tr');
-                    let id = document.createElement('td');
-                    id.textContent = element.id
-                    row.appendChild(id);
-                    let name = document.createElement('td');
-                    name.textContent = element.name;
-                    row.appendChild(name);
-                    let lastPayment = document.createElement('td');
-                    lastPayment.textContent = element.last_payment !== null ? element.last_payment : 'Nunca';
-                    row.appendChild(lastPayment);
-                    duePayTable.querySelector('tbody').appendChild(row);
-                });
-                return true;
-            }
-            
+            duePayTable.querySelector('tbody').innerHTML = '';
+            responseDuePay.forEach(element => {
+                let row = document.createElement('tr');
+                let id = document.createElement('td');
+                id.textContent = element.id
+                row.appendChild(id);
+                let name = document.createElement('td');
+                name.textContent = element.name;
+                row.appendChild(name);
+                let lastPayment = document.createElement('td');
+                lastPayment.textContent = element.last_payment !== null ? element.last_payment : 'Nunca';
+                row.appendChild(lastPayment);
+                duePayTable.querySelector('tbody').appendChild(row);
+            });
         } catch (error) {
             renderErrorMsg(error);
         }
@@ -661,15 +643,15 @@ export const GUI = function(Data, Event){
             renderPaymentsTable();
         }
     });
-    eventMaster.addClickEventListener(payNextBtn, () => {
-        currentPaymentPage++;
-        renderPaymentsTable().then(result =>{
-            if(result){
-                payPageIndicator.textContent = `Página ${currentPaymentPage}`;
-            }else{
-                currentPaymentPage--;
-            }
-        });
+    eventMaster.addClickEventListener(payNextBtn, async () => {
+        const totalPayments = await Database.getTotalPaymentsCount();
+        const maxPages = Math.ceil(totalPayments / rowsPerPage) || 1;
+
+        if(currentPaymentPage < maxPages){
+            currentPaymentPage++;
+            payPageIndicator.textContent = `Página ${currentPaymentPage}`;
+            renderPaymentsTable();
+        };
     });
     //Users
     eventMaster.addClickEventListener(usersPrevBtn, () => {
@@ -679,15 +661,15 @@ export const GUI = function(Data, Event){
             renderUsersTable();
         }
     });
-    eventMaster.addClickEventListener(usersNextBtn, () => {
-        currentUsersPage++;
-        renderUsersTable().then(result => {
-            if (result) {
-                usersPageIndicator.textContent = `Página ${currentUsersPage}`;
-            } else {
-                currentUsersPage--;
-            }
-        });
+    eventMaster.addClickEventListener(usersNextBtn, async () => {
+        const totalUsers = await Database.getTotalUsersCount();
+        const maxPages = Math.ceil(totalUsers / rowsPerPage) || 1;
+
+        if (currentUsersPage < maxPages){
+            currentUsersPage++;
+            usersPageIndicator.textContent = `Página ${currentUsersPage}`;
+            renderUsersTable();
+        }
     });
     //Due Payments
     eventMaster.addClickEventListener(duePaysPrevBtn, () => {
@@ -697,15 +679,15 @@ export const GUI = function(Data, Event){
             renderDuePayTable();
         }
     });
-    eventMaster.addClickEventListener(duePaysNextBtn, () => {
-        currentDuePayPage++;
-        renderDuePayTable().then(result => {
-            if (result) {
-                duePaysPageIndicator.textContent = `Página ${currentDuePayPage}`;
-            } else {
-                currentDuePayPage--;
-            }
-        });
+    eventMaster.addClickEventListener(duePaysNextBtn, async () => {
+        const totalDuePays = await Database.getTotalDuePayCount();
+        const maxPages = Math.ceil(totalDuePays / rowsPerPage) || 1;
+
+        if (currentDuePayPage < maxPages){
+            currentDuePayPage++;
+            duePaysPageIndicator.textContent = `Página ${currentDuePayPage}`;
+            renderDuePayTable();
+        }
     });
 
     return {renderTables, renderErrorMsg};

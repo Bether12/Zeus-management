@@ -56,6 +56,30 @@ export class Data{
         });   
     }
 
+    async getTotalUsersCount() {
+        const result = await this.queryDatabase('get', `SELECT COUNT(*) as total FROM users_id`);
+        console.log(`Users total: ${result[0].total}`);
+        return result[0].total;
+    }
+
+    async getTotalPaymentsCount() {
+        const result = await this.queryDatabase('get', `SELECT COUNT(*) as total FROM payment_records`);
+        console.log(`Payments total: ${result[0].total}`);
+        return result[0].total;
+    }
+
+    async getTotalDuePayCount(){
+        try{
+            const result = await this.queryDatabase('get', 
+                    `SELECT COUNT(*) as total FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', '-31 day'))`);
+            console.log(`Due pays total: ${result[0].total}`);
+            return result[0].total;
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
+
     async getPaginatedPayments(limit, offset){
          try {
             // Recent payments first

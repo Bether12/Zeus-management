@@ -1,20 +1,5 @@
 export const eventMaster = function(Data){
     const Database = Data;
-    let queue = [];
-
-    async function resolveQueue(){
-        while(queue.length !== 0) {
-            try {
-                //Execute the first query of the queue
-                await queue[0]();
-
-                //Shifts every query position index to the left, erasing the first one
-                queue.shift();
-            } catch (error) {
-                throw error;
-            } 
-        }
-    }
 
     function addClickEventListener(DOMElement, fun, generateResume = false, dateInput=undefined){
         DOMElement.addEventListener('click', (e)=>{

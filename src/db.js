@@ -1,8 +1,11 @@
+import { AsyncQueue } from "./asyncQueue.js";
+
 export class Data{
 
     constructor(db){
         console.log('Database successfully initiated');
         this.db = db;
+        this.sqlQueue = new AsyncQueue();
     }
 
     static async initializeDatabase(){
@@ -31,24 +34,26 @@ export class Data{
     }
 
     async queryDatabase(queyType, query, params=[]){
-        if(queyType === 'get'){
-            try{
-                return await this.db.select(query, params);
-            }catch(error){
-                console.log(error);
-                throw error;
-            }
-        }else if (queyType === 'set'){
-            try{
-                return await this.db.execute(query, params);
-            }catch(error){
-                console.log(error);
-                throw error;
-            }
-        }else{
-            throw new Error('Unknown queryType parameter');
-            return;
-        } 
+        return this.sqlQueue.enqueue(async () =>{
+            if(queyType === 'get'){
+                try{
+                    return await this.db.select(query, params);
+                }catch(error){
+                    console.log(error);
+                    throw error;
+                }
+            }else if (queyType === 'set'){
+                try{
+                    return await this.db.execute(query, params);
+                }catch(error){
+                    console.log(error);
+                    throw error;
+                }
+            }else{
+                throw new Error('Unknown queryType parameter');
+                return;
+            } 
+        });   
     }
 
     async getPaginatedPayments(limit, offset){

@@ -44,55 +44,63 @@ export const eventMaster = function(Data){
     }
 
     function checkForm(DOMElement){
-        DOMElement.addEventListener('input', (e)=>{
-            const target = e.target;
-            if(target.id === 'amount-paid-input' && target.validity.valueMissing){
-                target.setCustomValidity('El monto a pagar no puede estar vacío');
-                target.reportValidity();
-            } else if (target.id === 'amount-paid-input' && (target.validity.stepMismatch || target.value <= 0)){
-                target.setCustomValidity('El monto pagado tiene que ser un múltiplo positivo de 100');
-                target.reportValidity();
-            } else if(target.id === 'payment-date-input' && target.validity.valueMissing){
-                target.setCustomValidity('La fecha no puede estar vacía');
-                target.reportValidity();
-            } else if (target.id === 'payment-date-input' && target.validity.valid === false){
-                target.setCustomValidity('Formato de fecha inválido');
-                target.reportValidity();
-            } else if (target.id === 'user-id-input' && target.validity.valueMissing){
-                target.setCustomValidity('Escriba el ID del usuario');
-                target.reportValidity();
-            } else if (target.id === 'user-id-input' && (target.validity.stepMismatch || target.value <= 0)){
-                target.setCustomValidity('El ID tiene que ser un número entero positivo');
-                target.reportValidity();
-            } else if (target.id === 'name-input' && target.validity.valueMissing){
-                target.setCustomValidity('El nombre de usuario no puede estar vacío');
-                target.reportValidity();
-            } else if (target.id === 'name-input' && target.validity.tooShort){
-                target.setCustomValidity('El nombre de usuario ha de tener al menos 5 letras');
-                target.reportValidity();
-            } else if (target.id === 'ci-input' && target.validity.valueMissing){
-                target.setCustomValidity('El CI no puede estar vacío');
-                target.reportValidity();
-            }else if (target.id === 'ci-input' && target.validity.patternMismatch){
-                target.setCustomValidity('El CI tiene que ser un número de 11 dígitos');
-                target.reportValidity();
-            } else if (target.id === 'payment-id-input' && (target.validity.stepMismatch || target.value <= 0)){
-                target.setCustomValidity('El ID tiene que ser un número entero positivo');
-                target.reportValidity();
-            } else if (target.id === 'payment-id-input' && target.validity.valueMissing){
-                target.setCustomValidity('Escriba el ID de pago');
-                target.reportValidity();
-            } else if (target.id === 'date-input' && target.validity.rangeOverflow){
-                target.setCustomValidity('La fecha seleccionada no puede ser mayor que la fecha actual');
-                target.reportValidity();
-            } else if (target.id === 'date-input' && target.validity.valueMissing){
-                target.setCustomValidity('La fecha no puede estar vacía');
-                target.reportValidity();
-            } else {
-                target.setCustomValidity('');
-                target.reportValidity();
-            }
+        DOMElement.addEventListener('input', (e) => {
+            e.target.setCustomValidity('');
         });
+
+        DOMElement.addEventListener('focusout', (e) => {
+            validateField(e.target);
+        });
+    }
+
+    function validateField(target){
+        if (target.id === 'amount-paid-input'){
+            if (target.validity.valueMissing){
+                target.setCustomValidity('El monto a pagar no puede estar vacío');
+            } else if (target.validity.stepMismatch || Number(target.value) <= 0){
+                target.setCustomValidity('El monto pagado tiene que ser un múltiplo positivo de 100');
+            }
+        } else if (target.id === 'payment-date-input'){
+            if (target.validity.valueMissing){
+                target.setCustomValidity('La fecha no puede estar vacía');
+            } else if (target.validity.valid === false){
+                target.setCustomValidity('Formato de fecha inválido');
+            }
+        } else if (target.id === 'user-id-input'){
+            if (target.validity.valueMissing){
+                target.setCustomValidity('Escriba el ID del usuario');
+            } else if (target.validity.stepMismatch || Number(target.value) <= 0){
+                target.setCustomValidity('El ID tiene que ser un número entero positivo');
+            }
+        } else if (target.id === 'name-input'){
+            if (target.validity.valueMissing){
+                target.setCustomValidity('El nombre de usuario no puede estar vacío');
+            } else if (target.validity.tooShort){
+                target.setCustomValidity('El nombre de usuario ha de tener al menos 5 letras');
+            }
+        } else if (target.id === 'ci-input'){
+            if (target.validity.valueMissing){
+                target.setCustomValidity('El CI no puede estar vacío');
+            }else if (target.validity.patternMismatch){
+                target.setCustomValidity('El CI tiene que ser un número de 11 dígitos');
+            }
+        } else if (target.id === 'payment-id-input'){
+            if (target.validity.stepMismatch || Number(target.value) <= 0){
+                target.setCustomValidity('El ID tiene que ser un número entero positivo');
+            } else if (target.validity.valueMissing){
+                target.setCustomValidity('Escriba el ID de pago');
+            }
+        } else if (target.id === 'date-input'){
+            if (target.validity.rangeOverflow){
+                target.setCustomValidity('La fecha seleccionada no puede ser mayor que la fecha actual');
+            } else if (target.validity.valueMissing){
+                target.setCustomValidity('La fecha no puede estar vacía');
+            }
+        }
+
+        if(!target.checkValidity()){
+            target.reportValidity();
+        }
     }
 
     function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}, field=[],){

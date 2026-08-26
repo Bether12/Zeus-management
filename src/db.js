@@ -190,6 +190,11 @@ export class Data{
                 [paymentId]);
             console.log(data);
 
+            // Verification of the query's result
+            if (!data || data.length === 0) {
+                throw new Error(`No se encontró ningún registro de pago con el ID: ${paymentId}`);
+            }
+
             //Change the payment user's id
             await this.queryDatabase('set', 
                 `UPDATE payment_records SET user_id = $1 WHERE id = $2`, 
@@ -210,6 +215,11 @@ export class Data{
                 `SELECT MAX(payment_date) AS payment_date FROM payment_records WHERE user_id = $1`, 
                 [userId]);
             console.log(oldUserPayDate);
+
+            // Verification of the query's result
+            if (!oldUserPayDate || oldUserPayDate.length === 0) {
+                throw new Error(`No se encontró ningún registro de pago reciente para el usuario ID: ${userId}`);
+            }
             
             //Update old user's last payment date
             await this.queryDatabase('set', 

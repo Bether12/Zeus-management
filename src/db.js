@@ -258,6 +258,10 @@ export class Data{
                 `SELECT MAX(payment_date) AS payment_date FROM payment_records WHERE user_id = $1`, 
                 [userId]);
 
+            if(!lastPayment || lastPayment.length === 0){
+                throw new Error(`No se encontró ningún registro de pago reciente para el usuario con ID: ${userId}`);
+            };
+
             //Set user's new last payment
             await this.queryDatabase('set', 
                 `UPDATE users_id SET last_payment = $1 WHERE id = $2`, 

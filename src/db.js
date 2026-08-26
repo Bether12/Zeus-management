@@ -289,6 +289,10 @@ export class Data{
                 `SELECT * FROM payment_records WHERE id = $1`, 
                 [paymentId]);
 
+            if(!data || data.length === 0){
+                throw new Error(`No se encontró el pago con ID: ${paymentId}`)
+            }
+
             //Delete payment
             await this.queryDatabase('set', 
                 `DELETE FROM payment_records WHERE id = $1`, 
@@ -303,6 +307,10 @@ export class Data{
             const lastPayment = await this.queryDatabase('get', 
                 `SELECT MAX(payment_date) AS payment_date FROM payment_records WHERE user_id = $1`, 
                 [data[0].user_id]);
+
+            if(!lastPayment || lastPayment.length === 0){
+                throw new Error(`No se encontró un registro de pago reciente para el usuario con ID: ${data[0].user_id}`)
+            }
 
             //Set user's new last payment
             await this.queryDatabase('set', 

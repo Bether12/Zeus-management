@@ -15,7 +15,7 @@ export class Data{
             await db.execute(`CREATE TABLE IF NOT EXISTS users_id(
                 id INTEGER PRIMARY KEY AUTOINCREMENT ,
                 name VARCHAR(100) NOT NULL,
-                ci VARCHAR(11) NOT NULL,  
+                ci VARCHAR(11) NOT NULL UNIQUE,  
                 amount_paid INT NOT NULL DEFAULT 0 CHECK (amount_paid >= 0),
                 last_amount_paid INT NOT NULL DEFAULT 0 CHECK (last_amount_paid >=0),
                 last_payment TEXT DEFAULT NULL,
@@ -25,7 +25,7 @@ export class Data{
                 amount_paid INT NOT NULL CHECK (amount_paid >= 0), 
                 payment_date TEXT NOT NULL, 
                 user_id INTEGER NOT NULL, 
-                FOREIGN KEY(user_id) REFERENCES users_id(id)
+                FOREIGN KEY(user_id) REFERENCES users_id(id) ON DELETE CASCADE
                 );`);
         return new Data(db);
         }catch(error){
@@ -51,7 +51,6 @@ export class Data{
                 }
             }else{
                 throw new Error('Unknown queryType parameter');
-                return;
             } 
         });   
     }
@@ -71,7 +70,7 @@ export class Data{
     async getTotalDuePayCount(){
         try{
             const result = await this.queryDatabase('get', 
-                    `SELECT COUNT(*) as total FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', '-31 day'))`);
+                    `SELECT COUNT(*) as total FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', 'localtime', '-31 day'))`);
             console.log(`Due pays total: ${result[0].total}`);
             return result[0].total;
         }catch(error){
@@ -107,7 +106,7 @@ export class Data{
     async getPaginatedDuePay(limit, offset){
         try{
             return await this.queryDatabase('get', 
-                `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', '-31 day')) LIMIT $1 OFFSET $2`, 
+                `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', 'localtime', '-31 day')) LIMIT $1 OFFSET $2`, 
                 [limit, offset]);
         }catch(error){
             console.log(error);

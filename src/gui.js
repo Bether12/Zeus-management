@@ -594,6 +594,7 @@ export const GUI = function(Data, Event){
             const paymentRecordsTable = document.createElement('table');
             paymentRecordsTable.id = 'payment-records-table';
             const tbody = document.createElement('tbody');
+            const fragment = document.createDocumentFragment();
             const hRow = document.createElement('tr');
             const thId = document.createElement('th');
             thId.textContent = 'ID';
@@ -613,9 +614,10 @@ export const GUI = function(Data, Event){
                 paid.textContent = element.amount_paid;
                 row.appendChild(paid);
 
-                tbody.appendChild(row);
+                fragment.appendChild(row);
             });
 
+            tbody.appendChild(fragment);
             paymentRecordsTable.appendChild(tbody);
             dialog.appendChild(paymentRecordsTable);
 

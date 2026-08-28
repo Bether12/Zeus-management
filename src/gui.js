@@ -168,6 +168,7 @@ export const GUI = function(Data, Event){
             form.appendChild(amountPaidLabel);
 
             const amountPaidInput = document.createElement('input');
+            amountPaidInput.autofocus = true;
             amountPaidInput.id = 'amount-paid-input';
             amountPaidInput.type = 'number';
             amountPaidInput.required = true;
@@ -235,6 +236,7 @@ export const GUI = function(Data, Event){
             form.appendChild(nameLabel);
 
             const nameInput = document.createElement('input');
+            nameInput.autofocus = true;
             nameInput.id = 'name-input';
             nameInput.required = true;
             nameInput.minLength = 5;
@@ -301,6 +303,7 @@ export const GUI = function(Data, Event){
                 form.insertBefore(nameLabel, acceptBtn);
 
                 const nameInput = document.createElement('input');
+                nameInput.autofocus = true;
                 nameInput.id = 'name-input';
                 nameInput.value = field.dataset.name;
                 nameInput.required = true;
@@ -317,6 +320,7 @@ export const GUI = function(Data, Event){
                 form.insertBefore(ciLabel, acceptBtn);
 
                 const ciInput = document.createElement('input');
+                ciInput.autofocus = true;
                 ciInput.id = 'ci-input';
                 ciInput.value = field.dataset.ci;
                 ciInput.required = true;
@@ -333,6 +337,7 @@ export const GUI = function(Data, Event){
                 form.insertBefore(amountPaidLabel, acceptBtn);
 
                 const amountPaidInput = document.createElement('input');
+                amountPaidInput.autofocus = true;
                 amountPaidInput.id = 'amount-paid-input';
                 amountPaidInput.type = 'number';
                 amountPaidInput.value = field.dataset.amountPaid;
@@ -350,6 +355,7 @@ export const GUI = function(Data, Event){
                 form.insertBefore(paymentDateLabel, acceptBtn);
 
                 const paymentDateInput = document.createElement('input');
+                paymentDateInput.autofocus = true;
                 paymentDateInput.id = 'payment-date-input';
                 paymentDateInput.type = 'datetime-local';
                 paymentDateInput.value = field.dataset.paymentDate;
@@ -378,6 +384,7 @@ export const GUI = function(Data, Event){
                 inactiveOpt.textContent = 'Inactivo';
                 activeInput.appendChild(inactiveOpt);
                 activeInput.value = field.dataset.active;
+                activeInput.autofocus = true;
 
                 body.appendChild(dialog);
                 dialog.showModal();
@@ -389,6 +396,7 @@ export const GUI = function(Data, Event){
                 form.insertBefore(userIdLabel, acceptBtn);
 
                 const userIdInput = document.createElement('input');
+                userIdInput.autofocus = true;
                 userIdInput.id = 'user-id-input';
                 userIdInput.type = 'number';
                 userIdInput.value = field.dataset.userId;
@@ -419,6 +427,7 @@ export const GUI = function(Data, Event){
             form.appendChild(paymentIdLabel);
 
             const paymentIdInput = document.createElement('input');
+            paymentIdInput.autofocus = true;
             paymentIdInput.id = 'payment-id-input';
             paymentIdInput.type = 'number';
             paymentIdInput.placeholder = 'Ej. 1 o 2';
@@ -484,6 +493,7 @@ export const GUI = function(Data, Event){
             const selectInput = document.createElement('select');
             selectInput.id = 'select-input';
             selectInput.required = true;
+            selectInput.autofocus = true;
             form.appendChild(selectInput);
 
             const dayOption = document.createElement('option');

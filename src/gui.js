@@ -52,18 +52,18 @@ export const GUI = function(Data, Event){
                 amountPaid.dataset.amountPaid = element.amount_paid;
                 amountPaid.dataset.id = element.id;
                 amountPaid.dataset.userId = element.user_id;
-                amountPaid.textContent = element.amount_paid;
+                amountPaid.textContent = '✏️ ' + element.amount_paid;
                 row.appendChild(amountPaid);
                 let paymentDate = document.createElement('td');
                 paymentDate.dataset.paymentDate = element.payment_date;
                 paymentDate.dataset.userId = element.user_id;
                 paymentDate.dataset.id = element.id;
-                paymentDate.textContent = element.payment_date;
+                paymentDate.textContent = '✏️ ' + element.payment_date;
                 row.appendChild(paymentDate);
                 let userId = document.createElement('td');
                 userId.dataset.userId = element.user_id;
                 userId.dataset.id = element.id;
-                userId.textContent = element.user_id;
+                userId.textContent = '✏️ ' + element.user_id;
                 row.appendChild(userId);
                 paymentsTable.querySelector('tbody').appendChild(row);
             });
@@ -87,12 +87,12 @@ export const GUI = function(Data, Event){
                 let name = document.createElement('td');
                 name.dataset.name = element.name;
                 name.dataset.id = element.id;
-                name.textContent = element.name;
+                name.textContent = '✏️ ' + element.name;
                 row.appendChild(name);
                 let ci = document.createElement('td');
                 ci.dataset.ci = element.ci;
                 ci.dataset.id = element.id;
-                ci.textContent = element.ci;
+                ci.textContent = '✏️ ' + element.ci;
                 row.appendChild(ci);
                 let amountPaid = document.createElement('td');
                 amountPaid.dataset.amountPaid = element.amount_paid;
@@ -110,9 +110,9 @@ export const GUI = function(Data, Event){
                 active.dataset.active = element.active;
                 active.dataset.id = element.id;
                 if(element.active === 1){
-                    active.textContent = 'Sí';
+                    active.textContent = '✏️ ' + 'Sí';
                 }else{
-                    active.textContent = 'No';
+                    active.textContent = '✏️ ' +'No';
                 }
                 row.appendChild(active);
                 usersTable.querySelector('tbody').appendChild(row);

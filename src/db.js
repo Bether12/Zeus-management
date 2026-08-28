@@ -6,6 +6,10 @@ export class Data{
         console.log('Database successfully initiated');
         this.db = db;
         this.sqlQueue = new AsyncQueue();
+        this.currentUser = {
+            username: 'root', 
+            role: 'admin'
+        };
     }
 
     static async initializeDatabase(){
@@ -27,6 +31,11 @@ export class Data{
                 user_id INTEGER NOT NULL, 
                 FOREIGN KEY(user_id) REFERENCES users_id(id) ON DELETE CASCADE
                 );`);
+            await db.execute(`CREATE TABLE IF NOT EXISTS staff(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username VARCHAR(50) UNIQUE NOT NULL,
+                password VARCHAR(255) NOT NULL,
+                role VARCHAR(20) NOT NULL CHECK(role IN ('admin', 'dependent'));`);
         return new Data(db);
         }catch(error){
             throw error;

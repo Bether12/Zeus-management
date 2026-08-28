@@ -302,6 +302,7 @@ export const GUI = function(Data, Event){
 
                 const nameInput = document.createElement('input');
                 nameInput.id = 'name-input';
+                nameInput.value = field.dataset.name;
                 nameInput.required = true;
                 nameInput.minLength = 5;
                 form.insertBefore(nameInput, acceptBtn);
@@ -317,6 +318,7 @@ export const GUI = function(Data, Event){
 
                 const ciInput = document.createElement('input');
                 ciInput.id = 'ci-input';
+                ciInput.value = field.dataset.ci;
                 ciInput.required = true;
                 ciInput.pattern = '[0-9]{11}';
                 form.insertBefore(ciInput, acceptBtn);
@@ -333,6 +335,7 @@ export const GUI = function(Data, Event){
                 const amountPaidInput = document.createElement('input');
                 amountPaidInput.id = 'amount-paid-input';
                 amountPaidInput.type = 'number';
+                amountPaidInput.value = field.dataset.amountPaid;
                 amountPaidInput.required = true;
                 amountPaidInput.step = '100';
                 form.insertBefore(amountPaidInput, acceptBtn);
@@ -349,6 +352,7 @@ export const GUI = function(Data, Event){
                 const paymentDateInput = document.createElement('input');
                 paymentDateInput.id = 'payment-date-input';
                 paymentDateInput.type = 'datetime-local';
+                paymentDateInput.value = field.dataset.paymentDate;
                 paymentDateInput.required = true;
                 form.insertBefore(paymentDateInput, acceptBtn);
 
@@ -373,6 +377,7 @@ export const GUI = function(Data, Event){
                 inactiveOpt.value = '0';
                 inactiveOpt.textContent = 'Inactivo';
                 activeInput.appendChild(inactiveOpt);
+                activeInput.value = field.dataset.active;
 
                 body.appendChild(dialog);
                 dialog.showModal();
@@ -386,6 +391,7 @@ export const GUI = function(Data, Event){
                 const userIdInput = document.createElement('input');
                 userIdInput.id = 'user-id-input';
                 userIdInput.type = 'number';
+                userIdInput.value = field.dataset.userId;
                 userIdInput.step = '1';
                 userIdInput.required = true;
                 form.insertBefore(userIdInput, acceptBtn);

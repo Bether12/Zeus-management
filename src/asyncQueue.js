@@ -43,7 +43,7 @@ export class AsyncQueue{
                 const result = await currentTask.task();
                 currentTask.resolve(result);
             } catch (error) {
-                currentTask.reject(result);
+                currentTask.reject(error);
             }
         };
 

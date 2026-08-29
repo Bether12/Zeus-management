@@ -209,7 +209,7 @@ export const GUI = function(Data, Event){
             cancelBtn.textContent = 'Cancelar';
             form.appendChild(cancelBtn);
 
-            eventMaster.resolveForm('payment',acceptBtn,form,dialog, renderTables);
+            eventMaster.resolveForm('payment',acceptBtn,form,dialog, renderTables, [], renderErrorMsg);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 
@@ -264,7 +264,7 @@ export const GUI = function(Data, Event){
             cancelBtn.textContent = 'Cancelar';
             form.appendChild(cancelBtn);
 
-            eventMaster.resolveForm('user',acceptBtn,form,dialog, renderTables);
+            eventMaster.resolveForm('user',acceptBtn,form,dialog, renderTables, [], renderErrorMsg);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 
@@ -292,7 +292,7 @@ export const GUI = function(Data, Event){
             cancelBtn.textContent = 'Cancelar';
             form.appendChild(cancelBtn);
 
-            eventMaster.resolveForm('edit',acceptBtn,form,dialog, renderTables, field);
+            eventMaster.resolveForm('edit',acceptBtn,form,dialog, renderTables, field, renderErrorMsg);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 
@@ -445,7 +445,7 @@ export const GUI = function(Data, Event){
             cancelBtn.textContent = 'Cancelar';
             form.appendChild(cancelBtn);
 
-            eventMaster.resolveForm('delete', acceptBtn, form, dialog, renderTables);
+            eventMaster.resolveForm('delete', acceptBtn, form, dialog, renderTables, [], renderErrorMsg);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 
@@ -465,7 +465,7 @@ export const GUI = function(Data, Event){
         dialog.appendChild(text);
 
         const div = document.createElement('div');
-        div.textContent = error;
+        div.textContent = error.message || String(error);
         dialog.appendChild(div);
 
         const closeBtn = document.createElement('button');

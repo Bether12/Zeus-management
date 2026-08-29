@@ -88,7 +88,7 @@ export const eventMaster = function(Data){
         }
     }
 
-    function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}, field=[],){
+    function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}, field=[], renderErrorMsg=function(){}){
         DOMElement.addEventListener('click', async (e)=>{
             e.preventDefault();
             try{
@@ -155,7 +155,7 @@ export const eventMaster = function(Data){
                     return;
                 }
             }catch(error){
-                throw error;
+                renderErrorMsg(error);
             }
         });
     }

@@ -1,20 +1,23 @@
 import { AsyncQueue } from "./asyncQueue.js";
 
 export class Data{
+    #currentUser = {
+        username: 'root', 
+        role: 'dependent'
+    };
 
     constructor(db){
         console.log('Database successfully initiated');
         this.db = db;
         this.sqlQueue = new AsyncQueue();
-        this.currentUser = {
-            username: 'root', 
-            role: 'admin'
-        };
     }
 
     static async initializeDatabase(){
         try{
             const db = await window.__TAURI__.sql.load('sqlite:gym.db');
+
+            await db.execute(`PRAGMA foreign_keys = ON;`);
+
             //Create users id table with their last payment data
             await db.execute(`CREATE TABLE IF NOT EXISTS users_id(
                 id INTEGER PRIMARY KEY AUTOINCREMENT ,
@@ -24,6 +27,7 @@ export class Data{
                 last_amount_paid INT NOT NULL DEFAULT 0 CHECK (last_amount_paid >=0),
                 last_payment TEXT DEFAULT NULL,
                 active BOOLEAN DEFAULT 1);`);
+
             await db.execute(`CREATE TABLE IF NOT EXISTS payment_records(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 amount_paid INT NOT NULL CHECK (amount_paid >= 0), 
@@ -31,16 +35,37 @@ export class Data{
                 user_id INTEGER NOT NULL, 
                 FOREIGN KEY(user_id) REFERENCES users_id(id) ON DELETE CASCADE
                 );`);
+
             await db.execute(`CREATE TABLE IF NOT EXISTS staff(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
                 role VARCHAR(20) NOT NULL CHECK(role IN ('admin', 'dependent')
                 ));`);
+            
+            const staffCount = await db.select(`SELECT COUNT(*) as total FROM staff`);
+            if(staffCount[0].total === 0){
+                // If no user is present in staff, create default admin el 'admin' with password 'admin123'
+                const defaultHash = '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9';
+                await db.execute(
+                    `INSERT INTO staff (username, password, role) VALUES ('admin', $1, 'admin')`,
+                    [defaultHash]
+                );
+                console.log('Usuario administrador por defecto creado.');
+            }
+
         return new Data(db);
         }catch(error){
             throw error;
         }
+    }
+
+    getCurrentUserData(){
+        return this.#currentUser;
+    }
+
+    setCurrentUser(user) {
+        this.#currentUser = user;
     }
 
     async queryDatabase(queyType, query, params=[]){
@@ -63,6 +88,17 @@ export class Data{
                 throw new Error('Unknown queryType parameter');
             } 
         });   
+    }
+
+    async verifyLogin(username, passwordHash) {
+        const user = await this.queryDatabase('get',
+            `SELECT username, role FROM staff WHERE username = $1 AND password = $2`,
+            [username, passwordHash]
+        );
+        if(user.length > 0) {
+            return user[0];
+        }
+        throw new Error('Usuario o contraseña incorrectos');
     }
 
     async getTotalUsersCount() {
@@ -165,6 +201,9 @@ export class Data{
     }
 
     async changeUserName(name, id){
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
         try {
             await this.queryDatabase('set',
                 `UPDATE users_id SET name = $1 WHERE id = $2`,
@@ -176,6 +215,9 @@ export class Data{
     }
 
     async changeUserCI(ci, id){
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
         try {
             await this.queryDatabase('set',
                 `UPDATE users_id SET ci = $1 WHERE id = $2`,
@@ -187,6 +229,9 @@ export class Data{
     }
 
     async changeAmountPaid(newAmountPaid, oldAmountPaid, paymentId, userId){
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
         return this.sqlQueue.enqueue(async () => {
             try {
                 //Begin transaction
@@ -212,6 +257,9 @@ export class Data{
     }
 
     async changeUserStatus(newStatus, id){
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
         try {
             await this.queryDatabase('set',
                 `UPDATE users_id SET active = $1 WHERE id = $2`,
@@ -223,6 +271,9 @@ export class Data{
     }
 
     async changePaymentUser(userId, newUserId, paymentId){
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
         return this.sqlQueue.enqueue(async () => {
             try {
                 //Begin transaction
@@ -290,6 +341,9 @@ export class Data{
     }
 
     async changePaymentDate(newDate, paymentId, userId) {
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
         return this.sqlQueue.enqueue(async () => {
             try {
                 await this.db.execute(`BEGIN TRANSACTION`);
@@ -328,6 +382,9 @@ export class Data{
     }
 
     async deletePayment(paymentId){
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
         return this.sqlQueue.enqueue(async () => {
             try {
                 await this.db.execute(`BEGIN TRANSACTION`);
@@ -380,6 +437,9 @@ export class Data{
     }
 
     async getDateResume(date){
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
         return this.sqlQueue.enqueue(async () => {
             try{
                 const dateResponse ={

@@ -11,4 +11,4 @@ console.log('Payment_records:', tableInfo2);
 const Event = eventMaster(Database);
 const Gui = GUI(Database, Event);
 
-Gui.renderTables();
+Gui.logIn();

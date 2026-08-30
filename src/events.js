@@ -1,6 +1,14 @@
 export const eventMaster = function(Data){
     const Database = Data;
 
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
     function addClickEventListener(DOMElement, fun, generateResume = false, dateInput=undefined){
         DOMElement.addEventListener('click', (e)=>{
             if(generateResume){
@@ -57,11 +65,11 @@ export const eventMaster = function(Data){
             } else if (target.validity.stepMismatch || Number(target.value) <= 0){
                 target.setCustomValidity('El ID tiene que ser un número entero positivo');
             }
-        } else if (target.id === 'name-input'){
+        } else if (target.id === 'name-input' || target.id === 'user-name-input'){
             if (target.validity.valueMissing){
                 target.setCustomValidity('El nombre de usuario no puede estar vacío');
             } else if (target.validity.tooShort){
-                target.setCustomValidity('El nombre de usuario ha de tener al menos 5 letras');
+                target.setCustomValidity('El nombre de usuario ha de tener al menos 3 letras');
             }
         } else if (target.id === 'ci-input'){
             if (target.validity.valueMissing){
@@ -81,6 +89,10 @@ export const eventMaster = function(Data){
             } else if (target.validity.valueMissing){
                 target.setCustomValidity('La fecha no puede estar vacía');
             }
+        }else if (target.id === 'user-password-input'){
+            if(target.validity.valueMissing){
+                target.setCustomValidity('La contraseña no puede estar vacía');
+            }
         }
 
         if(!target.checkValidity()){
@@ -88,13 +100,28 @@ export const eventMaster = function(Data){
         }
     }
 
-    function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}, field=[], renderErrorMsg=function(){}){
+    function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}, field=[], renderErrorMsg=function(e){}){
         DOMElement.addEventListener('click', async (e)=>{
             e.preventDefault();
             try{
                 if(!form.checkValidity()){
                     form.reportValidity();
                     return;
+                }else if (type === 'login'){
+                    const inputs = [
+                        form.querySelector('#user-name-input'),
+                        form.querySelector('#user-password-input')
+                    ];
+                    
+                    const hash = await hashPassword(inputs[1].value);
+                    
+                    const user = await Database.verifyLogin(inputs[0].value, hash);
+                    
+                    Database.setCurrentUser(user);
+                    
+                    dialog.close();
+                    dialog.remove();
+                    renderFunc();
                 }else if (type === 'payment'){
                     const inputs = [
                         form.querySelector('#amount-paid-input'),

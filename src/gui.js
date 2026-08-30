@@ -239,7 +239,7 @@ export const GUI = function(Data, Event){
             nameInput.autofocus = true;
             nameInput.id = 'name-input';
             nameInput.required = true;
-            nameInput.minLength = 5;
+            nameInput.minLength = 3;
             form.appendChild(nameInput);
 
             const ciLabel = document.createElement('label');
@@ -307,7 +307,7 @@ export const GUI = function(Data, Event){
                 nameInput.id = 'name-input';
                 nameInput.value = field.dataset.name;
                 nameInput.required = true;
-                nameInput.minLength = 5;
+                nameInput.minLength = 3;
                 form.insertBefore(nameInput, acceptBtn);
 
                 body.appendChild(dialog);
@@ -645,6 +645,47 @@ export const GUI = function(Data, Event){
         }
     }
 
+    function logIn(){
+        const dialog = document.createElement('dialog');
+        dialog.addEventListener('cancel', (e) => e.preventDefault());
+        const form = document.createElement('form');
+        dialog.appendChild(form);
+        form.noValidate = true;
+
+        const userNameLabel = document.createElement('label');
+        userNameLabel.htmlFor = 'user-name-input';
+        userNameLabel.textContent = 'Usuario:';
+        form.appendChild(userNameLabel);
+
+        const userNameInput = document.createElement('input');
+        userNameInput.id = 'user-name-input';
+        userNameInput.required = true;
+        userNameInput.minLength = 3;
+        form.appendChild(userNameInput);
+
+        const userPasswordLabel = document.createElement('label');
+        userPasswordLabel.htmlFor = 'user-password-input';
+        userPasswordLabel.textContent = 'Contraseña:';
+        form.appendChild(userPasswordLabel);
+
+        const userPasswordInput = document.createElement('input');
+        userPasswordInput.id = 'user-password-input';
+        userPasswordInput.required = true;
+        userPasswordInput.type = 'password';
+        form.appendChild(userPasswordInput);
+
+        const logInBtn = document.createElement('button');
+        logInBtn.className = 'log-in-btn';
+        logInBtn.textContent = 'Iniciar Sesión';
+        form.appendChild(logInBtn);
+
+        eventMaster.resolveForm('login', logInBtn, form, dialog, renderTables, [], renderErrorMsg);
+        eventMaster.checkForm(form);
+
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
     eventMaster.editTableFields(usersTable, renderEditForm);
@@ -708,5 +749,5 @@ export const GUI = function(Data, Event){
         }
     });
 
-    return {renderTables, renderErrorMsg};
+    return {logIn, renderTables, renderErrorMsg};
 };

@@ -3,6 +3,7 @@ export const GUI = function(Data, Event){
     const eventMaster = Event;
 
     //State variables
+    let currentUser = {};
     let currentPaymentPage = 1;
     let currentUsersPage = 1;
     let currentDuePayPage = 1;
@@ -12,6 +13,8 @@ export const GUI = function(Data, Event){
     const usersTable = document.querySelector('#users-id');
     const paymentsTable = document.querySelector('#payment-records');
     const duePayTable = document.querySelector('#due-pay-users');
+    const userDisplay = document.querySelector('.user');
+    const changeCurrentUseBtn = document.querySelector('#change-user');
 
     //Payments table page controls
     const payPrevBtn = document.querySelector('#pay-prev-page-btn');
@@ -52,18 +55,18 @@ export const GUI = function(Data, Event){
                 amountPaid.dataset.amountPaid = element.amount_paid;
                 amountPaid.dataset.id = element.id;
                 amountPaid.dataset.userId = element.user_id;
-                amountPaid.textContent = '✏️ ' + element.amount_paid;
+                amountPaid.textContent = currentUser.role === 'admin'? '✏️ ' + element.amount_paid : element.amount_paid;
                 row.appendChild(amountPaid);
                 let paymentDate = document.createElement('td');
                 paymentDate.dataset.paymentDate = element.payment_date;
                 paymentDate.dataset.userId = element.user_id;
                 paymentDate.dataset.id = element.id;
-                paymentDate.textContent = '✏️ ' + element.payment_date;
+                paymentDate.textContent = currentUser.role === 'admin'? '✏️ ' + element.payment_date : element.payment_date;
                 row.appendChild(paymentDate);
                 let userId = document.createElement('td');
                 userId.dataset.userId = element.user_id;
                 userId.dataset.id = element.id;
-                userId.textContent = '✏️ ' + element.user_id;
+                userId.textContent = currentUser.role === 'admin'? '✏️ ' + element.user_id : element.user_id;
                 row.appendChild(userId);
                 paymentsTable.querySelector('tbody').appendChild(row);
             });
@@ -87,12 +90,12 @@ export const GUI = function(Data, Event){
                 let name = document.createElement('td');
                 name.dataset.name = element.name;
                 name.dataset.id = element.id;
-                name.textContent = '✏️ ' + element.name;
+                name.textContent = currentUser.role === 'admin'? '✏️ ' + element.name : element.name;
                 row.appendChild(name);
                 let ci = document.createElement('td');
                 ci.dataset.ci = element.ci;
                 ci.dataset.id = element.id;
-                ci.textContent = '✏️ ' + element.ci;
+                ci.textContent = currentUser.role === 'admin'? '✏️ ' + element.ci : element.ci;
                 row.appendChild(ci);
                 let amountPaid = document.createElement('td');
                 amountPaid.dataset.amountPaid = element.amount_paid;
@@ -110,9 +113,9 @@ export const GUI = function(Data, Event){
                 active.dataset.active = element.active;
                 active.dataset.id = element.id;
                 if(element.active === 1){
-                    active.textContent = '✏️ ' + 'Sí';
+                    active.textContent = currentUser.role === 'admin'? '✏️ ' + 'Sí' : 'Sí';
                 }else{
-                    active.textContent = '✏️ ' +'No';
+                    active.textContent = currentUser.role === 'admin'? '✏️ ' + 'No' : 'No';
                 }
                 row.appendChild(active);
                 usersTable.querySelector('tbody').appendChild(row);
@@ -660,6 +663,7 @@ export const GUI = function(Data, Event){
         const userNameInput = document.createElement('input');
         userNameInput.id = 'user-name-input';
         userNameInput.required = true;
+        userNameInput.autofocus = true;
         userNameInput.minLength = 3;
         form.appendChild(userNameInput);
 
@@ -679,11 +683,17 @@ export const GUI = function(Data, Event){
         logInBtn.textContent = 'Iniciar Sesión';
         form.appendChild(logInBtn);
 
-        eventMaster.resolveForm('login', logInBtn, form, dialog, renderTables, [], renderErrorMsg);
+        eventMaster.resolveForm('login', logInBtn, form, dialog, [renderCurrentUser, renderTables], [], renderErrorMsg);
         eventMaster.checkForm(form);
 
         body.appendChild(dialog);
         dialog.showModal();
+    }
+
+    function renderCurrentUser(){
+        currentUser = Database.getCurrentUserData();
+
+        userDisplay.querySelector('p').textContent = `Usuario: ${currentUser.username}, Rol: ${currentUser.role}`;
     }
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
@@ -692,6 +702,7 @@ export const GUI = function(Data, Event){
     eventMaster.editTableFields(paymentsTable, renderEditForm);
     eventMaster.addClickEventListener(deletePaymentBtn, renderDeletePaymentForm);
     eventMaster.addClickEventListener(generateResumeBtn, renderResumeForm);
+    eventMaster.addClickEventListener(changeCurrentUseBtn, logIn);
 
     //Pagination controls event listeners
     //Payments

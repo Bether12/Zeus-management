@@ -121,7 +121,8 @@ export const eventMaster = function(Data){
                     
                     dialog.close();
                     dialog.remove();
-                    renderFunc();
+                    renderFunc[0]();
+                    renderFunc[1]();
                 }else if (type === 'payment'){
                     const inputs = [
                         form.querySelector('#amount-paid-input'),

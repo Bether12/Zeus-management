@@ -40,7 +40,7 @@ export const eventMaster = function(Data){
         DOMElement.addEventListener('input', (e) => {
             e.target.setCustomValidity('');
         });
-
+        //FIXME: focusout solo funciona clickeando otro campo, pero al presionar enter en el campo actual no, pues sale la validacion estandar
         DOMElement.addEventListener('focusout', (e) => {
             validateField(e.target);
         });
@@ -92,6 +92,8 @@ export const eventMaster = function(Data){
         }else if (target.id === 'user-password-input'){
             if(target.validity.valueMissing){
                 target.setCustomValidity('La contraseña no puede estar vacía');
+            } else if (target.validity.tooShort){
+                target.setCustomValidity('La contraseña no puede tener menos de 8 caracteres');
             }
         }
 
@@ -107,6 +109,19 @@ export const eventMaster = function(Data){
                 if(!form.checkValidity()){
                     form.reportValidity();
                     return;
+                }else if (type === 'add-user'){
+                    const inputs = [
+                        form.querySelector('#user-name-input'),
+                        form.querySelector('#user-password-input'),
+                        form.querySelector('#user-role-input')
+                    ];
+
+                    const hash = await hashPassword(inputs[1].value);
+
+                    await Database.addUserSession(inputs[0].value, hash, inputs[2].value);
+
+                    dialog.close();
+                    dialog.remove();
                 }else if (type === 'login'){
                     const inputs = [
                         form.querySelector('#user-name-input'),

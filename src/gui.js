@@ -14,7 +14,13 @@ export const GUI = function(Data, Event){
     const paymentsTable = document.querySelector('#payment-records');
     const duePayTable = document.querySelector('#due-pay-users');
     const userDisplay = document.querySelector('.user');
-    const changeCurrentUseBtn = document.querySelector('#change-user');
+    const changeCurrentUserBtn = document.querySelector('#change-user');
+    const addUserSessionBtn = document.createElement('button');
+    addUserSessionBtn.id = 'add-user';
+    addUserSessionBtn.textContent = 'Añadir usuario';
+    const deleteUserSessionBtn = document.createElement('button');
+    deleteUserSessionBtn.id = 'delete-user';
+    deleteUserSessionBtn.textContent = 'Eliminar usuario';
 
     //Payments table page controls
     const payPrevBtn = document.querySelector('#pay-prev-page-btn');
@@ -700,6 +706,83 @@ export const GUI = function(Data, Event){
         currentUser = Database.getCurrentUserData();
 
         userDisplay.querySelector('p').textContent = `Usuario: ${currentUser.username}, Rol: ${currentUser.role}`;
+
+        if(currentUser.role === 'admin'){
+            userDisplay.appendChild(addUserSessionBtn);
+            userDisplay.appendChild(deleteUserSessionBtn);
+        }else{
+            if(userDisplay.querySelector('#add-user')){userDisplay.querySelector('#add-user').remove()};
+            if(userDisplay.querySelector('#delete-user')){userDisplay.querySelector('#delete-user').remove()};
+        }
+    }
+
+    function renderAddUserSessionForm(){
+        const dialog = document.createElement('dialog');
+        const form = document.createElement('form');
+        form.noValidate = true;
+        dialog.appendChild(form);
+
+        const userNameLabel = document.createElement('label');
+        userNameLabel.htmlFor = 'user-name-input';
+        userNameLabel.textContent = 'Nombre de usuario:';
+        form.appendChild(userNameLabel);
+
+        const userNameInput = document.createElement('input');
+        userNameInput.id = 'user-name-input';
+        userNameInput.autofocus = true;
+        userNameInput.required = true;
+        userNameInput.minLength = 3;
+        form.appendChild(userNameInput);
+
+        const userPasswordLabel = document.createElement('label');
+        userPasswordLabel.htmlFor = 'user-password-input';
+        userPasswordLabel.textContent = 'Contraseña:';
+        form.appendChild(userPasswordLabel);
+
+        const userPasswordInput = document.createElement('input');
+        userPasswordInput.id = 'user-password-input';
+        userPasswordInput.required = true;
+        userPasswordInput.minLength = 8;
+        userPasswordInput.type = 'password';
+        form.appendChild(userPasswordInput);
+
+        const userRoleLabel = document.createElement('label');
+        userRoleLabel.htmlFor = 'user-role-input';
+        userRoleLabel.textContent = 'Rol:';
+        form.appendChild(userRoleLabel);
+
+        const userRoleInput = document.createElement('select');
+        userRoleInput.id = 'user-role-input';
+        const adminOpt = document.createElement('option');
+        adminOpt.value = 'admin';
+        adminOpt.textContent = 'Administrador';
+        userRoleInput.appendChild(adminOpt);
+        const dependentOpt = document.createElement('option');
+        dependentOpt.value = 'dependiente';
+        dependentOpt.textContent = 'Dependiente';
+        userRoleInput.appendChild(dependentOpt);
+        form.appendChild(userRoleInput);
+
+        const addUserBtn = document.createElement('button');
+        addUserBtn.className = 'accept-btn';
+        addUserBtn.textContent = 'Añadir';
+        form.appendChild(addUserBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'cancel-btn';
+        cancelBtn.textContent = 'Cancelar';
+        form.appendChild(cancelBtn);
+
+        eventMaster.checkForm(form);
+        eventMaster.resolveForm('add-user', addUserBtn, form, dialog, [], [], renderErrorMsg);
+        eventMaster.closeDialog(cancelBtn, dialog);
+
+        body.appendChild(dialog);
+        dialog.showModal();
+    }
+
+    function renderDeleteUserSessionForm(){
+
     }
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
@@ -708,7 +791,9 @@ export const GUI = function(Data, Event){
     eventMaster.editTableFields(paymentsTable, renderEditForm);
     eventMaster.addClickEventListener(deletePaymentBtn, renderDeletePaymentForm);
     eventMaster.addClickEventListener(generateResumeBtn, renderResumeForm);
-    eventMaster.addClickEventListener(changeCurrentUseBtn, logIn);
+    eventMaster.addClickEventListener(changeCurrentUserBtn, logIn);
+    eventMaster.addClickEventListener(addUserSessionBtn, renderAddUserSessionForm);
+    eventMaster.addClickEventListener(deleteUserSessionBtn, renderDeleteUserSessionForm)
 
     //Pagination controls event listeners
     //Payments

@@ -43,7 +43,7 @@ export class Data{
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
-                role VARCHAR(20) NOT NULL CHECK(role IN ('admin', 'dependent'))
+                role VARCHAR(20) NOT NULL CHECK(role IN ('admin', 'dependiente'))
                 );`);
             
             const staffCount = await db.select(`SELECT COUNT(*) as total FROM staff`);
@@ -100,8 +100,19 @@ export class Data{
         );
         if(user.length > 0) {
             return user[0];
+        }else {
+            throw new Error('Usuario o contraseña incorrectos');
         }
-        throw new Error('Usuario o contraseña incorrectos');
+    }
+
+    async addUserSession(name, password, role){
+        try{
+            this.queryDatabase('set', 
+                `INSERT INTO staff(username, password, role) VALUES ($1, $2, $3)`, 
+                [name, password, role]);
+        }catch(error){
+            throw error;
+        }
     }
 
     async getTotalUsersCount() {

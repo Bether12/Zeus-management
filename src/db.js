@@ -26,13 +26,16 @@ export class Data{
                 amount_paid INT NOT NULL DEFAULT 0 CHECK (amount_paid >= 0),
                 last_amount_paid INT NOT NULL DEFAULT 0 CHECK (last_amount_paid >=0),
                 last_payment TEXT DEFAULT NULL,
-                active BOOLEAN DEFAULT 1);`);
+                active BOOLEAN DEFAULT 1,
+                registered_by VARCHAR(50) NOT NULL
+                );`);
 
             await db.execute(`CREATE TABLE IF NOT EXISTS payment_records(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 amount_paid INT NOT NULL CHECK (amount_paid >= 0), 
                 payment_date TEXT NOT NULL, 
-                user_id INTEGER NOT NULL, 
+                user_id INTEGER NOT NULL,
+                registered_by VARCHAR(50) NOT NULL, 
                 FOREIGN KEY(user_id) REFERENCES users_id(id) ON DELETE CASCADE
                 );`);
 
@@ -40,8 +43,8 @@ export class Data{
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
-                role VARCHAR(20) NOT NULL CHECK(role IN ('admin', 'dependent')
-                ));`);
+                role VARCHAR(20) NOT NULL CHECK(role IN ('admin', 'dependent'))
+                );`);
             
             const staffCount = await db.select(`SELECT COUNT(*) as total FROM staff`);
             if(staffCount[0].total === 0){
@@ -168,8 +171,8 @@ export class Data{
 
                 //Insert payment data
                 await this.db.execute(
-                    `INSERT INTO payment_records (amount_paid, payment_date, user_id) VALUES ($1, $2, $3);`,
-                    [amountPaid, date, userId]);
+                    `INSERT INTO payment_records (amount_paid, payment_date, user_id, registered_by) VALUES ($1, $2, $3, $4);`,
+                    [amountPaid, date, userId, this.#currentUser.username + Date.prototype.toISOString()]);
 
                 //Update user data
                 await this.db.execute(
@@ -192,8 +195,8 @@ export class Data{
     async addUser(name, ci){
         try {
             await this.queryDatabase('set', 
-                `INSERT INTO users_id(name, ci) VALUES ($1, $2)`, 
-                [name, ci]);
+                `INSERT INTO users_id(name, ci, registered_by) VALUES ($1, $2, $3)`, 
+                [name, ci, this.#currentUser.username]);
         } catch (error) {
            console.log(error);
            throw error; 
@@ -206,8 +209,8 @@ export class Data{
         }
         try {
             await this.queryDatabase('set',
-                `UPDATE users_id SET name = $1 WHERE id = $2`,
-                [name, id]);
+                `UPDATE users_id SET name = $1, registered_by = $3 WHERE id = $2`,
+                [name, id, this.#currentUser.username]);
         } catch (error) {
             console.log(error);
             throw error;
@@ -220,8 +223,8 @@ export class Data{
         }
         try {
             await this.queryDatabase('set',
-                `UPDATE users_id SET ci = $1 WHERE id = $2`,
-                [ci, id]);
+                `UPDATE users_id SET ci = $1, registered_by = $3 WHERE id = $2`,
+                [ci, id, this.#currentUser.username]);
         } catch (error) {
             console.log(error);
             throw error;
@@ -247,6 +250,11 @@ export class Data{
                     `UPDATE users_id SET amount_paid = amount_paid + ($1 - $2) WHERE id = $3`,
                     [newAmountPaid, oldAmountPaid, userId]);
 
+                await this.db.execute(
+                    `UPDATE payment_records SET registered_by = $1 WHERE id = $2`, 
+                    [this.#currentUser.username, paymentId]
+                );
+
                 await this.db.execute(`COMMIT`);
             } catch (error) {
                 await this.db.execute(`ROLLBACK`);
@@ -262,8 +270,8 @@ export class Data{
         }
         try {
             await this.queryDatabase('set',
-                `UPDATE users_id SET active = $1 WHERE id = $2`,
-                [newStatus, id]);
+                `UPDATE users_id SET active = $1, registered_by = $3 WHERE id = $2`,
+                [newStatus, id, this.#currentUser.username]);
         } catch (error) {
             console.log(error);
             throw error;
@@ -331,6 +339,11 @@ export class Data{
                     `UPDATE users_id SET last_amount_paid = COALESCE((SELECT amount_paid FROM payment_records WHERE payment_date = (SELECT last_payment FROM users_id WHERE id = $1)), 0) WHERE id = $1`, 
                     [newUserId]);
 
+                await this.db.execute(
+                    `UPDATE payment_records SET registered_by = $1 WHERE id = $2`, 
+                    [this.#currentUser.username, paymentId]
+                );
+
                 await this.db.execute(`COMMIT`);
             } catch (error) {
                 await this.db.execute(`ROLLBACK`);
@@ -371,6 +384,11 @@ export class Data{
                 await this.db.execute( 
                     `UPDATE users_id SET last_amount_paid = COALESCE((SELECT amount_paid FROM payment_records WHERE payment_date = (SELECT last_payment FROM users_id WHERE id = $1)), 0) WHERE id = $1`, 
                     [userId]);
+
+                await this.db.execute(
+                    `UPDATE payment_record SET registered_by = $1 WHERE id = $2`, 
+                    [this.#currentUser.username, paymentId]
+                );
 
                 await this.db.execute(`COMMIT`);
             } catch (error) {

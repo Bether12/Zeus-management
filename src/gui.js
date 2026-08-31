@@ -68,6 +68,9 @@ export const GUI = function(Data, Event){
                 userId.dataset.id = element.id;
                 userId.textContent = currentUser.role === 'admin'? '✏️ ' + element.user_id : element.user_id;
                 row.appendChild(userId);
+                let registeredBy = document.createElement('td');
+                registeredBy.textContent = element.registered_by;
+                row.appendChild(registeredBy);
                 paymentsTable.querySelector('tbody').appendChild(row);
             });
         } catch (error) {
@@ -118,6 +121,9 @@ export const GUI = function(Data, Event){
                     active.textContent = currentUser.role === 'admin'? '✏️ ' + 'No' : 'No';
                 }
                 row.appendChild(active);
+                let registeredBy = document.createElement('td');
+                registeredBy.textContent = element.registered_by;
+                row.appendChild(registeredBy);
                 usersTable.querySelector('tbody').appendChild(row);
             });
         } catch (error) {

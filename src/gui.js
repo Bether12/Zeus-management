@@ -37,11 +37,11 @@ export const GUI = function(Data, Event){
     const duePaysNextBtn = document.querySelector('#due-next-page-btn');
     const duePaysPageIndicator = document.querySelector('#due-page-indicator');
 
-    //Users table btn
+    //Payment table btn
     const addPaymentBtn = document.querySelector('#add-payment-btn');
     const deletePaymentBtn = document.querySelector('#delete-payment-btn');
 
-    //Payment table buttons
+    //Users table buttons
     const addUserBtn = document.querySelector('#add-user-btn');
     const generateResumeBtn = document.querySelector('#generate-resume-btn');
 
@@ -203,7 +203,7 @@ export const GUI = function(Data, Event){
 
             const userIdLabel = document.createElement('label');
             userIdLabel.htmlFor = 'user-id-input';
-            userIdLabel.textContent = 'ID de usuario';
+            userIdLabel.textContent = 'ID de cliente';
             form.appendChild(userIdLabel);
 
             const userIdInput = document.createElement('input');
@@ -383,7 +383,7 @@ export const GUI = function(Data, Event){
             }else if (field.dataset.active !== undefined){
                 const activeLabel = document.createElement('label');
                 activeLabel.htmlFor = 'active-input';
-                activeLabel.textContent = 'Nuevo estado de usuario:';
+                activeLabel.textContent = 'Nuevo estado de cliente:';
                 form.insertBefore(activeLabel, acceptBtn);
 
                 const activeInput = document.createElement('select');
@@ -407,7 +407,7 @@ export const GUI = function(Data, Event){
             } else if (field.dataset.userId !== undefined){
                 const userIdLabel = document.createElement('label');
                 userIdLabel.htmlFor = 'user-id-input';
-                userIdLabel.textContent = 'Nuevo ID de usuario:';
+                userIdLabel.textContent = 'Nuevo ID de cliente:';
                 form.insertBefore(userIdLabel, acceptBtn);
 
                 const userIdInput = document.createElement('input');
@@ -593,7 +593,7 @@ export const GUI = function(Data, Event){
 
             const numberOfUsersLabel = document.createElement('label');
             numberOfUsersLabel.htmlFor = 'number-of-users-text';
-            numberOfUsersLabel.textContent = 'Número de usuarios que pagaron:';
+            numberOfUsersLabel.textContent = 'Número de clientes que pagaron:';
             dialog.appendChild(numberOfUsersLabel);
 
             const numberOfUsersText = document.createElement('p');
@@ -782,7 +782,39 @@ export const GUI = function(Data, Event){
     }
 
     function renderDeleteUserSessionForm(){
+        const dialog = document.createElement('dialog');
+        const form = document.createElement('form');
+        form.noValidate = true;
+        dialog.appendChild(form);
 
+        const userNameLabel = document.createElement('label');
+        userNameLabel.htmlFor = 'user-name-input';
+        userNameLabel.textContent = 'Nombre de usuario a eliminar:';
+        form.appendChild(userNameLabel);
+
+        const userNameInput = document.createElement('input');
+        userNameInput.id = 'user-name-input';
+        userNameInput.autofocus = true;
+        userNameInput.required = true;
+        userNameInput.minLength = 3;
+        form.appendChild(userNameInput);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'accept-btn';
+        deleteBtn.textContent = 'Eliminar';
+        form.appendChild(deleteBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'cancel-btn';
+        cancelBtn.textContent = 'Cancelar';
+        form.appendChild(cancelBtn);
+
+        eventMaster.checkForm(form);
+        eventMaster.resolveForm('delete-user', deleteBtn, form, dialog, [], [], renderErrorMsg);
+        eventMaster.closeDialog(cancelBtn, dialog);
+
+        body.appendChild(dialog);
+        dialog.showModal();
     }
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);

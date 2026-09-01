@@ -115,6 +115,20 @@ export class Data{
         }
     }
 
+    async deleteUserSession(name){
+        try {
+            if(this.#currentUser.username === name) {
+                throw new Error('No puedes eliminar tu propia sesión');
+            }
+            await this.queryDatabase('set',
+                `DELETE FROM staff WHERE username = $1`, 
+                [name]);
+
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async getTotalUsersCount() {
         const result = await this.queryDatabase('get', `SELECT COUNT(*) as total FROM users_id`);
         console.log(`Users total: ${result[0].total}`);

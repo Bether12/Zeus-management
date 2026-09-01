@@ -122,6 +122,13 @@ export const eventMaster = function(Data){
 
                     dialog.close();
                     dialog.remove();
+                }else if(type === 'delete-user'){
+                    const input = form.querySelector('#user-name-input');
+
+                    await Database.deleteUserSession(input.value);
+
+                    dialog.close();
+                    dialog.remove();
                 }else if (type === 'login'){
                     const inputs = [
                         form.querySelector('#user-name-input'),

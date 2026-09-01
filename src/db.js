@@ -397,7 +397,7 @@ export class Data{
                     [userId]);
 
                 await this.db.execute(
-                    `UPDATE payment_record SET registered_by = $1 WHERE id = $2`, 
+                    `UPDATE payment_records SET registered_by = $1 WHERE id = $2`, 
                     [this.#currentUser.username, paymentId]
                 );
 

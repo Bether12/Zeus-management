@@ -830,12 +830,27 @@ export const GUI = function(Data, Event){
         dialog.showModal();
     }
 
-    userSearchInput.addEventListener('input', async (e)=>{
-            currentUserSearchTerm = e.target.value;
-            currentUsersPage = 1;
-            usersPageIndicator.textContent = `Página 1`;
-            await renderUsersTable();
-    });
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                func.apply(context, args);
+            }, wait);
+        };
+    }
+
+    const handleUserSearch = async (event)=>{
+        currentUserSearchTerm = event.target.value;
+        currentUsersPage = 1;
+        usersPageIndicator.textContent = `Página 1`;
+        await renderUsersTable();
+    }
+
+    const debouncedUserSearch = debounce(handleUserSearch, 200);
+
+    userSearchInput.addEventListener('input', debouncedUserSearch);
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);

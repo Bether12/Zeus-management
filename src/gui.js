@@ -3,6 +3,7 @@ export const GUI = function(Data, Event){
     const eventMaster = Event;
 
     //State variables
+    let currentUserSearchTerm = '';
     let currentUser = {};
     let currentPaymentPage = 1;
     let currentUsersPage = 1;
@@ -10,6 +11,7 @@ export const GUI = function(Data, Event){
     const rowsPerPage = 50;
 
     const body = document.querySelector('body');
+    const userSearchInput = document.querySelector('#user-search-input');
     const usersTable = document.querySelector('#users-id');
     const paymentsTable = document.querySelector('#payment-records');
     const duePayTable = document.querySelector('#due-pay-users');
@@ -87,7 +89,12 @@ export const GUI = function(Data, Event){
     async function renderUsersTable() {
         try {
             const usersOffset = (currentUsersPage - 1) * rowsPerPage;
-            const responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
+            let responseUsers;
+            if (currentUserSearchTerm.trim() !== '') {
+                responseUsers = await Database.getSearchUsers(currentUserSearchTerm, rowsPerPage, usersOffset);
+            } else {
+                responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
+            }
             console.log(responseUsers);
             usersTable.querySelector('tbody').innerHTML = '';
             responseUsers.forEach(element => {
@@ -162,9 +169,9 @@ export const GUI = function(Data, Event){
     }
 
     async function renderTables(){
-        renderUsersTable();
-        renderPaymentsTable();
-        renderDuePayTable();
+        await renderUsersTable();
+        await renderPaymentsTable();
+        await renderDuePayTable();
     };
 
     function renderAddPaymentForm(){
@@ -817,6 +824,13 @@ export const GUI = function(Data, Event){
         dialog.showModal();
     }
 
+    userSearchInput.addEventListener('input', async (e)=>{
+            currentUserSearchTerm = e.target.value;
+            currentUsersPage = 1;
+            usersPageIndicator.textContent = `Página 1`;
+            await renderUsersTable();
+    });
+
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
     eventMaster.editTableFields(usersTable, renderEditForm);
@@ -825,7 +839,7 @@ export const GUI = function(Data, Event){
     eventMaster.addClickEventListener(generateResumeBtn, renderResumeForm);
     eventMaster.addClickEventListener(changeCurrentUserBtn, logIn);
     eventMaster.addClickEventListener(addUserSessionBtn, renderAddUserSessionForm);
-    eventMaster.addClickEventListener(deleteUserSessionBtn, renderDeleteUserSessionForm)
+    eventMaster.addClickEventListener(deleteUserSessionBtn, renderDeleteUserSessionForm);
 
     //Pagination controls event listeners
     //Payments
@@ -855,7 +869,12 @@ export const GUI = function(Data, Event){
         }
     });
     eventMaster.addClickEventListener(usersNextBtn, async () => {
-        const totalUsers = await Database.getTotalUsersCount();
+        let totalUsers;
+        if (currentUserSearchTerm.trim() !== '') {
+            totalUsers = await Database.getSearchUsersCount(currentUserSearchTerm);
+        } else {
+            totalUsers = await Database.getTotalUsersCount();
+        }
         const maxPages = Math.ceil(totalUsers / rowsPerPage) || 1;
 
         if (currentUsersPage < maxPages){

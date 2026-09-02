@@ -13,7 +13,9 @@ export const GUI = function(Data, Event){
     const body = document.querySelector('body');
     const userSearchInput = document.querySelector('#user-search-input');
     const usersTable = document.querySelector('#users-id');
+    const usersHeader = document.querySelector('.users-header');
     const paymentsTable = document.querySelector('#payment-records');
+    const paymentHeader = document.querySelector('.payment-header');
     const duePayTable = document.querySelector('#due-pay-users');
     const userDisplay = document.querySelector('.user');
     const changeCurrentUserBtn = document.querySelector('#change-user');
@@ -717,9 +719,13 @@ export const GUI = function(Data, Event){
         if(currentUser.role === 'admin'){
             userDisplay.appendChild(addUserSessionBtn);
             userDisplay.appendChild(deleteUserSessionBtn);
+            usersHeader.querySelector('h3').textContent += '- (Tip: Ctrl + Click en una celda con ✏️ para editar)';
+            paymentHeader.querySelector('h3').textContent += '- (Tip: Ctrl + Click en una celda con ✏️ para editar)';
         }else{
             if(userDisplay.querySelector('#add-user')){userDisplay.querySelector('#add-user').remove()};
             if(userDisplay.querySelector('#delete-user')){userDisplay.querySelector('#delete-user').remove()};
+            usersHeader.querySelector('h3').textContent = usersHeader.querySelector('h3').textContent.split('-')[0];
+            paymentHeader.querySelector('h3').textContent = paymentHeader.querySelector('h3').textContent.split('-')[0];
         }
     }
 

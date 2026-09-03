@@ -158,6 +158,41 @@ export class Data{
         }
     }
 
+    async getSearchPayment(searchTerm, limit, offset){
+        try{
+            const term = `%${searchTerm}%`; 
+            return await this.queryDatabase('get', 
+                `SELECT * FROM payment_records 
+                 WHERE id LIKE $1 OR 
+                 DATE(payment_date) LIKE $1 OR 
+                 REPLACE(payment_date, 'T', ' ') LIKE $1 
+                 OR user_id LIKE $1
+                 ORDER BY id LIMIT $2 OFFSET $3`, 
+                [term, limit, offset]
+            );
+        }catch(error){
+            console.log(error);
+            throw error;
+        }
+    }
+
+    async getSearchPaymentCount(searchTerm) {
+        try {
+            const term = `%${searchTerm}%`;
+            const result = await this.queryDatabase('get', 
+                `SELECT COUNT(*) as total FROM payment_records WHERE id LIKE $1 
+                OR DATE(payment_date) LIKE $1 
+                OR REPLACE(payment_date, 'T', ' ') LIKE $1 
+                OR user_id LIKE $1`,
+                [term]
+            );
+            return result[0].total;
+        } catch(error) {
+            console.log(error);
+            throw error;
+        }
+    }
+
     async getTotalUsersCount() {
         const result = await this.queryDatabase('get', `SELECT COUNT(*) as total FROM users_id`);
         console.log(`Users total: ${result[0].total}`);

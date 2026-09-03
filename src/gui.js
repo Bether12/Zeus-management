@@ -4,6 +4,7 @@ export const GUI = function(Data, Event){
 
     //State variables
     let currentUserSearchTerm = '';
+    let currentPaymentSearchTerm = '';
     let currentUser = {};
     let currentPaymentPage = 1;
     let currentUsersPage = 1;
@@ -14,6 +15,7 @@ export const GUI = function(Data, Event){
     const userSearchInput = document.querySelector('#user-search-input');
     const usersTable = document.querySelector('#users-id');
     const usersHeader = document.querySelector('.users-header');
+    const paySearchInput = document.querySelector('#payment-search-input');
     const paymentsTable = document.querySelector('#payment-records');
     const paymentHeader = document.querySelector('.payment-header');
     const duePayTable = document.querySelector('#due-pay-users');
@@ -52,7 +54,12 @@ export const GUI = function(Data, Event){
     async function renderPaymentsTable() {
         try {
             const paymentsOffset = (currentPaymentPage - 1) * rowsPerPage;
-            const responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
+            let responsePayments;
+            if(currentPaymentSearchTerm.trim() !== ''){
+                responsePayments = await Database.getSearchPayment(currentPaymentSearchTerm);
+            }else{
+                responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
+            }
             console.log(responsePayments);
             paymentsTable.querySelector('tbody').innerHTML = '';
             responsePayments.forEach(element => {
@@ -846,11 +853,22 @@ export const GUI = function(Data, Event){
         currentUsersPage = 1;
         usersPageIndicator.textContent = `Página 1`;
         await renderUsersTable();
-    }
+    };
+
+    const handlePaymentSearch = async (event) =>{
+        currentPaymentSearchTerm = event.target.value;
+        currentPaymentPage = 1;
+        payPageIndicator.textContent = `Página 1`;
+        await renderPaymentsTable();
+    };
 
     const debouncedUserSearch = debounce(handleUserSearch, 200);
 
+    const debouncedPaymentSearch = debounce(handlePaymentSearch, 200);
+
     userSearchInput.addEventListener('input', debouncedUserSearch);
+
+    paySearchInput.addEventListener('input', debouncedPaymentSearch);
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
@@ -872,7 +890,12 @@ export const GUI = function(Data, Event){
         }
     });
     eventMaster.addClickEventListener(payNextBtn, async () => {
-        const totalPayments = await Database.getTotalPaymentsCount();
+        let totalPayments;
+        if(currentPaymentSearchTerm.trim() !== ''){
+            totalPayments = await Database.getSearchPaymentCount(currentPaymentSearchTerm);
+        }else{
+            totalPayments = await Database.getTotalPaymentsCount();
+        }
         const maxPages = Math.ceil(totalPayments / rowsPerPage) || 1;
 
         if(currentPaymentPage < maxPages){

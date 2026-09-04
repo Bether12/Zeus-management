@@ -19,7 +19,8 @@ export class Data{
             await db.execute(`PRAGMA foreign_keys = ON;`);
 
             //Create users id table with their last payment data
-            await db.execute(`CREATE TABLE IF NOT EXISTS users_id(
+            await db.execute(`
+                CREATE TABLE IF NOT EXISTS users_id(
                 id INTEGER PRIMARY KEY AUTOINCREMENT ,
                 name VARCHAR(100) NOT NULL,
                 ci VARCHAR(11) NOT NULL UNIQUE,  
@@ -30,7 +31,8 @@ export class Data{
                 registered_by VARCHAR(50) NOT NULL
                 );`);
 
-            await db.execute(`CREATE TABLE IF NOT EXISTS payment_records(
+            await db.execute(`
+                CREATE TABLE IF NOT EXISTS payment_records(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 amount_paid INT NOT NULL CHECK (amount_paid >= 0), 
                 payment_date TEXT NOT NULL, 
@@ -39,7 +41,17 @@ export class Data{
                 FOREIGN KEY(user_id) REFERENCES users_id(id) ON DELETE CASCADE
                 );`);
 
-            await db.execute(`CREATE TABLE IF NOT EXISTS staff(
+            await db.execute(`
+                CREATE TABLE IF NOT EXISTS attendance(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                check_in_date TEXT NOT NULL,
+                check_in_time TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES users_id(id) ON DELETE CASCADE
+                );`);
+
+            await db.execute(`
+                CREATE TABLE IF NOT EXISTS staff(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username VARCHAR(50) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
@@ -91,6 +103,73 @@ export class Data{
                 throw new Error('Unknown queryType parameter');
             } 
         });   
+    }
+
+    async recordAttendance(identifier) {
+        return this.sqlQueue.enqueue(async ()=>{
+            try {
+                const users = await this.db.select(
+                    `SELECT id, name FROM users_id WHERE ci = $1 OR id = $2`,
+                    [identifier, parseInt(identifier) || 0]
+                );
+
+                if (!users || users.length === 0) {
+                    throw { type: 'NOT_FOUND', message: 'Cliente no registrado' };
+                }
+
+                const user = users[0];
+                const today = new Date().toISOString().split('T')[0];
+                const time = new Date().toTimeString().split(' ')[0].substring(0, 5); // Format HH:MM
+
+                const duePay = await this.db.select(`
+                    SELECT last_payment
+                    FROM users_id 
+                    WHERE id = $1 
+                    AND COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', 'localtime', '-31 day'))`, 
+                    [user.id]);
+                console.log(duePay);
+
+                if (duePay && duePay.length > 0){
+                    throw { type: 'DUE_PAY', message: 'El cliente tiene atraso en el pago!' };
+                }
+
+                const existing = await this.db.select(
+                    `SELECT id FROM attendance WHERE user_id = $1 AND check_in_date = $2`,
+                    [user.id, today]
+                );
+
+                if (existing && existing.length > 0) {
+                    throw { type: 'DUPLICATE', message: `${user.name} ya registró entrada hoy.` };
+                }
+
+                await this.db.execute(
+                    `INSERT INTO attendance (user_id, check_in_date, check_in_time) VALUES ($1, $2, $3)`,
+                    [user.id, today, time]
+                );
+
+                return { name: user.name, time };
+            } catch (error) {
+                console.error(error);
+                throw error;
+            }
+        });
+    }
+
+    async getTodayAttendance() {
+        try {
+            const today = new Date().toISOString().split('T')[0];
+            return await this.queryDatabase('get',
+                `SELECT a.id, a.check_in_time, u.name, u.ci 
+                FROM attendance a 
+                JOIN users_id u ON a.user_id = u.id 
+                WHERE a.check_in_date = $1 
+                ORDER BY a.id DESC`,
+                [today]
+            );
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
     }
 
     async verifyLogin(username, passwordHash) {
@@ -261,7 +340,7 @@ export class Data{
                 //Insert payment data
                 await this.db.execute(
                     `INSERT INTO payment_records (amount_paid, payment_date, user_id, registered_by) VALUES ($1, $2, $3, $4);`,
-                    [amountPaid, date, userId, this.#currentUser.username + Date.prototype.toISOString()]);
+                    [amountPaid, date, userId, this.#currentUser.username]);
 
                 //Update user data
                 await this.db.execute(

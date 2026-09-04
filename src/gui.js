@@ -12,6 +12,10 @@ export const GUI = function(Data, Event){
     const rowsPerPage = 50;
 
     const body = document.querySelector('body');
+    const attendanceInput = document.querySelector('#attendance-input');
+    const attendanceStatus = document.querySelector('#attendance-status');
+    const attendanceTableBody = document.querySelector('#attendance-table tbody');
+    const attendanceCount = document.querySelector('#attendance-count');
     const userSearchInput = document.querySelector('#user-search-input');
     const usersTable = document.querySelector('#users-id');
     const usersHeader = document.querySelector('.users-header');
@@ -50,6 +54,28 @@ export const GUI = function(Data, Event){
     //Users table buttons
     const addUserBtn = document.querySelector('#add-user-btn');
     const generateResumeBtn = document.querySelector('#generate-resume-btn');
+
+    function showAttendanceStatus(message, type) {
+        attendanceStatus.textContent = message;
+        attendanceStatus.className = `status-banner ${type}`;
+        
+        setTimeout(() => {
+            attendanceStatus.className = 'status-banner hidden';
+        }, 3500);
+    }
+
+    async function refreshTodayAttendance() {
+        const records = await Database.getTodayAttendance();
+        attendanceCount.textContent = records.length;
+        
+        attendanceTableBody.innerHTML = records.map(r => `
+            <tr>
+                <td><strong>${r.check_in_time}</strong></td>
+                <td>${r.name}</td>
+                <td>${r.ci}</td>
+            </tr>
+        `).join('');
+    }
 
     async function renderPaymentsTable() {
         try {
@@ -181,6 +207,7 @@ export const GUI = function(Data, Event){
         await renderUsersTable();
         await renderPaymentsTable();
         await renderDuePayTable();
+        await refreshTodayAttendance();
     };
 
     function renderAddPaymentForm(){
@@ -869,6 +896,36 @@ export const GUI = function(Data, Event){
     userSearchInput.addEventListener('input', debouncedUserSearch);
 
     paySearchInput.addEventListener('input', debouncedPaymentSearch);
+
+    attendanceInput.addEventListener('keydown', async (e) => {
+        if (e.key === 'Enter') {
+            const value = attendanceInput.value.trim();
+            if (!value) return;
+
+            try {
+                const result = await Database.recordAttendance(value);
+                showAttendanceStatus(`✅ Entrada registrada: ${result.name} (${result.time})`, 'success');
+                attendanceInput.value = '';
+                await refreshTodayAttendance();
+            } catch (err) {
+                if (err.type === 'DUPLICATE') {
+                    showAttendanceStatus(`⚠️ ${err.message}`, 'warning');
+                } else if (err.type === 'NOT_FOUND' || err.type === 'DUE_PAY') {
+                    showAttendanceStatus(`❌ ${err.message}`, 'error');
+                } else {
+                    showAttendanceStatus(`❌ Error en el registro.`, 'error');
+                }
+                attendanceInput.value = '';
+            }
+        }
+    });
+
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'F2') {
+            e.preventDefault();
+            attendanceInput.focus();
+        }
+    });
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);

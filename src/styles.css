@@ -110,3 +110,39 @@ button {
     background-color: #0f0f0f69;
   }
 }
+
+/*My styles*/
+
+.attendance-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+#attendance-input {
+  font-size: 1.3rem;
+  padding: 0.8rem 1.2rem;
+  border: 2px solid #3f3f46;
+  border-radius: 8px;
+  background-color: #18181b;
+  color: #ffffff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#attendance-input:focus {
+  border-color: #10b981; /* Verde esmeralda */
+}
+
+.status-banner {
+  padding: 1rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.status-banner.hidden { display: none; }
+.status-banner.success { background-color: #065f46; color: #34d399; border: 1px solid #10b981; }
+.status-banner.warning { background-color: #78350f; color: #fbbf24; border: 1px solid #f59e0b; }
+.status-banner.error   { background-color: #7f1d1d; color: #fca5a5; border: 1px solid #ef4444; }

@@ -40,9 +40,33 @@ export const eventMaster = function(Data){
         DOMElement.addEventListener('input', (e) => {
             e.target.setCustomValidity('');
         });
-        //FIXME: focusout solo funciona clickeando otro campo, pero al presionar enter en el campo actual no, pues sale la validacion estandar
+        
         DOMElement.addEventListener('focusout', (e) => {
             validateField(e.target);
+        });
+
+        DOMElement.addEventListener('keydown', (e)=>{
+            if(e.key === 'Enter' && e.target.tagName === 'INPUT'){
+                e.preventDefault();
+                
+                const inputs = DOMElement.querySelectorAll('input');
+                let isFormValid = true;
+
+                for (let input of inputs) {
+                    validateField(input);
+                    if (!input.checkValidity()) {
+                        isFormValid = false;
+                        break;
+                    }
+                }
+                
+                if (isFormValid) {
+                    const submitBtn = DOMElement.querySelector('.accept-btn, .log-in-btn');
+                    if (submitBtn) {
+                        submitBtn.click();
+                    }
+                }
+            }
         });
     }
 

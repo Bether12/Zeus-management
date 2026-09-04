@@ -66,11 +66,13 @@ export const GUI = function(Data, Event){
 
     async function refreshTodayAttendance() {
         const records = await Database.getTodayAttendance();
+        console.log(`Attendance: `, records);
         attendanceCount.textContent = records.length;
         
         attendanceTableBody.innerHTML = records.map(r => `
             <tr>
                 <td><strong>${r.check_in_time}</strong></td>
+                <td>${r.user_id}</td>
                 <td>${r.name}</td>
                 <td>${r.ci}</td>
             </tr>

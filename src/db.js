@@ -159,7 +159,7 @@ export class Data{
         try {
             const today = new Date().toISOString().split('T')[0];
             return await this.queryDatabase('get',
-                `SELECT a.id, a.check_in_time, u.name, u.ci 
+                `SELECT a.id, a.check_in_time, u.id as user_id, u.name, u.ci 
                 FROM attendance a 
                 JOIN users_id u ON a.user_id = u.id 
                 WHERE a.check_in_date = $1 

@@ -120,7 +120,7 @@ button {
 }
 
 #attendance-input:focus {
-  border-color: #10b981; /* Verde esmeralda */
+  border-color: orange;
 }
 
 .status-banner {
@@ -150,6 +150,7 @@ body{
 }
 
 nav{
+  min-width: min-content;
   grid-row: 1/5;
   padding: 10px;
   display: flex;
@@ -158,7 +159,12 @@ nav{
   box-shadow: 10px 0px 7px rgb(39, 39, 39);
 }
 
+.view-section.hidden{
+  display: none;
+}
+
 #attendance-section{
+  min-width: min-content;
   margin-right: 10px;
   grid-column: 2/3;
   grid-row: 1/2;
@@ -178,6 +184,7 @@ nav{
 }
 
 #payment-section{
+  min-width: min-content;
   margin-right: 10px;
   grid-column: 2/3;
   grid-row: 2/3;
@@ -195,6 +202,7 @@ nav{
 }
 
 #due-pay-section{
+  min-width: min-content;
   margin-right: 10px;
   grid-column: 2/3;
   grid-row: 3/4;
@@ -208,6 +216,7 @@ nav{
 }
 
 #user-section{
+  min-width: min-content;
   margin-right: 10px;
   grid-column: 2/3;
   grid-row: 4/5;
@@ -243,8 +252,8 @@ form{
   gap: 1rem;
 }
 
-input:valid{
-  outline: 2px solid green;
+input:focus{
+  outline: 2px solid orange;
 }
 
 input:invalid{

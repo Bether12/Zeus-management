@@ -9,6 +9,33 @@ export const eventMaster = function(Data){
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
+    function handleToggleButtons(...args){
+        args[0].addEventListener('click', ()=>{
+            args[1].classList.remove('hidden');
+            args[3].classList.add('hidden');
+            args[5].classList.add('hidden');
+            args[7].classList.add('hidden');
+        });
+        args[2].addEventListener('click', ()=>{
+            args[1].classList.add('hidden');
+            args[3].classList.remove('hidden');
+            args[5].classList.add('hidden');
+            args[7].classList.add('hidden');
+        });
+        args[4].addEventListener('click', ()=>{
+            args[1].classList.add('hidden');
+            args[3].classList.add('hidden');
+            args[5].classList.remove('hidden');
+            args[7].classList.add('hidden');
+        });
+        args[6].addEventListener('click', ()=>{
+            args[1].classList.add('hidden');
+            args[3].classList.add('hidden');
+            args[5].classList.add('hidden');
+            args[7].classList.remove('hidden');
+        });
+    }
+
     function addClickEventListener(DOMElement, fun, generateResume = false, dateInput=undefined){
         DOMElement.addEventListener('click', (e)=>{
             if(generateResume){
@@ -245,5 +272,5 @@ export const eventMaster = function(Data){
         });
     }
 
-    return {addClickEventListener, addChangeEventListener, closeDialog, checkForm, resolveForm, editTableFields};
+    return {addClickEventListener, addChangeEventListener, closeDialog, checkForm, resolveForm, editTableFields, handleToggleButtons};
 };

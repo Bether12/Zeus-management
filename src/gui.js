@@ -11,6 +11,7 @@ export const GUI = function(Data, Event){
     let currentDuePayPage = 1;
     const rowsPerPage = 50;
 
+    //DOM Elements
     const body = document.querySelector('body');
     const attendanceInput = document.querySelector('#attendance-input');
     const attendanceStatus = document.querySelector('#attendance-status');
@@ -33,7 +34,17 @@ export const GUI = function(Data, Event){
     const deleteUserSessionBtn = document.createElement('button');
     deleteUserSessionBtn.id = 'delete-user';
     deleteUserSessionBtn.textContent = 'Eliminar usuario';
+    const attendanceSection = document.querySelector('#attendance-section');
+    const paymentSection = document.querySelector('#payment-section');
+    const duePaySection = document.querySelector('#due-pay-section');
+    const userSection = document.querySelector('#user-section');
 
+    //Sections buttons
+    const attendanceSectionBtn = document.querySelector('#attendance-section-btn');
+    const paymentSectionBtn = document.querySelector('#payment-section-btn');
+    const duePaySectionBtn = document.querySelector('#due-pay-section-btn');
+    const userSectionBtn = document.querySelector('#user-section-btn');
+    
     //Currency formatter
     const currencyFormatter = new Intl.NumberFormat('es-CU', {
         style: 'currency',
@@ -985,6 +996,11 @@ export const GUI = function(Data, Event){
     eventMaster.addClickEventListener(changeCurrentUserBtn, logIn);
     eventMaster.addClickEventListener(addUserSessionBtn, renderAddUserSessionForm);
     eventMaster.addClickEventListener(deleteUserSessionBtn, renderDeleteUserSessionForm);
+    eventMaster.handleToggleButtons(
+        attendanceSectionBtn, attendanceSection, 
+        paymentSectionBtn, paymentSection, 
+        duePaySectionBtn, duePaySection, 
+        userSectionBtn, userSection);
 
     //Pagination controls event listeners
     //Payments

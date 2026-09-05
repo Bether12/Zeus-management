@@ -186,7 +186,7 @@ export class Data{
 
     async addUserSession(name, password, role){
         try{
-            this.queryDatabase('set', 
+            await this.queryDatabase('set', 
                 `INSERT INTO staff(username, password, role) VALUES ($1, $2, $3)`, 
                 [name, password, role]);
         }catch(error){

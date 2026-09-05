@@ -34,6 +34,14 @@ export const GUI = function(Data, Event){
     deleteUserSessionBtn.id = 'delete-user';
     deleteUserSessionBtn.textContent = 'Eliminar usuario';
 
+    //Currency formatter
+    const currencyFormatter = new Intl.NumberFormat('es-CU', {
+        style: 'currency',
+        currency: 'CUP',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2 
+    });
+
     //Payments table page controls
     const payPrevBtn = document.querySelector('#pay-prev-page-btn');
     const payNextBtn = document.querySelector('#pay-next-page-btn');
@@ -104,7 +112,7 @@ export const GUI = function(Data, Event){
                 amountPaid.dataset.amountPaid = element.amount_paid;
                 amountPaid.dataset.id = element.id;
                 amountPaid.dataset.userId = element.user_id;
-                amountPaid.textContent = currentUser.role === 'admin'? '✏️ ' + element.amount_paid : element.amount_paid;
+                amountPaid.textContent = currentUser.role === 'admin'? '✏️ ' + currencyFormatter.format(element.amount_paid) : currencyFormatter.format(element.amount_paid);
                 row.appendChild(amountPaid);
                 let paymentDate = document.createElement('td');
                 paymentDate.dataset.paymentDate = element.payment_date;
@@ -158,11 +166,11 @@ export const GUI = function(Data, Event){
                 row.appendChild(ci);
                 let amountPaid = document.createElement('td');
                 amountPaid.dataset.totalPaid = element.amount_paid;
-                amountPaid.textContent = element.amount_paid;
+                amountPaid.textContent = currencyFormatter.format(element.amount_paid);
                 row.appendChild(amountPaid);
                 let lastAmountPaid = document.createElement('td');
                 lastAmountPaid.dataset.lastAmountPaid = element.last_amount_paid;
-                lastAmountPaid.textContent = element.last_amount_paid;
+                lastAmountPaid.textContent = currencyFormatter.format(element.last_amount_paid);
                 row.appendChild(lastAmountPaid);
                 let lastPayment = document.createElement('td');
                 lastPayment.dataset.lastPayment = element.last_payment;
@@ -687,7 +695,7 @@ export const GUI = function(Data, Event){
                 row.appendChild(id);
 
                 let paid = document.createElement('td');
-                paid.textContent = element.amount_paid;
+                paid.textContent = currencyFormatter.format(element.amount_paid);
                 row.appendChild(paid);
 
                 fragment.appendChild(row);

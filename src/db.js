@@ -130,6 +130,9 @@ export class Data{
                 console.log(duePay);
 
                 if (duePay && duePay.length > 0){
+                    if (duePay[0].last_payment === null){
+                        throw { type: 'DUE_PAY', message: 'El cliente no ha pagado por primera vez!' };
+                    }
                     throw { type: 'DUE_PAY', message: 'El cliente tiene atraso en el pago!' };
                 }
 

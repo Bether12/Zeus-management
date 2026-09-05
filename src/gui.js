@@ -86,7 +86,7 @@ export const GUI = function(Data, Event){
             const paymentsOffset = (currentPaymentPage - 1) * rowsPerPage;
             let responsePayments;
             if(currentPaymentSearchTerm.trim() !== ''){
-                responsePayments = await Database.getSearchPayment(currentPaymentSearchTerm);
+                responsePayments = await Database.getSearchPayment(currentPaymentSearchTerm, rowsPerPage, paymentsOffset);
             }else{
                 responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
             }

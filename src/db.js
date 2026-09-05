@@ -71,8 +71,32 @@ export class Data{
 
         return new Data(db);
         }catch(error){
-            throw error;
+            throw this.handleDatabaseError(error);
         }
+    }
+
+    handleDatabaseError(error) {
+        const errorMsg = String(error).toLowerCase();
+
+        if (errorMsg.includes('unique constraint failed')) {
+            if (errorMsg.includes('ci')) {
+                return 'Ya existe un cliente registrado con este número de identidad. Por favor, verifica los datos.';
+            }
+            if (errorMsg.includes('username')) {
+                return 'Este nombre ya está en uso por otro usuario.';
+            }
+            return 'Ya existe un registro con estos datos exactos.';
+        }
+
+        if (errorMsg.includes('not null constraint failed')) {
+            return 'Faltan campos obligatorios por llenar para completar esta acción.';
+        }
+
+        if (errorMsg.includes('database is locked')) {
+            return 'El sistema está procesando otra tarea. Intenta hacer clic de nuevo en un segundo.';
+        }
+
+        return 'Ocurrió un error inesperado. Si el problema persiste, reinicia la aplicación.';
     }
 
     getCurrentUserData(){
@@ -152,7 +176,6 @@ export class Data{
 
                 return { name: user.name, time };
             } catch (error) {
-                console.error(error);
                 throw error;
             }
         });
@@ -170,8 +193,7 @@ export class Data{
                 [today]
             );
         } catch (error) {
-            console.error(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -193,7 +215,7 @@ export class Data{
                 `INSERT INTO staff(username, password, role) VALUES ($1, $2, $3)`, 
                 [name, password, role]);
         }catch(error){
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -207,7 +229,7 @@ export class Data{
                 [name]);
 
         } catch (error) {
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -221,8 +243,7 @@ export class Data{
                 [term, limit, offset]
             );
         }catch(error){
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -235,8 +256,7 @@ export class Data{
             );
             return result[0].total;
         } catch(error) {
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -253,8 +273,7 @@ export class Data{
                 [term, limit, offset]
             );
         }catch(error){
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -270,8 +289,7 @@ export class Data{
             );
             return result[0].total;
         } catch(error) {
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -294,8 +312,7 @@ export class Data{
             console.log(`Due pays total: ${result[0].total}`);
             return result[0].total;
         }catch(error){
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -306,8 +323,7 @@ export class Data{
                 `SELECT * FROM payment_records ORDER BY id DESC LIMIT $1 OFFSET $2`, 
                 [limit, offset]);
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -318,8 +334,7 @@ export class Data{
                 `SELECT * FROM users_id ORDER BY id LIMIT $1 OFFSET $2`, 
                 [limit, offset]);
         }catch(error){
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -329,8 +344,7 @@ export class Data{
                 `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', 'localtime', '-31 day')) LIMIT $1 OFFSET $2`, 
                 [limit, offset]);
         }catch(error){
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -358,7 +372,7 @@ export class Data{
             }catch(error){
                 await this.db.execute(`ROLLBACK`);
                 console.log('Error during transaction:', error);
-                throw error;
+                throw this.handleDatabaseError(error);
             }
         });
     }
@@ -369,8 +383,7 @@ export class Data{
                 `INSERT INTO users_id(name, ci, registered_by) VALUES ($1, $2, $3)`, 
                 [name, ci, this.#currentUser.username]);
         } catch (error) {
-           console.log(error);
-           throw error; 
+           throw this.handleDatabaseError(error); 
         }
     }
 
@@ -383,8 +396,7 @@ export class Data{
                 `UPDATE users_id SET name = $1, registered_by = $3 WHERE id = $2`,
                 [name, id, this.#currentUser.username]);
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -397,8 +409,7 @@ export class Data{
                 `UPDATE users_id SET ci = $1, registered_by = $3 WHERE id = $2`,
                 [ci, id, this.#currentUser.username]);
         } catch (error) {
-            console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -430,7 +441,7 @@ export class Data{
             } catch (error) {
                 await this.db.execute(`ROLLBACK`);
                 console.log(error);
-                throw error;
+                throw this.handleDatabaseError(error);
             }
         });
     }
@@ -445,7 +456,7 @@ export class Data{
                 [newStatus, id, this.#currentUser.username]);
         } catch (error) {
             console.log(error);
-            throw error;
+            throw this.handleDatabaseError(error);
         }
     }
 
@@ -519,7 +530,7 @@ export class Data{
             } catch (error) {
                 await this.db.execute(`ROLLBACK`);
                 console.log('Error during transaction:', error);
-                throw error;
+                throw this.handleDatabaseError(error);
             }
         });
     }
@@ -565,7 +576,7 @@ export class Data{
             } catch (error) {
                 await this.db.execute(`ROLLBACK`);
                 console.log('Error during transaction:', error);
-                throw error;
+                throw this.handleDatabaseError(error);
             }
         });
     }
@@ -620,7 +631,7 @@ export class Data{
             } catch (error) {
                 await this.db.execute(`ROLLBACK`);
                 console.log('Error during transaction:', error);
-                throw error;
+                throw this.handleDatabaseError(error);
             }
         });
     }
@@ -643,7 +654,7 @@ export class Data{
                 return dateResponse;
             }catch(error){
                 console.log(error);
-                throw error;
+                throw this.handleDatabaseError(error);
             }
         });
     }

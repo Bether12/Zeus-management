@@ -157,7 +157,7 @@ export const GUI = function(Data, Event){
                 ci.textContent = currentUser.role === 'admin'? '✏️ ' + element.ci : element.ci;
                 row.appendChild(ci);
                 let amountPaid = document.createElement('td');
-                amountPaid.dataset.amountPaid = element.amount_paid;
+                amountPaid.dataset.totalPaid = element.amount_paid;
                 amountPaid.textContent = element.amount_paid;
                 row.appendChild(amountPaid);
                 let lastAmountPaid = document.createElement('td');

@@ -239,7 +239,7 @@ export const GUI = function(Data, Event){
             const body = document.querySelector('body');
             const dialog = document.createElement('dialog');
             const form = document.createElement('form');
-            form.action = 'dialog';
+            form.method = 'dialog';
             form.noValidate = true;
 
             dialog.appendChild(form);
@@ -317,7 +317,7 @@ export const GUI = function(Data, Event){
             const body = document.querySelector('body');
             const dialog = document.createElement('dialog');
             const form = document.createElement('form');
-            form.action = 'dialog';
+            form.method = 'dialog';
             form.noValidate = true;
 
             dialog.appendChild(form);
@@ -371,6 +371,7 @@ export const GUI = function(Data, Event){
         try{
             const dialog = document.createElement('dialog');
             const form = document.createElement('form');
+            form.method = 'dialog';
             form.noValidate = true;
             dialog.appendChild(form);
 
@@ -511,6 +512,7 @@ export const GUI = function(Data, Event){
         try{
             const form = document.createElement('form');
             const dialog = document.createElement('dialog');
+            form.method = 'dialog';
             form.noValidate = true;
 
             const paymentIdLabel = document.createElement('label');
@@ -573,6 +575,7 @@ export const GUI = function(Data, Event){
         try{
             const dialog = document.createElement('dialog');
             const form = document.createElement('form');
+            form.method = 'dialog';
             form.noValidate = true;
             dialog.appendChild(form);
 
@@ -742,6 +745,7 @@ export const GUI = function(Data, Event){
         dialog.addEventListener('cancel', (e) => e.preventDefault());
         const form = document.createElement('form');
         dialog.appendChild(form);
+        form.method = 'dialog';
         form.noValidate = true;
 
         const userNameLabel = document.createElement('label');
@@ -800,6 +804,7 @@ export const GUI = function(Data, Event){
     function renderAddUserSessionForm(){
         const dialog = document.createElement('dialog');
         const form = document.createElement('form');
+        form.method = 'dialog';
         form.noValidate = true;
         dialog.appendChild(form);
 
@@ -865,6 +870,7 @@ export const GUI = function(Data, Event){
     function renderDeleteUserSessionForm(){
         const dialog = document.createElement('dialog');
         const form = document.createElement('form');
+        form.method = 'dialog';
         form.noValidate = true;
         dialog.appendChild(form);
 

@@ -105,7 +105,8 @@ export const GUI = function(Data, Event){
                 responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
             }
             console.log(responsePayments);
-            paymentCount.textContent = `Número de pagos: (${await Database.getTotalPaymentsCount()})`;
+            const total = currentPaymentSearchTerm ? await Database.getSearchPaymentCount(currentPaymentSearchTerm) : await Database.getTotalPaymentsCount();
+            paymentCount.textContent = `Número de pagos: (${total})`;
             console.log(paymentCount);
             paymentsTable.querySelector('tbody').innerHTML = '';
             responsePayments.forEach(element => {
@@ -151,7 +152,8 @@ export const GUI = function(Data, Event){
                 responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
             }
             console.log(responseUsers);
-            usersCount.textContent = `Número de clientes: (${await Database.getTotalUsersCount()})`;
+            const total = currentUserSearchTerm ? await Database.getSearchUsersCount(currentUserSearchTerm) : await Database.getTotalUsersCount();
+            usersCount.textContent = `Número de clientes: (${total})`;
             console.log(usersCount);
             usersTable.querySelector('tbody').innerHTML = '';
             responseUsers.forEach(element => {

@@ -239,7 +239,8 @@ export class Data{
             return await this.queryDatabase('get', 
                 `SELECT * FROM users_id 
                  WHERE name LIKE $1 OR ci LIKE $1 OR id LIKE $1
-                 ORDER BY id LIMIT $2 OFFSET $3`, 
+                 ORDER BY id 
+                 LIMIT $2 OFFSET $3`, 
                 [term, limit, offset]
             );
         }catch(error){
@@ -269,7 +270,9 @@ export class Data{
                  DATE(payment_date) LIKE $1 OR 
                  REPLACE(payment_date, 'T', ' ') LIKE $1 
                  OR user_id LIKE $1
-                 ORDER BY id LIMIT $2 OFFSET $3`, 
+                 ORDER BY id 
+                 DESC 
+                 LIMIT $2 OFFSET $3`, 
                 [term, limit, offset]
             );
         }catch(error){

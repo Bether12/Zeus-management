@@ -19,9 +19,11 @@ export const GUI = function(Data, Event){
     const userSearchInput = document.querySelector('#user-search-input');
     const usersTable = document.querySelector('#users-id');
     const usersHeader = document.querySelector('.users-header');
+    const usersCount = document.querySelector('#users-count');
     const paySearchInput = document.querySelector('#payment-search-input');
     const paymentsTable = document.querySelector('#payment-records');
     const paymentHeader = document.querySelector('.payment-header');
+    const paymentCount = document.querySelector('#payment-count');
     const duePayTable = document.querySelector('#due-pay-users');
     const userDisplay = document.querySelector('.user');
     const changeCurrentUserBtn = document.querySelector('#change-user');
@@ -89,6 +91,8 @@ export const GUI = function(Data, Event){
                 responsePayments = await Database.getPaginatedPayments(rowsPerPage, paymentsOffset);
             }
             console.log(responsePayments);
+            paymentCount.textContent = `Número de pagos: (${await Database.getTotalPaymentsCount()})`;
+            console.log(paymentCount);
             paymentsTable.querySelector('tbody').innerHTML = '';
             responsePayments.forEach(element => {
                 let row = document.createElement('tr');
@@ -133,6 +137,8 @@ export const GUI = function(Data, Event){
                 responseUsers = await Database.getPaginatedUsers(rowsPerPage, usersOffset);
             }
             console.log(responseUsers);
+            usersCount.textContent = `Número de clientes: (${await Database.getTotalUsersCount()})`;
+            console.log(usersCount);
             usersTable.querySelector('tbody').innerHTML = '';
             responseUsers.forEach(element => {
                 let row = document.createElement('tr');
@@ -755,8 +761,8 @@ export const GUI = function(Data, Event){
         if(currentUser.role === 'admin'){
             userDisplay.appendChild(addUserSessionBtn);
             userDisplay.appendChild(deleteUserSessionBtn);
-            usersHeader.querySelector('h3').textContent += '- (Tip: Ctrl + Click en una celda con ✏️ para editar)';
-            paymentHeader.querySelector('h3').textContent += '- (Tip: Ctrl + Click en una celda con ✏️ para editar)';
+            usersHeader.querySelector('h3').textContent += '-(Tip: Ctrl + Click en una celda con ✏️ para editar)';
+            paymentHeader.querySelector('h3').textContent += '-(Tip: Ctrl + Click en una celda con ✏️ para editar)';
         }else{
             if(userDisplay.querySelector('#add-user')){userDisplay.querySelector('#add-user').remove()};
             if(userDisplay.querySelector('#delete-user')){userDisplay.querySelector('#delete-user').remove()};

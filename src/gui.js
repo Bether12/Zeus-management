@@ -42,6 +42,12 @@ export const GUI = function(Data, Event){
         maximumFractionDigits: 2 
     });
 
+    //Date formatter
+    const dateFormatter = new Intl.DateTimeFormat('es-CU', {
+        dateStyle: "medium",
+        timeStyle: "short"
+    });
+
     //Payments table page controls
     const payPrevBtn = document.querySelector('#pay-prev-page-btn');
     const payNextBtn = document.querySelector('#pay-next-page-btn');
@@ -118,7 +124,7 @@ export const GUI = function(Data, Event){
                 paymentDate.dataset.paymentDate = element.payment_date;
                 paymentDate.dataset.userId = element.user_id;
                 paymentDate.dataset.id = element.id;
-                paymentDate.textContent = currentUser.role === 'admin'? '✏️ ' + element.payment_date : element.payment_date;
+                paymentDate.textContent = currentUser.role === 'admin'? '✏️ ' + dateFormatter.format(new Date(element.payment_date)) : dateFormatter.format(new Date(element.payment_date));
                 row.appendChild(paymentDate);
                 let userId = document.createElement('td');
                 userId.dataset.userId = element.user_id;
@@ -174,7 +180,7 @@ export const GUI = function(Data, Event){
                 row.appendChild(lastAmountPaid);
                 let lastPayment = document.createElement('td');
                 lastPayment.dataset.lastPayment = element.last_payment;
-                lastPayment.textContent = element.last_payment !== null ? element.last_payment : 'Nunca';
+                lastPayment.textContent = element.last_payment !== null ? dateFormatter.format(new Date(element.last_payment)) : 'Nunca';
                 row.appendChild(lastPayment);
                 let active = document.createElement('td');
                 active.dataset.active = element.active;
@@ -210,7 +216,7 @@ export const GUI = function(Data, Event){
                 name.textContent = element.name;
                 row.appendChild(name);
                 let lastPayment = document.createElement('td');
-                lastPayment.textContent = element.last_payment !== null ? element.last_payment : 'Nunca';
+                lastPayment.textContent = element.last_payment !== null ? dateFormatter.format(new Date(element.last_payment)) : 'Nunca';
                 row.appendChild(lastPayment);
                 duePayTable.querySelector('tbody').appendChild(row);
             });

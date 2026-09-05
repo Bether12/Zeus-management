@@ -257,7 +257,7 @@ export const GUI = function(Data, Event){
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             paymentDateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
-            
+
             paymentDateInput.required = true;
             paymentDateInput.type = 'datetime-local';
             form.appendChild(paymentDateInput);
@@ -938,10 +938,19 @@ export const GUI = function(Data, Event){
         }
     });
 
+    //Key Shorcuts
     window.addEventListener('keydown', (e) => {
         if (e.key === 'F2') {
             e.preventDefault();
             attendanceInput.focus();
+        } else if (e.ctrlKey && e.key === '1'){
+            console.log(e.key);
+            e.preventDefault();
+            renderAddUserForm();
+        } else if (e.ctrlKey && e.key === '2'){
+            console.log(e.key);
+            e.preventDefault();
+            renderAddPaymentForm();
         }
     });
 

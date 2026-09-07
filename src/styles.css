@@ -3,6 +3,7 @@
 }
 :root {
   --background: rgb(22, 22, 22);
+  --main-background: #2f2f2f;
   --border-color: #0f0f0f;
   --focus-color: orange;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
@@ -18,21 +19,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-}
-
-.container {
-  margin: 0;
-  padding-top: 10vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-}
-
-
-.row {
-  display: flex;
-  justify-content: center;
 }
 
 a {
@@ -282,4 +268,9 @@ table th{
 
 table tr:nth-child(even){
   background-color: #3f3f46;
+}
+
+dialog{
+  background-color: var(--main-background);
+  color: #ffffff;
 }

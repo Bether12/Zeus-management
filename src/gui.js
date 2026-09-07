@@ -264,6 +264,7 @@ export const GUI = function(Data, Event){
             amountPaidInput.autofocus = true;
             amountPaidInput.id = 'amount-paid-input';
             amountPaidInput.type = 'number';
+            amountPaidInput.placeholder = 'Ej. 1000 o 2000';
             amountPaidInput.required = true;
             amountPaidInput.step = '100';
             form.appendChild(amountPaidInput);
@@ -342,6 +343,7 @@ export const GUI = function(Data, Event){
             nameInput.autofocus = true;
             nameInput.id = 'name-input';
             nameInput.required = true;
+            nameInput.placeholder = 'Mínimo 3 letras'
             nameInput.minLength = 3;
             form.appendChild(nameInput);
 
@@ -353,6 +355,7 @@ export const GUI = function(Data, Event){
             const ciInput = document.createElement('input');
             ciInput.id = 'ci-input';
             ciInput.required = true;
+            ciInput.placeholder = 'Un número de 11 dígitos';
             ciInput.pattern = '[0-9]{11}';
             form.appendChild(ciInput);
 
@@ -768,6 +771,7 @@ export const GUI = function(Data, Event){
         userNameInput.id = 'user-name-input';
         userNameInput.required = true;
         userNameInput.autofocus = true;
+        userNameInput.placeholder = 'Tu nombre de usuario';
         userNameInput.minLength = 3;
         form.appendChild(userNameInput);
 
@@ -779,6 +783,7 @@ export const GUI = function(Data, Event){
         const userPasswordInput = document.createElement('input');
         userPasswordInput.id = 'user-password-input';
         userPasswordInput.required = true;
+        userPasswordInput.placeholder = 'Mínimo 8 caracteres';
         userPasswordInput.type = 'password';
         form.appendChild(userPasswordInput);
 

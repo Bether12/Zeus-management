@@ -2,6 +2,9 @@
   filter: drop-shadow(0 0 2em #ffe21c);
 }
 :root {
+  --background: rgb(22, 22, 22);
+  --border-color: #0f0f0f;
+  --focus-color: orange;
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-size: 16px;
   line-height: 24px;
@@ -34,12 +37,12 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--focus-color);
   text-decoration: inherit;
 }
 
 a:hover {
-  color: #535bf2;
+  color: var(--focus-color);
 }
 
 h1 {
@@ -65,10 +68,10 @@ button {
 }
 
 button:hover {
-  border-color: #396cd8;
+  border-color: var(--focus-color);
 }
 button:active {
-  border-color: #396cd8;
+  border-color: var(--focus-color);
   background-color: #e8e8e8;
 }
 
@@ -85,7 +88,7 @@ button {
   }
 
   a:hover {
-    color: #24c8db;
+    color: var(--focus-color);
   }
 
   input,
@@ -120,7 +123,7 @@ button {
 }
 
 #attendance-input:focus {
-  border-color: orange;
+  border-color: var(--focus-color);
 }
 
 .status-banner {
@@ -134,8 +137,6 @@ button {
 .status-banner.success { background-color: #065f46; color: #34d399; border: 1px solid #10b981; }
 .status-banner.warning { background-color: #78350f; color: #fbbf24; border: 1px solid #f59e0b; }
 .status-banner.error   { background-color: #7f1d1d; color: #fca5a5; border: 1px solid #ef4444; }
-
-/*Other styles*/
 
 body{
   margin: 0;
@@ -159,6 +160,11 @@ nav{
   flex-direction: column;
   gap: 10px;
   box-shadow: 10px 0px 7px rgb(39, 39, 39);
+}
+
+.view-section{
+  overflow-y: scroll;
+  margin-bottom: 60px;
 }
 
 .view-section.hidden{
@@ -255,9 +261,25 @@ form{
 }
 
 input:focus{
-  outline: 2px solid orange;
+  outline: 2px solid var(--focus-color);
+  box-shadow: 3px 3px 5px var(--focus-color);
 }
 
 input:invalid{
   outline: 2px solid red;
+}
+
+table{
+  margin: 40px;
+  border: 2px solid var(--border-color);
+  border-radius: 10px;
+  box-shadow: 3px 3px 5px var(--focus-color), -3px -3px 5px var(--focus-color);
+}
+
+table th{
+  background-color: var(--background);
+}
+
+table tr:nth-child(even){
+  background-color: #3f3f46;
 }

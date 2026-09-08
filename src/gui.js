@@ -945,9 +945,9 @@ export const GUI = function(Data, Event){
         await renderPaymentsTable();
     };
 
-    const debouncedUserSearch = debounce(handleUserSearch, 200);
+    const debouncedUserSearch = debounce(handleUserSearch, 600);
 
-    const debouncedPaymentSearch = debounce(handlePaymentSearch, 200);
+    const debouncedPaymentSearch = debounce(handlePaymentSearch, 600);
 
     userSearchInput.addEventListener('input', debouncedUserSearch);
 

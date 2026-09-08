@@ -99,6 +99,34 @@ export class Data{
         return 'Ocurrió un error inesperado. Si el problema persiste, reinicia la aplicación.';
     }
 
+    parseSearchInput(query) {
+        const cleanQuery = query.trim();
+
+        const idMatch = cleanQuery.match(/^(?:#|id:|u:)(\d+)$/i);
+
+        const payMatch = cleanQuery.match(/^(?:p)(\d+)$/i);
+
+        if (idMatch) {
+            return {
+                isExactId: true,
+                isPayId: false,
+                id: parseInt(idMatch[1], 10)
+            };
+        } else if (payMatch){
+            return {
+                isExactId: false,
+                isPayId: true,
+                id: parseInt(payMatch[1], 10)
+            };
+        }else {
+            return {
+                isExactId: false,
+                isPayId: false,
+                term: `%${cleanQuery}%`
+            };
+        }
+    }
+
     getCurrentUserData(){
         return this.#currentUser;
     }
@@ -235,14 +263,24 @@ export class Data{
 
     async getSearchUsers(searchTerm, limit, offset){
         try{
-            const term = `%${searchTerm}%`; 
-            return await this.queryDatabase('get', 
-                `SELECT * FROM users_id 
-                 WHERE name LIKE $1 OR ci LIKE $1 OR id LIKE $1
-                 ORDER BY id 
-                 LIMIT $2 OFFSET $3`, 
-                [term, limit, offset]
-            );
+            const parsed = this.parseSearchInput(searchTerm);
+            if (parsed.isExactId){
+                return await this.queryDatabase('get', 
+                    `SELECT * FROM users_id 
+                    WHERE id = $1 
+                    LIMIT $2 
+                    OFFSET $3`, 
+                    [parsed.id, limit, offset]
+                );
+            }else {
+                return await this.queryDatabase('get', 
+                    `SELECT * FROM users_id 
+                    WHERE name LIKE $1 OR ci LIKE $1
+                    ORDER BY id 
+                    LIMIT $2 OFFSET $3`, 
+                    [parsed.term, limit, offset]
+                );
+            }
         }catch(error){
             throw this.handleDatabaseError(error);
         }
@@ -250,12 +288,27 @@ export class Data{
 
     async getSearchUsersCount(searchTerm) {
         try {
-            const term = `%${searchTerm}%`;
-            const result = await this.queryDatabase('get', 
-                `SELECT COUNT(*) as total FROM users_id WHERE name LIKE $1 OR ci LIKE $1 OR id LIKE $1`,
-                [term]
-            );
-            return result[0].total;
+            const parsed = this.parseSearchInput(searchTerm);
+            let result;
+
+            if (parsed.isExactId){
+                result = await this.queryDatabase('get', 
+                    `SELECT COUNT(*) as total 
+                    FROM users_id 
+                    WHERE id = $1`,
+                    [parsed.id]
+                );
+                return result[0].total;
+            }else {
+                result = await this.queryDatabase('get', 
+                    `SELECT COUNT(*) as total 
+                    FROM users_id 
+                    WHERE name LIKE $1 
+                    OR ci LIKE $1`,
+                    [parsed.term]
+                );
+                return result[0].total;
+            }
         } catch(error) {
             throw this.handleDatabaseError(error);
         }
@@ -263,18 +316,36 @@ export class Data{
 
     async getSearchPayment(searchTerm, limit, offset){
         try{
-            const term = `%${searchTerm}%`; 
-            return await this.queryDatabase('get', 
-                `SELECT * FROM payment_records 
-                 WHERE id LIKE $1 OR 
-                 DATE(payment_date) LIKE $1 OR 
-                 REPLACE(payment_date, 'T', ' ') LIKE $1 
-                 OR user_id LIKE $1
-                 ORDER BY id 
-                 DESC 
-                 LIMIT $2 OFFSET $3`, 
-                [term, limit, offset]
-            );
+            const parsed = this.parseSearchInput(searchTerm);
+            
+            if (parsed.isExactId) {
+                return await this.queryDatabase('get', 
+                    `SELECT * FROM payment_records 
+                    WHERE user_id = $1 
+                    LIMIT $2 
+                    OFFSET $3`, 
+                    [parsed.id, limit, offset]
+                );
+            } else if (parsed.isPayId){
+                return await this.queryDatabase('get', 
+                    `SELECT * FROM payment_records 
+                    WHERE id = $1 
+                    LIMIT $2 
+                    OFFSET $3`, 
+                    [parsed.id, limit, offset]
+                );
+            } else {
+                return await this.queryDatabase('get', 
+                    `SELECT * FROM payment_records 
+                    WHERE DATE(payment_date) LIKE $1 
+                    OR REPLACE(payment_date, 'T', ' ') LIKE $1 
+                    ORDER BY id 
+                    DESC 
+                    LIMIT $2 
+                    OFFSET $3`, 
+                    [parsed.term, limit, offset]
+                );
+            }
         }catch(error){
             throw this.handleDatabaseError(error);
         }
@@ -282,15 +353,32 @@ export class Data{
 
     async getSearchPaymentCount(searchTerm) {
         try {
-            const term = `%${searchTerm}%`;
-            const result = await this.queryDatabase('get', 
-                `SELECT COUNT(*) as total FROM payment_records WHERE id LIKE $1 
-                OR DATE(payment_date) LIKE $1 
-                OR REPLACE(payment_date, 'T', ' ') LIKE $1 
-                OR user_id LIKE $1`,
-                [term]
-            );
-            return result[0].total;
+            const parsed = this.parseSearchInput(searchTerm);
+            let result; 
+
+            if (parsed.isExactId) {
+                result = await this.queryDatabase('get', 
+                    `SELECT COUNT(*) as total FROM payment_records 
+                    WHERE user_id = $1 `,
+                    [parsed.id]
+                );
+                return result[0].total;
+            } else if (parsed.isPayId) {
+                result = await this.queryDatabase('get', 
+                    `SELECT COUNT(*) as total FROM payment_records 
+                    WHERE id = $1 `,
+                    [parsed.id]
+                );
+                return result[0].total;
+            } else {
+                result = await this.queryDatabase('get', 
+                    `SELECT COUNT(*) as total FROM payment_records 
+                    WHERE DATE(payment_date) LIKE $1 
+                    OR REPLACE(payment_date, 'T', ' ') LIKE $1`,
+                    [parsed.term]
+                );
+                return result[0].total;
+            }
         } catch(error) {
             throw this.handleDatabaseError(error);
         }

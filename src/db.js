@@ -127,6 +127,13 @@ export class Data{
         }
     }
 
+    getLocalDateString(date = new Date()){
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
     getCurrentUserData(){
         return this.#currentUser;
     }
@@ -170,8 +177,8 @@ export class Data{
                 }
 
                 const user = users[0];
-                const today = new Date().toISOString().split('T')[0];
-                const time = new Date().toTimeString().split(' ')[0].substring(0, 5); // Format HH:MM
+                const today = this.getLocalDateString();
+                const time = new Date().toTimeString().split(' ')[0].substring(0, 5);
 
                 const duePay = await this.db.select(`
                     SELECT last_payment
@@ -211,7 +218,7 @@ export class Data{
 
     async getTodayAttendance() {
         try {
-            const today = new Date().toISOString().split('T')[0];
+            const today = this.getLocalDateString();
             return await this.queryDatabase('get',
                 `SELECT a.id, a.check_in_time, u.id as user_id, u.name, u.ci 
                 FROM attendance a 

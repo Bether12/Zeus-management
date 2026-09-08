@@ -27,6 +27,7 @@ export class Data{
                 amount_paid INT NOT NULL DEFAULT 0 CHECK (amount_paid >= 0),
                 last_amount_paid INT NOT NULL DEFAULT 0 CHECK (last_amount_paid >=0),
                 last_payment TEXT DEFAULT NULL,
+                expiration_date TEXT NOT NULL DEFAULT '1970-01-01T00:00',
                 active BOOLEAN DEFAULT 1,
                 registered_by VARCHAR(50) NOT NULL
                 );`);
@@ -184,8 +185,9 @@ export class Data{
                     SELECT last_payment
                     FROM users_id 
                     WHERE id = $1 
-                    AND COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', 'localtime', '-31 day'))`, 
-                    [user.id]);
+                    AND expiration_date < DATE('now', 'localtime')`, 
+                    [user.id]
+                );
                 console.log(duePay);
 
                 if (duePay && duePay.length > 0){
@@ -406,7 +408,9 @@ export class Data{
     async getTotalDuePayCount(){
         try{
             const result = await this.queryDatabase('get', 
-                    `SELECT COUNT(*) as total FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', 'localtime', '-31 day'))`);
+                    `SELECT COUNT(*) as total FROM users_id
+                    WHERE expiration_date < DATE('now', 'localtime')`
+                );
             console.log(`Due pays total: ${result[0].total}`);
             return result[0].total;
         }catch(error){
@@ -439,8 +443,12 @@ export class Data{
     async getPaginatedDuePay(limit, offset){
         try{
             return await this.queryDatabase('get', 
-                `SELECT last_payment, id, name FROM (SELECT last_payment, id, name FROM users_id WHERE active = 1) WHERE COALESCE(last_payment, '1970-01-01T00:00') <= strftime('%Y-%m-%dT%H:%M', datetime('now', 'localtime', '-31 day')) LIMIT $1 OFFSET $2`, 
-                [limit, offset]);
+                `SELECT last_payment, id, name FROM users_id 
+                WHERE expiration_date < DATE('now', 'localtime')
+                LIMIT $1 
+                OFFSET $2`, 
+                [limit, offset]
+            );
         }catch(error){
             throw this.handleDatabaseError(error);
         }
@@ -454,17 +462,21 @@ export class Data{
 
                 //Insert payment data
                 await this.db.execute(
-                    `INSERT INTO payment_records (amount_paid, payment_date, user_id, registered_by) VALUES ($1, $2, $3, $4);`,
-                    [amountPaid, date, userId, this.#currentUser.username]);
+                    `INSERT INTO payment_records (amount_paid, payment_date, user_id, registered_by) 
+                    VALUES ($1, $2, $3, $4)`,
+                    [amountPaid, date, userId, this.#currentUser.username]
+                );
 
                 //Update user data
                 await this.db.execute(
                     `UPDATE users_id
                     SET last_payment = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN last_payment ELSE $2 END,
-                    amount_paid = amount_paid + $3,
-                    last_amount_paid = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN last_amount_paid ELSE $3 END
+                        amount_paid = amount_paid + $3,
+                        last_amount_paid = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN last_amount_paid ELSE $3 END,
+                        expiration_date = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN expiration_date ELSE datetime($2, '+1 month') END
                     WHERE id = $1`,
-                    [userId, date, amountPaid]);
+                    [userId, date, amountPaid]
+                );
                 
                 await this.db.execute(`COMMIT`);
             }catch(error){
@@ -586,17 +598,25 @@ export class Data{
                 //Subtract the amount paid from the old user's total
                 await this.db.execute(
                     `UPDATE users_id SET amount_paid = amount_paid - $1 WHERE id = $2`, 
-                    [data[0].amount_paid, userId]);
+                    [data[0].amount_paid, userId]
+                    );
 
                 //Update the values of the new user
                 await this.db.execute(
-                    `UPDATE users_id SET amount_paid = amount_paid + $1, last_payment = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN last_payment ELSE $2 END WHERE id = $3`, 
-                    [data[0].amount_paid, data[0].payment_date, newUserId]);
+                    `UPDATE users_id SET 
+                    amount_paid = amount_paid + $1, 
+                    last_payment = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN last_payment ELSE $2 END,
+                    expiration_date = CASE WHEN COALESCE(last_payment, '1970-01-01T00:00') > $2 THEN expiration_date ELSE datetime($2, '+1 month') END
+                    WHERE id = $3`, 
+                    [data[0].amount_paid, data[0].payment_date, newUserId]
+                    );
                 
                 //Get old user's most recent payment date
                 const oldUserPayDate = await this.db.select(
-                    `SELECT MAX(payment_date) AS payment_date FROM payment_records WHERE user_id = $1`, 
-                    [userId]);
+                    `SELECT MAX(payment_date) AS payment_date FROM payment_records 
+                    WHERE user_id = $1`, 
+                    [userId]
+                    );
                 console.log(oldUserPayDate);
 
                 // Verification of the query's result
@@ -606,7 +626,9 @@ export class Data{
                 
                 //Update old user's last payment date
                 await this.db.execute(
-                    `UPDATE users_id SET last_payment = $1 WHERE id = $2`,
+                    `UPDATE users_id SET last_payment = $1,
+                    expiration_date = CASE WHEN COALESCE($1, '1970-01-01T00:00') <= '1970-01-01T00:00' THEN '1970-01-01T00:00' ELSE datetime($1, '+1 month') END 
+                    WHERE id = $2`,
                     [oldUserPayDate[0].payment_date, userId]);
 
                 //Update the last amount paid of the old user
@@ -657,7 +679,9 @@ export class Data{
 
                 //Set user's new last payment
                 await this.db.execute(
-                    `UPDATE users_id SET last_payment = $1 WHERE id = $2`, 
+                    `UPDATE users_id SET last_payment = $1,
+                    expiration_date = CASE WHEN COALESCE($1, '1970-01-01T00:00') <= '1970-01-01T00:00' THEN '1970-01-01T00:00' ELSE datetime($1, '+1 month') END 
+                    WHERE id = $2`, 
                     [lastPayment[0].payment_date, userId]);
 
                 //Update the last amount paid of the user
@@ -717,7 +741,9 @@ export class Data{
 
                 //Set user's new last payment
                 await this.db.execute(
-                    `UPDATE users_id SET last_payment = $1 WHERE id = $2`, 
+                    `UPDATE users_id SET last_payment = $1,
+                    expiration_date = CASE WHEN COALESCE($1, '1970-01-01T00:00') <= '1970-01-01T00:00' THEN '1970-01-01T00:00' ELSE datetime($1, '+1 month') END 
+                    WHERE id = $2`, 
                     [lastPayment[0].payment_date, data[0].user_id]);
 
                 //Update the last amount paid of the user

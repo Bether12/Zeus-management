@@ -194,6 +194,7 @@ export const GUI = function(Data, Event){
                 let lastPayment = document.createElement('td');
                 lastPayment.dataset.lastPayment = element.last_payment;
                 lastPayment.textContent = element.last_payment !== null ? dateFormatter.format(new Date(element.last_payment)) : 'Nunca';
+                lastPayment.textContent += `/ ${element.expiration_date === '1970-01-01T00:00' ? '-' : dateFormatter.format(new Date(element.expiration_date))}`;
                 row.appendChild(lastPayment);
                 let active = document.createElement('td');
                 active.dataset.active = element.active;

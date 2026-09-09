@@ -37,6 +37,7 @@ export const GUI = function(Data, Event){
     const attendanceSection = document.querySelector('#attendance-section');
     const paymentSection = document.querySelector('#payment-section');
     const duePaySection = document.querySelector('#due-pay-section');
+    const duePayCount = document.querySelector('#due-pay-count');
     const userSection = document.querySelector('#user-section');
 
     //Sections buttons
@@ -95,6 +96,14 @@ export const GUI = function(Data, Event){
         const records = await Database.getTodayAttendance();
         console.log(`Attendance: `, records);
         attendanceCount.textContent = records.length;
+        if(records.length === 0){
+            attendanceTableBody.innerHTML = `
+            <tr>
+                <td colspan="4">No hay entradas por el momento<td/>
+            </tr>
+            `;
+            return;
+        }
         
         attendanceTableBody.innerHTML = records.map(r => `
             <tr>
@@ -118,7 +127,17 @@ export const GUI = function(Data, Event){
             console.log(responsePayments);
             const total = currentPaymentSearchTerm ? await Database.getSearchPaymentCount(currentPaymentSearchTerm) : await Database.getTotalPaymentsCount();
             paymentCount.textContent = `Número de pagos: (${total})`;
-            console.log(paymentCount);
+
+            if(responsePayments.length === 0){
+                let row = document.createElement('tr');
+                let td = document.createElement('td');
+                td.textContent = 'No se encontraron pagos';
+                td.colSpan = 5;
+                row.appendChild(td);
+                paymentsTable.querySelector('tbody').appendChild(row);
+                return;
+            }
+
             paymentsTable.querySelector('tbody').innerHTML = '';
             responsePayments.forEach(element => {
                 let row = document.createElement('tr');
@@ -165,7 +184,17 @@ export const GUI = function(Data, Event){
             console.log(responseUsers);
             const total = currentUserSearchTerm ? await Database.getSearchUsersCount(currentUserSearchTerm) : await Database.getTotalUsersCount();
             usersCount.textContent = `Número de clientes: (${total})`;
-            console.log(usersCount);
+
+            if(responseUsers.length === 0){
+                let row = document.createElement('tr');
+                let td = document.createElement('td');
+                td.textContent = 'No se encontraron clientes';
+                td.colSpan = 8;
+                row.appendChild(td);
+                usersTable.querySelector('tbody').appendChild(row);
+                return;
+            }
+
             usersTable.querySelector('tbody').innerHTML = '';
             responseUsers.forEach(element => {
                 let row = document.createElement('tr');
@@ -219,7 +248,21 @@ export const GUI = function(Data, Event){
         try {
             const duePaysOffset = (currentDuePayPage - 1) * rowsPerPage;
             const responseDuePay = await Database.getPaginatedDuePay(rowsPerPage, duePaysOffset);
-            console.log(responseDuePay);
+            console.log(responseDuePay.length);
+
+            const total = await Database.getTotalDuePayCount();
+            duePayCount.textContent = `Número de pendientes: (${total})`;
+
+            if(responseDuePay.length === 0){
+                let row = document.createElement('tr');
+                let td = document.createElement('td');
+                td.textContent = 'No hay clientes con atraso de pago';
+                td.colSpan = 3;
+                row.appendChild(td);
+                duePayTable.querySelector('tbody').appendChild(row);
+                return;
+            }
+
             duePayTable.querySelector('tbody').innerHTML = '';
             responseDuePay.forEach(element => {
                 let row = document.createElement('tr');

@@ -248,6 +248,8 @@ export const eventMaster = function(Data){
                         renderFunc();
                     }
                 }else if (type === 'delete'){
+                    const confirmed = confirm(`¿Estás seguro de que deseas eliminar el registro de pago #${form.querySelector('#payment-id-input').value}?`);
+                    if (!confirmed) return;
                     await Database.deletePayment(form.querySelector('#payment-id-input').value);
                     dialog.close();
                     dialog.remove();

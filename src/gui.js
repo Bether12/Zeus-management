@@ -801,6 +801,7 @@ export const GUI = function(Data, Event){
     function logIn(){
         const dialog = document.createElement('dialog');
         dialog.addEventListener('cancel', (e) => e.preventDefault());
+        dialog.id = 'log-in';
         const form = document.createElement('form');
         dialog.appendChild(form);
         form.method = 'dialog';
@@ -1033,6 +1034,12 @@ export const GUI = function(Data, Event){
             console.log(e.key);
             e.preventDefault();
             renderAddPaymentForm();
+        } else if (e.key === 'Escape') {
+            const openDialog = document.querySelector('dialog[open]');
+            if (openDialog && openDialog.id !== 'log-in') {
+            openDialog.close();
+            openDialog.remove();
+            }
         }
     });
 

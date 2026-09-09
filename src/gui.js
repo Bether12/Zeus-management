@@ -1034,12 +1034,6 @@ export const GUI = function(Data, Event){
             console.log(e.key);
             e.preventDefault();
             renderAddPaymentForm();
-        } else if (e.key === 'Escape') {
-            const openDialog = document.querySelector('dialog[open]');
-            if (openDialog && openDialog.id !== 'log-in') {
-            openDialog.close();
-            openDialog.remove();
-            }
         }
     });
 

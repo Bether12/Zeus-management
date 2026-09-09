@@ -61,6 +61,10 @@ export const eventMaster = function(Data){
             dialog.close();
             dialog.remove();
         });
+
+        dialog.addEventListener('close', (e)=>{
+            dialog.remove();
+        });
     }
 
     function checkForm(DOMElement){

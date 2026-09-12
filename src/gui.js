@@ -45,6 +45,7 @@ export const GUI = function(Data, Event){
     const paymentSectionBtn = document.querySelector('#payment-section-btn');
     const duePaySectionBtn = document.querySelector('#due-pay-section-btn');
     const userSectionBtn = document.querySelector('#user-section-btn');
+    const sections = [attendanceSection, paymentSection, duePaySection, userSection];
     
     //Currency formatter
     const currencyFormatter = new Intl.NumberFormat('es-CU', {
@@ -82,6 +83,16 @@ export const GUI = function(Data, Event){
     //Users table buttons
     const addUserBtn = document.querySelector('#add-user-btn');
     const generateResumeBtn = document.querySelector('#generate-resume-btn');
+
+    function switchSection(targetSection) {
+        sections.forEach(section => {
+            if (section === targetSection) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        });
+    }
 
     function showAttendanceStatus(message, type) {
         attendanceStatus.textContent = message;
@@ -1037,6 +1048,12 @@ export const GUI = function(Data, Event){
         }
     });
 
+    //View sections buttons 
+    attendanceSectionBtn.addEventListener('click', () => switchSection(attendanceSection));
+    paymentSectionBtn.addEventListener('click', () => switchSection(paymentSection));
+    duePaySectionBtn.addEventListener('click', () => switchSection(duePaySection));
+    userSectionBtn.addEventListener('click', () => switchSection(userSection));
+
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
     eventMaster.editTableFields(usersTable, renderEditForm);
@@ -1046,11 +1063,6 @@ export const GUI = function(Data, Event){
     eventMaster.addClickEventListener(changeCurrentUserBtn, logIn);
     eventMaster.addClickEventListener(addUserSessionBtn, renderAddUserSessionForm);
     eventMaster.addClickEventListener(deleteUserSessionBtn, renderDeleteUserSessionForm);
-    eventMaster.handleToggleButtons(
-        attendanceSectionBtn, attendanceSection, 
-        paymentSectionBtn, paymentSection, 
-        duePaySectionBtn, duePaySection, 
-        userSectionBtn, userSection);
 
     //Pagination controls event listeners
     //Payments

@@ -9,33 +9,6 @@ export const eventMaster = function(Data){
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    function handleToggleButtons(...args){
-        args[0].addEventListener('click', ()=>{
-            args[1].classList.remove('hidden');
-            args[3].classList.add('hidden');
-            args[5].classList.add('hidden');
-            args[7].classList.add('hidden');
-        });
-        args[2].addEventListener('click', ()=>{
-            args[1].classList.add('hidden');
-            args[3].classList.remove('hidden');
-            args[5].classList.add('hidden');
-            args[7].classList.add('hidden');
-        });
-        args[4].addEventListener('click', ()=>{
-            args[1].classList.add('hidden');
-            args[3].classList.add('hidden');
-            args[5].classList.remove('hidden');
-            args[7].classList.add('hidden');
-        });
-        args[6].addEventListener('click', ()=>{
-            args[1].classList.add('hidden');
-            args[3].classList.add('hidden');
-            args[5].classList.add('hidden');
-            args[7].classList.remove('hidden');
-        });
-    }
-
     function addClickEventListener(DOMElement, fun, generateResume = false, dateInput=undefined){
         DOMElement.addEventListener('click', (e)=>{
             if(generateResume){
@@ -160,11 +133,17 @@ export const eventMaster = function(Data){
     function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}, field=[], renderErrorMsg=function(e){}){
         DOMElement.addEventListener('click', async (e)=>{
             e.preventDefault();
+            const text = DOMElement.textContent;
             try{
                 if(!form.checkValidity()){
                     form.reportValidity();
                     return;
-                }else if (type === 'add-user'){
+                }
+
+                DOMElement.disabled = true;
+                DOMElement.textContent = 'Procesando...';
+                
+                if (type === 'add-user'){
                     const inputs = [
                         form.querySelector('#user-name-input'),
                         form.querySelector('#user-password-input'),
@@ -263,6 +242,8 @@ export const eventMaster = function(Data){
                 }
             }catch(error){
                 renderErrorMsg(error);
+                DOMElement.disabled = false;
+                DOMElement.textContent = text;
             }
         });
     }
@@ -278,5 +259,5 @@ export const eventMaster = function(Data){
         });
     }
 
-    return {addClickEventListener, addChangeEventListener, closeDialog, checkForm, resolveForm, editTableFields, handleToggleButtons};
+    return {addClickEventListener, addChangeEventListener, closeDialog, checkForm, resolveForm, editTableFields};
 };

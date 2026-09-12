@@ -81,10 +81,12 @@ export const eventMaster = function(Data){
             } else if (target.validity.stepMismatch || Number(target.value) <= 0){
                 target.setCustomValidity('El monto pagado tiene que ser un múltiplo positivo de 100');
             }
-        } else if (target.id === 'payment-date-input'){
+        } else if (target.id === 'payment-date-input' || target.id === 'date-input'){
             if (target.validity.valueMissing){
                 target.setCustomValidity('La fecha no puede estar vacía');
-            } else if (target.validity.valid === false){
+            } else if (target.validity.rangeOverflow){
+                target.setCustomValidity('La fecha seleccionada no puede ser futura');
+            } else if (!target.validity.valid){
                 target.setCustomValidity('Formato de fecha inválido');
             }
         } else if (target.id === 'user-id-input'){
@@ -110,12 +112,6 @@ export const eventMaster = function(Data){
                 target.setCustomValidity('El ID tiene que ser un número entero positivo');
             } else if (target.validity.valueMissing){
                 target.setCustomValidity('Escriba el ID de pago');
-            }
-        } else if (target.id === 'date-input'){
-            if (target.validity.rangeOverflow){
-                target.setCustomValidity('La fecha seleccionada no puede ser mayor que la fecha actual');
-            } else if (target.validity.valueMissing){
-                target.setCustomValidity('La fecha no puede estar vacía');
             }
         }else if (target.id === 'user-password-input'){
             if(target.validity.valueMissing){

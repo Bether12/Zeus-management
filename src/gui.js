@@ -342,6 +342,7 @@ export const GUI = function(Data, Event){
             paymentDateInput.value = `${year}-${month}-${day}T${hours}:${minutes}`;
 
             paymentDateInput.required = true;
+            paymentDateInput.max = `${year}-${month}-${day}T${hours}:${minutes}`;
             paymentDateInput.type = 'datetime-local';
             form.appendChild(paymentDateInput);
 
@@ -521,6 +522,16 @@ export const GUI = function(Data, Event){
                 paymentDateInput.id = 'payment-date-input';
                 paymentDateInput.type = 'datetime-local';
                 paymentDateInput.value = field.dataset.paymentDate;
+
+                //Actual date calculation and setting
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                const hours = String(now.getHours()).padStart(2, '0');
+                const minutes = String(now.getMinutes()).padStart(2, '0');
+                paymentDateInput.max = `${year}-${month}-${day}T${hours}:${minutes}`;
+                
                 paymentDateInput.required = true;
                 form.insertBefore(paymentDateInput, acceptBtn);
 

@@ -185,7 +185,7 @@ export class Data{
                     SELECT last_payment
                     FROM users_id 
                     WHERE id = $1 
-                    AND expiration_date < DATE('now', 'localtime')`, 
+                    AND DATE(expiration_date) < DATE('now', 'localtime')`, 
                     [user.id]
                 );
                 console.log(duePay);
@@ -409,7 +409,7 @@ export class Data{
         try{
             const result = await this.queryDatabase('get', 
                     `SELECT COUNT(*) as total FROM users_id
-                    WHERE expiration_date < DATE('now', 'localtime')`
+                    WHERE DATE(expiration_date) < DATE('now', 'localtime')`
                 );
             console.log(`Due pays total: ${result[0].total}`);
             return result[0].total;
@@ -444,7 +444,7 @@ export class Data{
         try{
             return await this.queryDatabase('get', 
                 `SELECT last_payment, id, name FROM users_id 
-                WHERE expiration_date < DATE('now', 'localtime')
+                WHERE DATE(expiration_date) < DATE('now', 'localtime')
                 LIMIT $1 
                 OFFSET $2`, 
                 [limit, offset]

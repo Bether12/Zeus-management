@@ -419,6 +419,7 @@ export const GUI = function(Data, Event){
             const ciInput = document.createElement('input');
             ciInput.id = 'ci-input';
             ciInput.required = true;
+            ciInput.inputMode = 'numeric';
             ciInput.placeholder = 'Un número de 11 dígitos';
             ciInput.pattern = '[0-9]{11}';
             form.appendChild(ciInput);
@@ -493,6 +494,7 @@ export const GUI = function(Data, Event){
                 const ciInput = document.createElement('input');
                 ciInput.autofocus = true;
                 ciInput.id = 'ci-input';
+                ciInput.inputMode = 'numeric';
                 ciInput.value = field.dataset.ci;
                 ciInput.required = true;
                 ciInput.pattern = '[0-9]{11}';

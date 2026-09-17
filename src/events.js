@@ -245,6 +245,7 @@ export const eventMaster = function(Data){
     }
 
     function editTableFields(DOMElement, func){
+        //PC
         DOMElement.addEventListener('click', (e)=>{
             const target = e.target;
             if (e.ctrlKey === true && target.tagName === 'TD'){
@@ -252,6 +253,29 @@ export const eventMaster = function(Data){
             }else{
                 return;
             }
+        });
+
+        //Mobile
+        let touchTimer;
+
+        DOMElement.addEventListener('touchstart', (e) =>{
+            if (e.target.tagName === 'TD'){
+                touchTimer = setTimeout(() => {
+                    func(e.target);
+                }, 600);
+            }
+        }, {passive: true});
+
+        DOMElement.addEventListener('touchmove', () => {
+            clearTimeout(touchTimer);
+        });
+
+        DOMElement.addEventListener('touchend', () => {
+            clearTimeout(touchTimer);
+        });
+
+        DOMElement.addEventListener('touchcancel', () => {
+            clearTimeout(touchTimer);
         });
     }
 

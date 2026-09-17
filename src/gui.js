@@ -84,6 +84,11 @@ export const GUI = function(Data, Event){
     const addUserBtn = document.querySelector('#add-user-btn');
     const generateResumeBtn = document.querySelector('#generate-resume-btn');
 
+    // Focus the input if the pointer is a mouse
+    if (window.matchMedia("(pointer: fine)").matches) {
+        attendanceInput.focus();
+    }
+
     function switchSection(targetSection) {
         sections.forEach(section => {
             if (section === targetSection) {
@@ -139,6 +144,8 @@ export const GUI = function(Data, Event){
             const total = currentPaymentSearchTerm ? await Database.getSearchPaymentCount(currentPaymentSearchTerm) : await Database.getTotalPaymentsCount();
             paymentCount.textContent = `Número de pagos: (${total})`;
 
+            paymentsTable.querySelector('tbody').innerHTML = '';
+
             if(responsePayments.length === 0){
                 let row = document.createElement('tr');
                 let td = document.createElement('td');
@@ -149,7 +156,6 @@ export const GUI = function(Data, Event){
                 return;
             }
 
-            paymentsTable.querySelector('tbody').innerHTML = '';
             responsePayments.forEach(element => {
                 let row = document.createElement('tr');
                 let id = document.createElement('td');
@@ -196,6 +202,8 @@ export const GUI = function(Data, Event){
             const total = currentUserSearchTerm ? await Database.getSearchUsersCount(currentUserSearchTerm) : await Database.getTotalUsersCount();
             usersCount.textContent = `Número de clientes: (${total})`;
 
+            usersTable.querySelector('tbody').innerHTML = '';
+
             if(responseUsers.length === 0){
                 let row = document.createElement('tr');
                 let td = document.createElement('td');
@@ -206,7 +214,6 @@ export const GUI = function(Data, Event){
                 return;
             }
 
-            usersTable.querySelector('tbody').innerHTML = '';
             responseUsers.forEach(element => {
                 let row = document.createElement('tr');
                 let id = document.createElement('td');
@@ -264,6 +271,8 @@ export const GUI = function(Data, Event){
             const total = await Database.getTotalDuePayCount();
             duePayCount.textContent = `Número de pendientes: (${total})`;
 
+            duePayTable.querySelector('tbody').innerHTML = '';
+
             if(responseDuePay.length === 0){
                 let row = document.createElement('tr');
                 let td = document.createElement('td');
@@ -274,7 +283,6 @@ export const GUI = function(Data, Event){
                 return;
             }
 
-            duePayTable.querySelector('tbody').innerHTML = '';
             responseDuePay.forEach(element => {
                 let row = document.createElement('tr');
                 let id = document.createElement('td');

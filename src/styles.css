@@ -180,6 +180,7 @@ nav{
 #attendance-section .attendance-list-container{
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 15px;
 }
 
@@ -194,6 +195,7 @@ nav{
 #payment-section .payments{
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 15px;
 }
 
@@ -212,6 +214,7 @@ nav{
 #due-pay-section .duepays{
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 15px;
 }
 
@@ -226,6 +229,7 @@ nav{
 #user-section .users{
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 15px;
 }
 
@@ -278,29 +282,12 @@ nav{
     padding-bottom: 70px;
   }
 
-  table, thead, tbody, th, td, tr {
-    display: block;
-  }
-  
-  thead tr {
-    position: absolute;
-    top: -9999px;
-    left: -9999px;
-  }
-  
-  tr {
-    margin-bottom: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+  .table-responsive {
+    width: 100vw;
     padding: 10px;
-    background: var(--main-background);
-  }
-  
-  td {
-    display: flex;
-    justify-content: space-between;
-    padding: 6px 0;
-    border: none;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Scroll suave en móviles */
+    white-space: nowrap; /* Evita que el texto de las celdas salte de línea de forma fea */
   }
 }
 
@@ -327,6 +314,11 @@ input:focus{
 
 input:invalid{
   outline: 2px solid red;
+}
+
+.table-responsive{
+  display: flex;
+  justify-content: center;
 }
 
 table{

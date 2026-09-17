@@ -29,17 +29,19 @@
         </div>
         <div class="attendance-list-container">
           <h3>Accesos de hoy (<span id="attendance-count">0</span>)</h3>
-          <table id="attendance-table" class="data-table">
-            <thead>
-              <tr>
-                <th>Hora</th>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>CI</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div class="table-responsive">
+            <table id="attendance-table" class="data-table">
+              <thead>
+                <tr>
+                  <th>Hora</th>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>CI</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
         </div>
       </section>
       <section id="payment-section" class="view-section hidden">
@@ -49,18 +51,20 @@
             <h4 id="payment-count">Número de pagos: (0)</h4>
             <input type="search" id="payment-search-input" placeholder="Buscar por ID, ID de cliente o fecha ..." autocomplete="off">
           </div>
-          <table id="payment-records">
-            <thead>
-              <tr>
-                <th>ID de pago</th>
-                <th>Cantidad pagada</th>
-                <th>Fecha de pago</th>
-                <th>ID de usuario</th>
-                <th>Últ. modificación</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <div class="table-responsive">
+            <table id="payment-records">
+              <thead>
+                <tr>
+                  <th>ID de pago</th>
+                  <th>Cantidad pagada</th>
+                  <th>Fecha de pago</th>
+                  <th>ID de usuario</th>
+                  <th>Últ. modificación</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
           <div class="pagination-controls">
             <button id="pay-prev-page-btn">Anterior</button>
             <span id="pay-page-indicator">Página 1</span>
@@ -76,18 +80,19 @@
         <div class="duepays">
           <h3>Usuarios que deben renovar su pago</h3>
           <h4 id="due-pay-count">Número de pagos: (0)</h4>
-          <table id="due-pay-users">
-            <thead>
-              <tr>
-                <th>ID de usuario</th>
-                <th>Nombre</th>
-                <th>Fecha últ. pago</th>
-              </tr>
-            </thead>
-            <tbody>
-      
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table id="due-pay-users">
+              <thead>
+                <tr>
+                  <th>ID de usuario</th>
+                  <th>Nombre</th>
+                  <th>Fecha últ. pago</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
           <div class="pagination-controls">
             <button id="due-prev-page-btn">Anterior</button>
             <span id="due-page-indicator">Página 1</span>
@@ -102,23 +107,24 @@
             <h4 id="users-count">Número de clientes: (0)</h4>
             <input type="search" id="user-search-input" placeholder="Buscar por ID, nombre o CI..." autocomplete="off">
           </div>
-          <table id="users-id">
-            <thead>
-              <tr>
-                <th>ID de usuario</th>
-                <th>Nombre</th>
-                <th>CI</th>
-                <th>Total pagado</th>
-                <th>Últ. cantidad pagada</th>
-                <th>Fecha últ. pago/Vencimiento</th>
-                <th>Activo</th>
-                <th>Últ. modificación</th>
-              </tr>
-            </thead>
-            <tbody>
-      
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table id="users-id">
+              <thead>
+                <tr>
+                  <th>ID de usuario</th>
+                  <th>Nombre</th>
+                  <th>CI</th>
+                  <th>Total pagado</th>
+                  <th>Últ. cantidad pagada</th>
+                  <th>Fecha últ. pago/Vencimiento</th>
+                  <th>Activo</th>
+                  <th>Últ. modificación</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
           <div class="pagination-controls">
             <button id="users-prev-page-btn">Anterior</button>
             <span id="users-page-indicator">Página 1</span>

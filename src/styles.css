@@ -61,6 +61,10 @@ button:active {
   background-color: #e8e8e8;
 }
 
+button:disabled{
+  background-color: #0f0f0f;
+}
+
 input,
 button {
   outline: none;
@@ -312,8 +316,7 @@ input:invalid{
 .table-responsive{
   display: flex;
   justify-content: center;
-  width: 100vw;
-  padding: 10px;
+  width: 90vw;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   white-space: nowrap;

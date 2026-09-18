@@ -881,9 +881,11 @@ export const GUI = function(Data, Event){
     function renderCurrentUser(){
         currentUser = Database.getCurrentUserData();
 
-        userDisplay.querySelector('p').textContent = `Usuario: ${currentUser.username}, Rol: ${currentUser.role}`;
+        userDisplay.querySelector('.username').textContent = `${currentUser.username}`;
+        userDisplay.querySelector('.rolename').textContent = `${currentUser.role}`;
 
         if(currentUser.role === 'admin'){
+            userDisplay.querySelector('.role-img').src = './assets/lock_open_right_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg';
             userDisplay.appendChild(addUserSessionBtn);
             userDisplay.appendChild(deleteUserSessionBtn);
             usersHeader.querySelector('h3').textContent += '-(Tip: Ctrl + Click en una celda con ✏️ para editar)';
@@ -893,6 +895,7 @@ export const GUI = function(Data, Event){
         }else{
             if(userDisplay.querySelector('#add-user')){userDisplay.querySelector('#add-user').remove()};
             if(userDisplay.querySelector('#delete-user')){userDisplay.querySelector('#delete-user').remove()};
+            userDisplay.querySelector('.role-img').src = './assets/lock_person_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg';
             usersHeader.querySelector('h3').textContent = usersHeader.querySelector('h3').textContent.split('-')[0];
             paymentHeader.querySelector('h3').textContent = paymentHeader.querySelector('h3').textContent.split('-')[0];
             exportBtn.disabled = true;

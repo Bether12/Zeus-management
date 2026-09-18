@@ -34,6 +34,8 @@ export const GUI = function(Data, Event){
     const deleteUserSessionBtn = document.createElement('button');
     deleteUserSessionBtn.id = 'delete-user';
     deleteUserSessionBtn.textContent = 'Eliminar usuario';
+    const exportBtn = document.querySelector('#export-btn');
+    const importBtn = document.querySelector('#import-btn');
     const attendanceSection = document.querySelector('#attendance-section');
     const paymentSection = document.querySelector('#payment-section');
     const duePaySection = document.querySelector('#due-pay-section');
@@ -886,11 +888,15 @@ export const GUI = function(Data, Event){
             userDisplay.appendChild(deleteUserSessionBtn);
             usersHeader.querySelector('h3').textContent += '-(Tip: Ctrl + Click en una celda con ✏️ para editar)';
             paymentHeader.querySelector('h3').textContent += '-(Tip: Ctrl + Click en una celda con ✏️ para editar)';
+            exportBtn.disabled = false;
+            importBtn.disabled = false;
         }else{
             if(userDisplay.querySelector('#add-user')){userDisplay.querySelector('#add-user').remove()};
             if(userDisplay.querySelector('#delete-user')){userDisplay.querySelector('#delete-user').remove()};
             usersHeader.querySelector('h3').textContent = usersHeader.querySelector('h3').textContent.split('-')[0];
             paymentHeader.querySelector('h3').textContent = paymentHeader.querySelector('h3').textContent.split('-')[0];
+            exportBtn.disabled = true;
+            importBtn.disabled = true;
         }
     }
 
@@ -1084,6 +1090,8 @@ export const GUI = function(Data, Event){
     eventMaster.addClickEventListener(changeCurrentUserBtn, logIn);
     eventMaster.addClickEventListener(addUserSessionBtn, renderAddUserSessionForm);
     eventMaster.addClickEventListener(deleteUserSessionBtn, renderDeleteUserSessionForm);
+    eventMaster.exportEventListener(exportBtn);
+    eventMaster.importEventListener(importBtn, renderTables);
 
     //Pagination controls event listeners
     //Payments

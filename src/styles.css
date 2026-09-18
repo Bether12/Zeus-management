@@ -149,8 +149,7 @@ body{
 }
 
 nav{
-  width: 100%;
-  overflow: scroll;
+  min-width: min-content;
   grid-row: 1/2;
   padding: 10px;
   display: flex;
@@ -283,6 +282,9 @@ nav{
   }
 
   nav {
+    min-width: auto;
+    width: 100%;
+    overflow-y: scroll;
     order: 2;
     position: fixed;
     bottom: 0;

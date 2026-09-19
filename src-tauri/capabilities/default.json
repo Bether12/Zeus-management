@@ -11,6 +11,14 @@
     "sql:default",
     "sql:allow-execute",
     "sql:allow-load",
-    "sql:allow-select"
+    "sql:allow-select",
+    "fs:default",
+    "fs:allow-app-read",
+    "fs:allow-app-write",
+    "fs:allow-copy-file",
+    "fs:allow-read-file",
+    "dialog:default",
+    "dialog:allow-save",
+    "dialog:allow-open"
   ]
 }

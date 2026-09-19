@@ -1,3 +1,6 @@
+import { exportBackup } from "./backup.js";
+import { importBackup } from "./backup.js";
+
 export const eventMaster = function(Data){
     const Database = Data;
 
@@ -8,6 +11,45 @@ export const eventMaster = function(Data){
         const hashArray = Array.from(new Uint8Array(hashBuffer));
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
+
+    //TODO:See if tauri://back works
+    window.__TAURI__.event.listen('tauri://back', ()=>{
+        const openDialog = document.querySelector('dialog');
+
+        if (openDialog){
+            openDialog.close();
+            openDialog.remove();
+        }
+    });
+
+    function exportEventListener(DOMElement){
+        DOMElement.addEventListener('click', async () => {
+            DOMElement.disabled = true;
+            const result = await exportBackup(Database);
+            if(result.success){
+                alert(result.message);
+            }else {
+                alert(`Error: ${result.message}`);
+            }
+            DOMElement.disabled = false;
+        });
+    }
+
+    function importEventListener(DOMElement){
+        DOMElement.addEventListener('click', async () => {
+            const result = await importBackup(Database);
+
+            if (result.success) {
+                alert(result.message);
+                new Promise((resolve) => 
+                    {setTimeout(()=>{
+                    resolve()}, 3000)}
+                ).then(()=>{window.location.reload()});
+            } else if (result.message !== 'Operación cancelada.') {
+                alert(`Error: ${result.message}`);
+            }
+        });
+    }    
 
     function addClickEventListener(DOMElement, fun, generateResume = false, dateInput=undefined){
         DOMElement.addEventListener('click', (e)=>{
@@ -279,5 +321,14 @@ export const eventMaster = function(Data){
         });
     }
 
-    return {addClickEventListener, addChangeEventListener, closeDialog, checkForm, resolveForm, editTableFields};
+    return {
+        addClickEventListener, 
+        addChangeEventListener, 
+        closeDialog, 
+        checkForm, 
+        resolveForm, 
+        editTableFields,
+        exportEventListener,
+        importEventListener
+    };
 };

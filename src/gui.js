@@ -1094,7 +1094,7 @@ export const GUI = function(Data, Event){
     eventMaster.addClickEventListener(addUserSessionBtn, renderAddUserSessionForm);
     eventMaster.addClickEventListener(deleteUserSessionBtn, renderDeleteUserSessionForm);
     eventMaster.exportEventListener(exportBtn);
-    eventMaster.importEventListener(importBtn, renderTables);
+    eventMaster.importEventListener(importBtn);
 
     //Pagination controls event listeners
     //Payments

@@ -1,6 +1,6 @@
 //FIXME:See why froms don't resolve to valid URLs
-import { copyFile, readFile, BaseDirectory } from "@tauri-apps/plugin-fs";
-import { save, open } from "@tauri-apps/plugin-dialog";
+const { copyFile, readFile, BaseDirectory } = window.__TAURI__.fs;
+const { save, open } = window.__TAURI__.dialog;
 
 const DB_NAME = 'gym.db';
 
@@ -24,20 +24,22 @@ export async function exportBackup(dbInstance) {
         }
 
         const defaultName = getBackupFileName();
-        const targetPath = await save({
-            title: 'Guardar copia de seguridad',
-            defaultPath: defaultName,
-            filters: [{
-                name: 'Base de datos SQLite',
-                extensions: ['db', 'sqlite']
-            }]
-        });
+        const targetPath = await save(
+            {
+                title: 'Guardar copia de seguridad',
+                defaultPath: defaultName,
+                filters: [{
+                    name: 'Base de datos SQLite',
+                    extensions: ['db', 'sqlite']
+                }]
+            });
 
         if (!targetPath) return { success: false, message: 'Operación cancelada.' };
 
-        await copyFile(DB_NAME, targetPath, {
-            fromPathBaseDir: BaseDirectory.AppData
-        });
+        await copyFile( DB_NAME, targetPath, {
+                fromPathBaseDir: BaseDirectory.AppConfig
+            }
+        );
 
         return { success: true, message: 'Copia de seguridad exportada con éxito.' };
 
@@ -60,7 +62,7 @@ async function isValidSqliteFile(filePath) {
     }
 }
 
-export async function importBackup(dbInstance, reinitCallback) {
+export async function importBackup(dbInstance) {
     try {
         
         const selectedPath = await open({
@@ -85,11 +87,11 @@ export async function importBackup(dbInstance, reinitCallback) {
         const tempBackup = `${DB_NAME}.tmp`;
         try {
             await copyFile(DB_NAME, tempBackup, {
-                fromPathBaseDir: BaseDirectory.AppData,
-                toPathBaseDir: BaseDirectory.AppData
+                fromPathBaseDir: BaseDirectory.AppConfig,
+                toPathBaseDir: BaseDirectory.AppConfig
             });
         } catch (_) {
-            // Ignorar si no existía archivo previo
+            
         }
 
         if (dbInstance) {
@@ -98,14 +100,8 @@ export async function importBackup(dbInstance, reinitCallback) {
 
         //Replace internal database with the imported one
         await copyFile(selectedPath, DB_NAME, {
-            toPathBaseDir: BaseDirectory.AppData
+            toPathBaseDir: BaseDirectory.AppConfig
         });
-
-        if (typeof reinitCallback === 'function') {
-            await reinitCallback();
-        } else {
-            window.location.reload();
-        }
 
         return { success: true, message: 'Base de datos restaurada correctamente.' };
 

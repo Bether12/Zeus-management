@@ -1,4 +1,3 @@
-//FIXME:See why froms don't resolve to valid URLs
 const { copyFile, readFile, BaseDirectory } = window.__TAURI__.fs;
 const { save, open } = window.__TAURI__.dialog;
 

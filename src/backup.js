@@ -36,7 +36,7 @@ export async function exportBackup(dbInstance) {
         if (!targetPath) return { success: false, message: 'Operación cancelada.' };
 
         await copyFile( DB_NAME, targetPath, {
-                fromPathBaseDir: BaseDirectory.AppConfig
+                fromPathBaseDir: BaseDirectory.AppData
             }
         );
 

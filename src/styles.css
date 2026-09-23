@@ -155,7 +155,9 @@ nav{
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background-color: var(--main-background);
   box-shadow: 10px 0px 7px rgb(39, 39, 39);
+  z-index: 1;
 }
 
 .view-section{
@@ -342,14 +344,12 @@ input:invalid{
 .table-responsive{
   display: flex;
   justify-content: center;
-  width: clamp(250px, 70vw, 800px);
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
   white-space: nowrap;
 }
 
 table{
-  margin: 40px;
+  margin: 10px;
   border: 2px solid var(--border-color);
   border-radius: 10px;
   box-shadow: 3px 3px 5px var(--focus-color), -3px -3px 5px var(--focus-color);

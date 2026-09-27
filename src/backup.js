@@ -1,7 +1,5 @@
 const { copyFile, readFile, writeFile, BaseDirectory } = window.__TAURI__.fs;
 const { save, open } = window.__TAURI__.dialog;
-const { invoke } = window.__TAURI__.core;
-
 const DB_NAME = 'gym.db';
 
 function getBackupFileName() {
@@ -99,9 +97,11 @@ export async function importBackup(dbInstance) {
             await dbInstance.db.execute('PRAGMA wal_checkpoint(TRUNCATE);');
         }
 
+        const pathBytes = await readFile(selectedPath);
+
         //Replace internal database with the imported one
-        await copyFile(selectedPath, DB_NAME, {
-            toPathBaseDir: BaseDirectory.AppConfig
+        await writeFile(DB_NAME, pathBytes, {
+            baseDir: BaseDirectory.AppData
         });
 
         return { success: true, message: 'Base de datos restaurada correctamente.' };

@@ -1,5 +1,6 @@
-const { copyFile, readFile, BaseDirectory } = window.__TAURI__.fs;
+const { copyFile, readFile, writeFile, BaseDirectory } = window.__TAURI__.fs;
 const { save, open } = window.__TAURI__.dialog;
+const { invoke } = window.__TAURI__.core;
 
 const DB_NAME = 'gym.db';
 
@@ -35,10 +36,11 @@ export async function exportBackup(dbInstance) {
 
         if (!targetPath) return { success: false, message: 'Operación cancelada.' };
 
-        await copyFile( DB_NAME, targetPath, {
-                fromPathBaseDir: BaseDirectory.AppData
-            }
-        );
+        const dbBytes = await readFile('gym.db', {
+            baseDir: BaseDirectory.AppData
+        });
+
+        await writeFile(targetPath, dbBytes);
 
         return { success: true, message: 'Copia de seguridad exportada con éxito.' };
 

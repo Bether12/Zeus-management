@@ -117,7 +117,7 @@ export const GUI = function(Data, Event){
         if(records.length === 0){
             attendanceTableBody.innerHTML = `
             <tr>
-                <td colspan="4">No hay entradas por el momento<td/>
+                <td colspan="3">No hay entradas por el momento<td/>
             </tr>
             `;
             return;

@@ -161,7 +161,7 @@ nav{
 }
 
 .view-section{
-  overflow-y: scroll;
+  overflow: scroll;
   margin-bottom: 60px;
 }
 
@@ -342,6 +342,7 @@ input:invalid{
 }
 
 .table-responsive{
+  width: clamp(70vw, 600px, 90vw);
   display: flex;
   justify-content: center;
   overflow-x: auto;
@@ -363,12 +364,12 @@ table tr:nth-child(even){
   background-color: #3f3f46;
 }
 
-table thead tr{
-  width: 100%;
+tbody tr:hover{
+  background-color: #222020;
 }
 
-table tr td{
-  padding: 5px 10px 5px 10px;
+table td, table th{
+  padding: 5px 10px;
 }
 
 dialog{

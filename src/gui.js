@@ -47,7 +47,12 @@ export const GUI = function(Data, Event){
     const paymentSectionBtn = document.querySelector('#payment-section-btn');
     const duePaySectionBtn = document.querySelector('#due-pay-section-btn');
     const userSectionBtn = document.querySelector('#user-section-btn');
-    const sections = [attendanceSection, paymentSection, duePaySection, userSection];
+    const sections = [
+        {section: attendanceSection, button: attendanceSectionBtn}, 
+        {section: paymentSection, button: paymentSectionBtn}, 
+        {section: duePaySection, button: duePaySectionBtn}, 
+        {section: userSection, button: userSectionBtn}
+    ];
     
     //Currency formatter
     const currencyFormatter = new Intl.NumberFormat('es-CU', {
@@ -93,10 +98,12 @@ export const GUI = function(Data, Event){
 
     function switchSection(targetSection) {
         sections.forEach(section => {
-            if (section === targetSection) {
-                section.classList.remove('hidden');
+            if (section.section === targetSection) {
+                section.section.classList.remove('hidden');
+                section.button.classList.add('active');
             } else {
-                section.classList.add('hidden');
+                section.section.classList.add('hidden');
+                section.button.classList.remove('active');
             }
         });
     }

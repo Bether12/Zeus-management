@@ -306,6 +306,10 @@ nav button.active {
     box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
   }
 
+  .editable-cell::after{
+    content: url(./assets/edit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg);
+  }
+
 }
 
 dialog{
@@ -368,24 +372,26 @@ table td, table th{
   padding: 5px 10px;
 }
 
-.editable-cell {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
+@media (min-width: 768px) {
+  .editable-cell {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
 
-.editable-cell:hover {
-  background-color: rgba(0, 0, 0, 0.650);
-}
+  .editable-cell:hover {
+    background-color: rgba(0, 0, 0, 0.650);
+  }
 
-.editable-cell::after {
-  content: url(./assets/edit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg);
-  opacity: 0;
-  padding: 2px 0px 0px 2px;
-  transition: opacity 0.2s ease;
-}
+  .editable-cell::after {
+    content: url(./assets/edit_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg);
+    opacity: 0;
+    padding: 2px 0px 0px 2px;
+    transition: opacity 0.2s ease;
+  }
 
-.editable-cell:hover::after {
-  opacity: 0.5;
+  .editable-cell:hover::after {
+    opacity: 0.5;
+  }
 }
 
 .empty-state-cell {

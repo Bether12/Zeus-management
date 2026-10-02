@@ -810,7 +810,7 @@ export const GUI = function(Data, Event){
 
             const acceptBtn = document.createElement('button');
             acceptBtn.className = 'accept-btn';
-            acceptBtn.textContent = 'Generar Resumen';
+            acceptBtn.textContent = 'Generar resumen';
             form.appendChild(acceptBtn);
 
             const cancelBtn = document.createElement('button');
@@ -989,16 +989,12 @@ export const GUI = function(Data, Event){
             userDisplay.querySelector('.role-img').src = './assets/lock_open_right_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg';
             userDisplay.appendChild(addUserSessionBtn);
             userDisplay.appendChild(deleteUserSessionBtn);
-            usersHeader.querySelector('h3').textContent += '-(Tip: Ctrl + Click en una celda con ✏️ para editar)';
-            paymentHeader.querySelector('h3').textContent += '-(Tip: Ctrl + Click en una celda con ✏️ para editar)';
             exportBtn.disabled = false;
             importBtn.disabled = false;
         }else{
             if(userDisplay.querySelector('#add-user')){userDisplay.querySelector('#add-user').remove()};
             if(userDisplay.querySelector('#delete-user')){userDisplay.querySelector('#delete-user').remove()};
             userDisplay.querySelector('.role-img').src = './assets/lock_person_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg';
-            usersHeader.querySelector('h3').textContent = usersHeader.querySelector('h3').textContent.split('-')[0];
-            paymentHeader.querySelector('h3').textContent = paymentHeader.querySelector('h3').textContent.split('-')[0];
             exportBtn.disabled = true;
             importBtn.disabled = true;
         }

@@ -118,6 +118,16 @@ export const GUI = function(Data, Event){
     }
 
     async function refreshTodayAttendance() {
+        attendanceTableBody.innerHTML = `
+            <tr>
+                <td colspan="4" class="loading-state-cell">
+                    <div class="spinner-container">
+                        <span class="spinner"></span> 
+                        <span>Cargando datos...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
         const records = await Database.getTodayAttendance();
         console.log(`Attendance: `, records);
         attendanceCount.textContent = records.length;
@@ -141,6 +151,17 @@ export const GUI = function(Data, Event){
     }
 
     async function renderPaymentsTable() {
+        paymentsTable.querySelector('tbody').innerHTML = `
+            <tr>
+                <td colspan="5" class="loading-state-cell">
+                    <div class="spinner-container">
+                        <span class="spinner"></span> 
+                        <span>Cargando datos...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
+
         try {
             const paymentsOffset = (currentPaymentPage - 1) * rowsPerPage;
             let responsePayments;
@@ -219,6 +240,17 @@ export const GUI = function(Data, Event){
     }
 
     async function renderUsersTable() {
+        usersTable.querySelector('tbody').innerHTML = `
+            <tr>
+                <td colspan="8" class="loading-state-cell">
+                    <div class="spinner-container">
+                        <span class="spinner"></span> 
+                        <span>Cargando datos...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
+
         try {
             const usersOffset = (currentUsersPage - 1) * rowsPerPage;
             let responseUsers;
@@ -318,6 +350,17 @@ export const GUI = function(Data, Event){
     }
 
     async function renderDuePayTable() {
+        duePayTable.querySelector('tbody').innerHTML = `
+            <tr>
+                <td colspan="8" class="loading-state-cell">
+                    <div class="spinner-container">
+                        <span class="spinner"></span> 
+                        <span>Cargando datos...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
+
         try {
             const duePaysOffset = (currentDuePayPage - 1) * rowsPerPage;
             const responseDuePay = await Database.getPaginatedDuePay(rowsPerPage, duePaysOffset);

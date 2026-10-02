@@ -111,3 +111,5 @@ export async function importBackup(dbInstance) {
         return { success: false, message: `Error al importar: ${error.message || error}` };
     }
 }
+
+//TODO: Create a restoration function to turn back to te previous data

@@ -134,8 +134,8 @@ export const GUI = function(Data, Event){
             <tr>
                 <td><strong>${r.check_in_time}</strong></td>
                 <td>${r.user_id}</td>
-                <td>${r.name}</td>
-                <td>${r.ci}</td>
+                <td class="text-left">${r.name}</td>
+                <td class="text-right">${r.ci}</td>
             </tr>
         `).join('');
     }
@@ -160,6 +160,7 @@ export const GUI = function(Data, Event){
                 let td = document.createElement('td');
                 td.textContent = 'No se encontraron pagos';
                 td.colSpan = 5;
+                td.classList.add('empty-state-cell');
                 row.appendChild(td);
                 paymentsTable.querySelector('tbody').appendChild(row);
                 return;
@@ -171,25 +172,44 @@ export const GUI = function(Data, Event){
                 id.dataset.id =  element.id;
                 id.textContent = element.id;
                 row.appendChild(id);
+
                 let amountPaid = document.createElement('td');
                 amountPaid.dataset.amountPaid = element.amount_paid;
                 amountPaid.dataset.id = element.id;
                 amountPaid.dataset.userId = element.user_id;
-                amountPaid.textContent = currentUser.role === 'admin'? '✏️ ' + currencyFormatter.format(element.amount_paid) : currencyFormatter.format(element.amount_paid);
+                amountPaid.textContent = currencyFormatter.format(element.amount_paid);
+                amountPaid.classList.add('text-right');
+                if (currentUser.role === 'admin'){
+                    amountPaid.classList.add('editable-cell');
+                    amountPaid.title = 'Ctrl+Clic para editar';
+                }
                 row.appendChild(amountPaid);
+
                 let paymentDate = document.createElement('td');
                 paymentDate.dataset.paymentDate = element.payment_date;
                 paymentDate.dataset.userId = element.user_id;
                 paymentDate.dataset.id = element.id;
-                paymentDate.textContent = currentUser.role === 'admin'? '✏️ ' + dateFormatter.format(new Date(element.payment_date)) : dateFormatter.format(new Date(element.payment_date));
+                paymentDate.textContent = dateFormatter.format(new Date(element.payment_date));
+                paymentDate.classList.add('text-right');
+                if (currentUser.role === 'admin'){
+                    paymentDate.classList.add('editable-cell');
+                    paymentDate.title = 'Ctrl+Clic para editar';
+                }
                 row.appendChild(paymentDate);
+
                 let userId = document.createElement('td');
                 userId.dataset.userId = element.user_id;
                 userId.dataset.id = element.id;
-                userId.textContent = currentUser.role === 'admin'? '✏️ ' + element.user_id : element.user_id;
+                userId.textContent = element.user_id;
+                if (currentUser.role === 'admin'){
+                    userId.classList.add('editable-cell');
+                    userId.title = 'Ctrl+Clic para editar';
+                }
                 row.appendChild(userId);
+
                 let registeredBy = document.createElement('td');
                 registeredBy.textContent = element.registered_by;
+                registeredBy.classList.add('text-left');
                 row.appendChild(registeredBy);
                 paymentsTable.querySelector('tbody').appendChild(row);
             });
@@ -218,6 +238,7 @@ export const GUI = function(Data, Event){
                 let td = document.createElement('td');
                 td.textContent = 'No se encontraron clientes';
                 td.colSpan = 8;
+                td.classList.add('empty-state-cell');
                 row.appendChild(td);
                 usersTable.querySelector('tbody').appendChild(row);
                 return;
@@ -229,40 +250,65 @@ export const GUI = function(Data, Event){
                 id.dataset.id =  element.id;
                 id.textContent = element.id;
                 row.appendChild(id);
+
                 let name = document.createElement('td');
                 name.dataset.name = element.name;
                 name.dataset.id = element.id;
-                name.textContent = currentUser.role === 'admin'? '✏️ ' + element.name : element.name;
+                name.textContent = element.name;
+                name.classList.add('text-left');
+                if (currentUser.role === 'admin'){
+                    name.classList.add('editable-cell');
+                    name.title = 'Ctrl+Clic para editar';
+                }
                 row.appendChild(name);
+
                 let ci = document.createElement('td');
                 ci.dataset.ci = element.ci;
                 ci.dataset.id = element.id;
-                ci.textContent = currentUser.role === 'admin'? '✏️ ' + element.ci : element.ci;
+                ci.textContent = element.ci;
+                ci.classList.add('text-right');
+                if (currentUser.role === 'admin'){
+                    ci.classList.add('editable-cell');
+                    ci.title = 'Ctrl+Clic para editar';
+                }
                 row.appendChild(ci);
+
                 let amountPaid = document.createElement('td');
                 amountPaid.dataset.totalPaid = element.amount_paid;
                 amountPaid.textContent = currencyFormatter.format(element.amount_paid);
+                amountPaid.classList.add('text-right');
                 row.appendChild(amountPaid);
+
                 let lastAmountPaid = document.createElement('td');
                 lastAmountPaid.dataset.lastAmountPaid = element.last_amount_paid;
                 lastAmountPaid.textContent = currencyFormatter.format(element.last_amount_paid);
+                lastAmountPaid.classList.add('text-right');
                 row.appendChild(lastAmountPaid);
+
                 let lastPayment = document.createElement('td');
                 lastPayment.dataset.lastPayment = element.last_payment;
                 lastPayment.textContent = element.last_payment !== null ? dateFormatter.format(new Date(element.last_payment)) : 'Nunca';
                 lastPayment.textContent += `/ ${element.expiration_date === '1970-01-01T00:00' ? '-' : dateFormatter.format(new Date(element.expiration_date))}`;
+                lastPayment.classList.add('text-right');
                 row.appendChild(lastPayment);
+
                 let active = document.createElement('td');
                 active.dataset.active = element.active;
                 active.dataset.id = element.id;
-                if(element.active === 1){
-                    active.textContent = currentUser.role === 'admin'? '✏️ ' + 'Sí' : 'Sí';
-                }else{
-                    active.textContent = currentUser.role === 'admin'? '✏️ ' + 'No' : 'No';
+                if (currentUser.role === 'admin'){
+                    active.classList.add('editable-cell');
+                    active.title = 'Ctrl+Clic para editar';
+                    if(element.active === 1){
+                        active.textContent = 'Sí';
+                    }else{
+                        active.textContent = 'No';
+                    }
                 }
                 row.appendChild(active);
+
                 let registeredBy = document.createElement('td');
                 registeredBy.textContent = element.registered_by;
+                registeredBy.classList.add('text-left');
                 row.appendChild(registeredBy);
                 usersTable.querySelector('tbody').appendChild(row);
             });
@@ -287,6 +333,7 @@ export const GUI = function(Data, Event){
                 let td = document.createElement('td');
                 td.textContent = 'No hay clientes con atraso de pago';
                 td.colSpan = 3;
+                td.classList.add('empty-state-cell');
                 row.appendChild(td);
                 duePayTable.querySelector('tbody').appendChild(row);
                 return;
@@ -297,11 +344,15 @@ export const GUI = function(Data, Event){
                 let id = document.createElement('td');
                 id.textContent = element.id
                 row.appendChild(id);
+
                 let name = document.createElement('td');
                 name.textContent = element.name;
+                name.classList.add('text-left');
                 row.appendChild(name);
+
                 let lastPayment = document.createElement('td');
                 lastPayment.textContent = element.last_payment !== null ? dateFormatter.format(new Date(element.last_payment)) : 'Nunca';
+                lastPayment.classList.add('text-right');
                 row.appendChild(lastPayment);
                 duePayTable.querySelector('tbody').appendChild(row);
             });

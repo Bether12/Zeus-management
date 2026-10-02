@@ -150,6 +150,14 @@ nav{
   z-index: 1;
 }
 
+nav button{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
 nav button.active {
   background-color: var(--focus-color);
   color: #000;

@@ -96,6 +96,26 @@ export const GUI = function(Data, Event){
         attendanceInput.focus();
     }
 
+    /**
+     * 
+     * @param {String} message - Message to appear inside the input element
+     * @param {Element} appendTo - An input element
+     */
+    function showMessage(message, appendTo){
+        if(!message){
+            return;
+        }
+        appendTo.value += ': ' + message;
+        appendTo.style.color = 'grey';
+        appendTo.disabled = true;
+        setTimeout(() =>{
+            appendTo.value = appendTo.value.split(':')[0];
+            appendTo.style.color = 'white';
+            appendTo.disabled = false;
+            appendTo.focus();
+        }, 2000);
+    }
+
     function switchSection(targetSection) {
         sections.forEach(section => {
             if (section.section === targetSection) {
@@ -464,7 +484,6 @@ export const GUI = function(Data, Event){
 
             const userIdInput = document.createElement('input');
             userIdInput.id = 'user-id-input';
-            userIdInput.type = 'number';
             userIdInput.required = true;
             userIdInput.step = '1';
             form.appendChild(userIdInput);
@@ -480,6 +499,7 @@ export const GUI = function(Data, Event){
             cancelBtn.textContent = 'Cancelar';
             form.appendChild(cancelBtn);
 
+            userIdInput.addEventListener('input', debouncedIdSearch);
             eventMaster.resolveForm('payment',acceptBtn,form,dialog, renderTables, [], renderErrorMsg);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
@@ -684,11 +704,12 @@ export const GUI = function(Data, Event){
                 const userIdInput = document.createElement('input');
                 userIdInput.autofocus = true;
                 userIdInput.id = 'user-id-input';
-                userIdInput.type = 'number';
                 userIdInput.value = field.dataset.userId;
                 userIdInput.step = '1';
                 userIdInput.required = true;
                 form.insertBefore(userIdInput, acceptBtn);
+
+                userIdInput.addEventListener('input', debouncedIdSearch);
 
                 body.appendChild(dialog);
                 dialog.showModal();
@@ -1103,6 +1124,12 @@ export const GUI = function(Data, Event){
         dialog.showModal();
     }
 
+    /**
+     * 
+     * @param {Function} func 
+     * @param {Number} wait 
+     * @returns 
+     */
     function debounce(func, wait) {
         let timeout;
         return function(...args) {
@@ -1128,13 +1155,23 @@ export const GUI = function(Data, Event){
         await renderPaymentsTable();
     };
 
+    const handleIdSearch = async (event) =>{
+        let currentId = event.target.value;
+        const name = await Database.getUserNameById(currentId);
+        showMessage(name, event.target);
+    };
+
     const debouncedUserSearch = debounce(handleUserSearch, 600);
 
     const debouncedPaymentSearch = debounce(handlePaymentSearch, 600);
 
+    const debouncedIdSearch = debounce(handleIdSearch, 600);
+
     userSearchInput.addEventListener('input', debouncedUserSearch);
 
     paySearchInput.addEventListener('input', debouncedPaymentSearch);
+
+    attendanceInput.addEventListener('input', debouncedIdSearch);
 
     attendanceInput.addEventListener('keydown', async (e) => {
         if (e.key === 'Enter') {

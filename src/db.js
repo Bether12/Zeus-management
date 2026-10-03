@@ -75,7 +75,7 @@ export class Data{
             throw this.handleDatabaseError(error);
         }
     }
-
+    //TODO: Improve error messages
     handleDatabaseError(error) {
         const errorMsg = String(error).toLowerCase();
 
@@ -99,6 +99,7 @@ export class Data{
 
         return 'Ocurrió un error inesperado. Si el problema persiste, reinicia la aplicación.';
     }
+    //TODO: Implement edition of daily assistance table
 
     parseSearchInput(query) {
         const cleanQuery = query.trim();
@@ -163,6 +164,21 @@ export class Data{
                 throw new Error('Unknown queryType parameter');
             } 
         });   
+    }
+
+    async getUserNameById(id){
+        if(id.trim().length === 0){
+            return;
+        }
+        const result = await this.queryDatabase('get', 
+            `SELECT name FROM users_id WHERE id = $1`, 
+            [parseInt(id) || 0]
+        );
+        console.log(result);
+        if(!result || result.length === 0){
+            return 'El cliente no existe';
+        }
+        return result[0].name;
     }
 
     async recordAttendance(identifier) {

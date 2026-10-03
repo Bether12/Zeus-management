@@ -12,7 +12,6 @@ export const eventMaster = function(Data){
         return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
     }
 
-    //TODO:See if tauri://back works
     window.__TAURI__.event.listen('tauri://back', ()=>{
         const openDialog = document.querySelector('dialog');
 

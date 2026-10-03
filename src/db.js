@@ -167,9 +167,13 @@ export class Data{
     }
 
     async getUserNameById(id){
-        if(id.trim().length === 0){
+        let numberId;
+        try {
+            numberId = parseInt(id);
+        } catch (error) {
             return;
         }
+        
         const result = await this.queryDatabase('get', 
             `SELECT name FROM users_id WHERE id = $1`, 
             [parseInt(id) || 0]

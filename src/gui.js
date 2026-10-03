@@ -24,6 +24,7 @@ export const GUI = function(Data, Event){
     const paySearchInput = document.querySelector('#payment-search-input');
     const paymentsTable = document.querySelector('#payment-records');
     const paymentHeader = document.querySelector('.payment-header');
+    const paymentTableHeader = paymentsTable.querySelector('thead');
     const paymentCount = document.querySelector('#payment-count');
     const duePayTable = document.querySelector('#due-pay-users');
     const userDisplay = document.querySelector('.user');
@@ -171,9 +172,10 @@ export const GUI = function(Data, Event){
     }
 
     async function renderPaymentsTable() {
+        let columns = currentUser.role === 'admin' ? 6 : 5;
         paymentsTable.querySelector('tbody').innerHTML = `
             <tr>
-                <td colspan="5" class="loading-state-cell">
+                <td colspan="${columns}" class="loading-state-cell">
                     <div class="spinner-container">
                         <span class="spinner"></span> 
                         <span>Cargando datos...</span>
@@ -200,19 +202,46 @@ export const GUI = function(Data, Event){
                 let row = document.createElement('tr');
                 let td = document.createElement('td');
                 td.textContent = 'No se encontraron pagos';
-                td.colSpan = 5;
+                td.colSpan = columns;
                 td.classList.add('empty-state-cell');
                 row.appendChild(td);
                 paymentsTable.querySelector('tbody').appendChild(row);
                 return;
             }
+            
+            if (currentUser.role !== 'admin'){
+                let paymentIdColumn = paymentTableHeader.querySelector('.payment-data');
+                paymentIdColumn.remove();
+            }else if (currentUser.role === 'admin' && !paymentTableHeader.querySelector('.payment-data')){
+                let th = paymentTableHeader.querySelector('th');
+                let column = document.createElement('th');
+                column.textContent = 'ID de pago';
+                th.before(column);
+            }
 
-            responsePayments.forEach(element => {
+            responsePayments.forEach(async element => {
                 let row = document.createElement('tr');
-                let id = document.createElement('td');
-                id.dataset.id =  element.id;
-                id.textContent = element.id;
-                row.appendChild(id);
+
+                if (currentUser.role === 'admin'){
+                    let id = document.createElement('td');
+                    id.dataset.id =  element.id;
+                    id.textContent = element.id;
+                    row.appendChild(id);
+                }
+
+                let userId = document.createElement('td');
+                userId.dataset.userId = element.user_id;
+                userId.dataset.id = element.id;
+                userId.textContent = element.user_id;
+                if (currentUser.role === 'admin'){
+                    userId.classList.add('editable-cell');
+                    userId.title = 'Ctrl+Clic para editar';
+                }
+                row.appendChild(userId);
+
+                let name = document.createElement('td');
+                name.textContent = await Database.getUserNameById(element.user_id);
+                row.appendChild(name);
 
                 let amountPaid = document.createElement('td');
                 amountPaid.dataset.amountPaid = element.amount_paid;
@@ -237,16 +266,6 @@ export const GUI = function(Data, Event){
                     paymentDate.title = 'Ctrl+Clic para editar';
                 }
                 row.appendChild(paymentDate);
-
-                let userId = document.createElement('td');
-                userId.dataset.userId = element.user_id;
-                userId.dataset.id = element.id;
-                userId.textContent = element.user_id;
-                if (currentUser.role === 'admin'){
-                    userId.classList.add('editable-cell');
-                    userId.title = 'Ctrl+Clic para editar';
-                }
-                row.appendChild(userId);
 
                 let registeredBy = document.createElement('td');
                 registeredBy.textContent = element.registered_by;

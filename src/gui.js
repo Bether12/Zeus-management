@@ -9,6 +9,7 @@ export const GUI = function(Data, Event){
     let currentPaymentPage = 1;
     let currentUsersPage = 1;
     let currentDuePayPage = 1;
+    let currentTrainersPage = 1;
     const rowsPerPage = 50;
 
     //DOM Elements
@@ -43,17 +44,22 @@ export const GUI = function(Data, Event){
     const duePaySection = document.querySelector('#due-pay-section');
     const duePayCount = document.querySelector('#due-pay-count');
     const userSection = document.querySelector('#user-section');
+    const trainersSection = document.querySelector('#trainers-section');
+    const trainersTable = document.querySelector('#trainers-table');
+    const trainersCount = document.querySelector('#trainers-count');
 
     //Sections buttons
     const attendanceSectionBtn = document.querySelector('#attendance-section-btn');
     const paymentSectionBtn = document.querySelector('#payment-section-btn');
     const duePaySectionBtn = document.querySelector('#due-pay-section-btn');
+    const trainerSectionBtn = document.querySelector('#trainers-section-btn')
     const userSectionBtn = document.querySelector('#user-section-btn');
     const sections = [
         {section: attendanceSection, button: attendanceSectionBtn}, 
         {section: paymentSection, button: paymentSectionBtn}, 
         {section: duePaySection, button: duePaySectionBtn}, 
-        {section: userSection, button: userSectionBtn}
+        {section: userSection, button: userSectionBtn},
+        {section: trainersSection, button: trainerSectionBtn}
     ];
     
     //Currency formatter
@@ -85,13 +91,22 @@ export const GUI = function(Data, Event){
     const duePaysNextBtn = document.querySelector('#due-next-page-btn');
     const duePaysPageIndicator = document.querySelector('#due-page-indicator');
 
-    //Payment table btn
+    //Trainers table page controls
+    const trainersPrevBtn = document.querySelector('#train-prev-page-btn');
+    const trainersNextBtn = document.querySelector('#train-next-page-btn');
+    const trainersPageIndicator = document.querySelector('#train-page-indicator');
+
+    //Payment table buttons
     const addPaymentBtn = document.querySelector('#add-payment-btn');
     const deletePaymentBtn = document.querySelector('#delete-payment-btn');
 
     //Users table buttons
     const addUserBtn = document.querySelector('#add-user-btn');
     const generateResumeBtn = document.querySelector('#generate-resume-btn');
+
+    //Trainers table buttons
+    const addTrainerBtn = document.querySelector('#add-trainer-btn');
+    const deleteTrainerBtn = document.querySelector('#delete-trainer-btn');
 
     // Focus the input if the pointer is a mouse
     if (window.matchMedia("(pointer: fine)").matches) {
@@ -156,7 +171,7 @@ export const GUI = function(Data, Event){
         if(records.length === 0){
             attendanceTableBody.innerHTML = `
             <tr>
-                <td colspan="3">No hay entradas por el momento<td/>
+                <td colspan="4" class="empty-state-cell">No hay entradas por el momento<td/>
             </tr>
             `;
             return;
@@ -444,11 +459,71 @@ export const GUI = function(Data, Event){
         }
     }
 
+    async function renderTrainersTable() {
+        trainersTable.querySelector('tbody').innerHTML = `
+            <tr>
+                <td colspan="3" class="loading-state-cell">
+                    <div class="spinner-container">
+                        <span class="spinner"></span> 
+                        <span>Cargando datos...</span>
+                    </div>
+                </td>
+            </tr>
+        `;
+
+        try {
+            const trainersOffset = (currentTrainersPage - 1) * rowsPerPage;
+            const responseTrainers = await Database.getPaginatedTrainers(rowsPerPage, trainersOffset);
+            console.log(responseTrainers.length);
+
+            const total = await Database.getTotalTrainersCount();
+            trainersCount.textContent = `Número de entrenadores: (${total})`;
+
+            trainersTable.querySelector('tbody').innerHTML = '';
+
+            if(responseTrainers.length === 0){
+                let row = document.createElement('tr');
+                let td = document.createElement('td');
+                td.textContent = 'No hay entrenadores registrados';
+                td.colSpan = 3;
+                td.classList.add('empty-state-cell');
+                row.appendChild(td);
+                trainersTable.querySelector('tbody').appendChild(row);
+                return;
+            }
+
+            responseTrainers.forEach(element => {
+                let row = document.createElement('tr');
+                let id = document.createElement('td');
+                id.textContent = element.id
+                row.appendChild(id);
+
+                let name = document.createElement('td');
+                name.textContent = element.name;
+                name.dataset.name = element.name;
+                name.dataset.id = element.id;
+                name.classList.add('text-left');
+                row.appendChild(name);
+
+                let ci = document.createElement('td');
+                ci.textContent = element.ci;
+                ci.dataset.ci = element.ci;
+                ci.dataset.id = element.id;
+                ci.classList.add('text-right');
+                row.appendChild(ci);
+                trainersTable.querySelector('tbody').appendChild(row);
+            });
+        } catch (error) {
+            renderErrorMsg(error);
+        }
+    }
+
     async function renderTables(){
         await renderUsersTable();
         await renderPaymentsTable();
         await renderDuePayTable();
         await refreshTodayAttendance();
+        await renderTrainersTable();
     };
 
     function renderAddPaymentForm(){
@@ -530,6 +605,14 @@ export const GUI = function(Data, Event){
             renderErrorMsg(error);
         }
     };
+
+    function renderAddTrainerForm(){
+
+    }
+
+    function renderDeleteTrainerForm(){
+
+    }
 
     function renderAddUserForm(){
         try{
@@ -1239,6 +1322,7 @@ export const GUI = function(Data, Event){
     paymentSectionBtn.addEventListener('click', () => switchSection(paymentSection));
     duePaySectionBtn.addEventListener('click', () => switchSection(duePaySection));
     userSectionBtn.addEventListener('click', () => switchSection(userSection));
+    trainerSectionBtn.addEventListener('click', () => switchSection(trainersSection));
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
@@ -1255,11 +1339,11 @@ export const GUI = function(Data, Event){
 
     //Pagination controls event listeners
     //Payments
-    eventMaster.addClickEventListener(payPrevBtn, () => {
+    eventMaster.addClickEventListener(payPrevBtn, async () => {
         if (currentPaymentPage > 1) {
             currentPaymentPage--;
             payPageIndicator.textContent = `Página ${currentPaymentPage}`;
-            renderPaymentsTable();
+            await renderPaymentsTable();
         }
     });
     eventMaster.addClickEventListener(payNextBtn, async () => {
@@ -1278,11 +1362,11 @@ export const GUI = function(Data, Event){
         };
     });
     //Users
-    eventMaster.addClickEventListener(usersPrevBtn, () => {
+    eventMaster.addClickEventListener(usersPrevBtn, async () => {
         if (currentUsersPage > 1) {
             currentUsersPage--;
             usersPageIndicator.textContent = `Página ${currentUsersPage}`;
-            renderUsersTable();
+            await renderUsersTable();
         }
     });
     eventMaster.addClickEventListener(usersNextBtn, async () => {
@@ -1301,11 +1385,11 @@ export const GUI = function(Data, Event){
         }
     });
     //Due Payments
-    eventMaster.addClickEventListener(duePaysPrevBtn, () => {
+    eventMaster.addClickEventListener(duePaysPrevBtn, async () => {
         if (currentDuePayPage > 1) {
             currentDuePayPage--;
             duePaysPageIndicator.textContent = `Página ${currentDuePayPage}`;
-            renderDuePayTable();
+            await renderDuePayTable();
         }
     });
     eventMaster.addClickEventListener(duePaysNextBtn, async () => {
@@ -1316,6 +1400,24 @@ export const GUI = function(Data, Event){
             currentDuePayPage++;
             duePaysPageIndicator.textContent = `Página ${currentDuePayPage}`;
             renderDuePayTable();
+        }
+    });
+    //Trainers
+    eventMaster.addClickEventListener(trainersPrevBtn, async () => {
+        if (currentTrainersPage > 1) {
+            currentTrainersPage--;
+            trainersPageIndicator.textContent = `Página ${currentTrainersPage}`;
+            await renderTrainersTable();
+        }
+    });
+    eventMaster.addClickEventListener(trainersNextBtn, async () => {
+        const totalTrainers = await Database.getTotalTrainersCount();
+        const maxPages = Math.ceil(totalTrainers / rowsPerPage) || 1;
+
+        if (currentTrainersPage < maxPages){
+            currentTrainersPage++;
+            trainersPageIndicator.textContent = `Página ${currentTrainersPage}`;
+            await renderTrainersTable();
         }
     });
 

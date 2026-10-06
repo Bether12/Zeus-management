@@ -24,6 +24,7 @@
         <button id="due-pay-section-btn"><img src="./assets/edit_calendar_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">Pendientes</button>
         <button id="payment-section-btn"><img src="./assets/credit_card_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">Pagos</button>
         <button id="user-section-btn"><img src="./assets/group_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">Clientes</button>
+        <button id="trainers-section-btn"><img src="./assets/supervisor_account_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">Entrenadores</button>
         <button id="generate-resume-btn"><img src="./assets/patient_list_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">Resumen</button>
         <button id="export-btn" disabled><img src="./assets/file_export_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">Exportar datos</button>
         <button id="import-btn" disabled><img src="./assets/file_save_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg">Importar datos</button>
@@ -106,6 +107,34 @@
             <button id="due-prev-page-btn">Anterior</button>
             <span id="due-page-indicator">Página 1</span>
             <button id="due-next-page-btn">Siguiente</button>
+          </div>
+        </div>
+      </section>
+      <section id="trainers-section" class="view-section hidden">
+        <div class="trainers">
+          <h3>Entrenadores</h3>
+          <h4 id="trainers-count">Número de entrenadores: (0)</h4>
+          <div class="table-responsive">
+            <table id="trainers-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Nombre</th>
+                  <th>CI</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+            <div class="pagination-controls">
+              <button id="train-prev-page-btn">Anterior</button>
+              <span id="train-page-indicator">Página 1</span>
+              <button id="train-next-page-btn">Siguiente</button>
+            </div>
+            <div class="buttons">
+              <button id="add-trainer-btn">Añadir pago</button>
+              <button id="delete-trainer-btn">Eliminar pago</button>
+            </div>
           </div>
         </div>
       </section>

@@ -28,8 +28,17 @@ export class Data{
                 last_amount_paid INT NOT NULL DEFAULT 0 CHECK (last_amount_paid >=0),
                 last_payment TEXT DEFAULT NULL,
                 expiration_date TEXT NOT NULL DEFAULT '1970-01-01T00:00',
+                trainer VARCHAR(100) NOT NULL,
                 active BOOLEAN DEFAULT 1,
-                registered_by VARCHAR(50) NOT NULL
+                registered_by VARCHAR(50) NOT NULL,
+                FOREIGN KEY(trainer) REFERENCES trainers(name) ON DELETE CASCADE
+                );`);
+
+            await db.execute(`
+                CREATE TABLE IF NOT EXISTS trainers(
+                id INTEGER PRIMARY KEY AUTOINCREMENT ,
+                name VARCHAR(100) NOT NULL,
+                ci VARCHAR(11) NOT NULL UNIQUE
                 );`);
 
             await db.execute(`
@@ -425,6 +434,12 @@ export class Data{
         return result[0].total;
     }
 
+    async getTotalTrainersCount() {
+        const result = await this.queryDatabase('get', `SELECT COUNT(*) as total FROM trainers`);
+        console.log(`Trainers total: ${result[0].total}`);
+        return result[0].total;
+    }
+
     async getTotalDuePayCount(){
         try{
             const result = await this.queryDatabase('get', 
@@ -474,6 +489,17 @@ export class Data{
         }
     }
 
+    async getPaginatedTrainers(limit, offset){
+        try{
+            //Ordered by ascending id
+            return await this.queryDatabase('get', 
+                `SELECT * FROM trainers ORDER BY id LIMIT $1 OFFSET $2`, 
+                [limit, offset]);
+        }catch(error){
+            throw this.handleDatabaseError(error);
+        }
+    }
+
     async setPayment(userId, amountPaid, date){
         return this.sqlQueue.enqueue(async () => {
             try{
@@ -512,6 +538,26 @@ export class Data{
             await this.queryDatabase('set', 
                 `INSERT INTO users_id(name, ci, registered_by) VALUES ($1, $2, $3)`, 
                 [name, ci, this.#currentUser.username]);
+        } catch (error) {
+           throw this.handleDatabaseError(error); 
+        }
+    }
+
+    async addTrainer(name, ci){
+        try {
+            await this.queryDatabase('set', 
+                `INSERT INTO trainers(name, ci) VALUES ($1, $2)`, 
+                [name, ci]);
+        } catch (error) {
+           throw this.handleDatabaseError(error); 
+        }
+    }
+
+    async deleteTrainer(id){
+        try {
+            await this.queryDatabase('set', 
+                `DELETE FROM trainers WHERE id = $1`, 
+                [id]);
         } catch (error) {
            throw this.handleDatabaseError(error); 
         }

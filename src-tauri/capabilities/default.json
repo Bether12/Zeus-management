@@ -21,6 +21,7 @@
     "fs:allow-read-file",
     "dialog:default",
     "dialog:allow-save",
-    "dialog:allow-open"
+    "dialog:allow-open",
+    "process:allow-restart"
   ]
 }

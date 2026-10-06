@@ -37,6 +37,7 @@ export const GUI = function(Data, Event){
     deleteUserSessionBtn.textContent = 'Eliminar usuario';
     const exportBtn = document.querySelector('#export-btn');
     const importBtn = document.querySelector('#import-btn');
+    const restoreBtn = document.querySelector('#restore-btn');
     const attendanceSection = document.querySelector('#attendance-section');
     const paymentSection = document.querySelector('#payment-section');
     const duePaySection = document.querySelector('#due-pay-section');
@@ -1031,12 +1032,14 @@ export const GUI = function(Data, Event){
             userDisplay.appendChild(deleteUserSessionBtn);
             exportBtn.disabled = false;
             importBtn.disabled = false;
+            restoreBtn.disabled = false;
         }else{
             if(userDisplay.querySelector('#add-user')){userDisplay.querySelector('#add-user').remove()};
             if(userDisplay.querySelector('#delete-user')){userDisplay.querySelector('#delete-user').remove()};
             userDisplay.querySelector('.role-img').src = './assets/lock_person_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg';
             exportBtn.disabled = true;
             importBtn.disabled = true;
+            restoreBtn.disabled = true;
         }
     }
 
@@ -1248,6 +1251,7 @@ export const GUI = function(Data, Event){
     eventMaster.addClickEventListener(deleteUserSessionBtn, renderDeleteUserSessionForm);
     eventMaster.exportEventListener(exportBtn);
     eventMaster.importEventListener(importBtn);
+    eventMaster.restoreEventListener(restoreBtn);
 
     //Pagination controls event listeners
     //Payments

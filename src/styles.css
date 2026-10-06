@@ -310,8 +310,13 @@ nav button.active {
   }
 
   .table-responsive{
+    width: 100%;
     border-radius: 8px;
     box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+  }
+
+  table{
+    margin: 10px;
   }
 
   .editable-cell::after{
@@ -350,15 +355,14 @@ input:invalid{
 }
 
 .table-responsive{
-  width: clamp(70vw, 600px, 90vw);
-  display: flex;
-  justify-content: center;
+  width: 100%;
+  max-width: 100%;
   overflow-x: auto;
-  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
 }
 
 table{
-  margin: 10px;
+  margin: 10px auto;
   border: 2px solid var(--border-color);
   border-radius: 10px;
   box-shadow: 3px 3px 5px var(--focus-color), -3px -3px 5px var(--focus-color);

@@ -1,4 +1,4 @@
-const { copyFile, readFile, writeFile, BaseDirectory } = window.__TAURI__.fs;
+const { copyFile, readFile, writeFile, remove, BaseDirectory } = window.__TAURI__.fs;
 const { save, open } = window.__TAURI__.dialog;
 const DB_NAME = 'gym.db';
 
@@ -84,13 +84,14 @@ export async function importBackup(dbInstance) {
         }
 
         const tempBackup = `${DB_NAME}.tmp`;
+
         try {
             await copyFile(DB_NAME, tempBackup, {
-                fromPathBaseDir: BaseDirectory.AppConfig,
-                toPathBaseDir: BaseDirectory.AppConfig
+                fromPathBaseDir: BaseDirectory.AppData,
+                toPathBaseDir: BaseDirectory.AppData
             });
-        } catch (_) {
-            
+        } catch (error) {
+            alert(error);
         }
 
         if (dbInstance) {
@@ -104,7 +105,7 @@ export async function importBackup(dbInstance) {
             baseDir: BaseDirectory.AppData
         });
 
-        return { success: true, message: 'Base de datos restaurada correctamente.' };
+        return { success: true, message: 'Base de datos restaurada correctamente. Espere unos segundos al cerrar el cartel e inserte sus credenciales de usuario.' };
 
     } catch (error) {
         console.error('Error al importar respaldo:', error);
@@ -113,3 +114,17 @@ export async function importBackup(dbInstance) {
 }
 
 //TODO: Create a restoration function to turn back to te previous data
+export async function restoreToPreviousBackup(){
+    try {
+        await copyFile(`${DB_NAME}.tmp`, DB_NAME, {
+            fromPathBaseDir: BaseDirectory.AppData,
+            toPathBaseDir: BaseDirectory.AppData
+        });
+
+        return { success: true, message: 'Base de datos restaurada a la versión anterior correctamente. Espere unos segundos al cerrar el cartel e inserte sus credenciales de usuario.' };
+
+    } catch (error) {
+        console.error('Error al restaurar:', error);
+        return { success: false, message: `Error al restaurar: ${error.message || error}` };
+    }
+}

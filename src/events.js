@@ -1,5 +1,4 @@
-import { exportBackup } from "./backup.js";
-import { importBackup } from "./backup.js";
+import { exportBackup, importBackup, restoreToPreviousBackup } from "./backup.js";
 
 export const eventMaster = function(Data){
     const Database = Data;
@@ -36,19 +35,41 @@ export const eventMaster = function(Data){
 
     function importEventListener(DOMElement){
         DOMElement.addEventListener('click', async () => {
+            DOMElement.disabled = true;
             const result = await importBackup(Database);
 
             if (result.success) {
                 alert(result.message);
-                new Promise((resolve) => 
-                    {setTimeout(()=>{
-                    resolve()}, 3000)}
-                ).then(()=>{window.location.reload()});
+                setTimeout(()=>{
+                    window.__TAURI__.process.relaunch();}, 
+                    3000
+                );
             } else if (result.message !== 'Operación cancelada.') {
                 alert(`Error: ${result.message}`);
             }
+            DOMElement.disabled = false;
         });
-    }    
+    }
+    
+    function restoreEventListener(DOMElement){
+        DOMElement.addEventListener('click', async () =>{
+            DOMElement.disabled = true;
+
+            const result = await restoreToPreviousBackup();
+
+            if (result.success) {
+                alert(result.message);
+                setTimeout(()=>{
+                    window.__TAURI__.process.relaunch();}, 
+                    3000
+                );
+            } else if (result.message !== 'Operación cancelada.') {
+                alert(`Error: ${result.message}`);
+            }
+
+            DOMElement.disabled = false;
+        });
+    }
 
     function addClickEventListener(DOMElement, fun, generateResume = false, dateInput=undefined){
         DOMElement.addEventListener('click', (e)=>{
@@ -328,6 +349,7 @@ export const eventMaster = function(Data){
         resolveForm, 
         editTableFields,
         exportEventListener,
-        importEventListener
+        importEventListener,
+        restoreEventListener
     };
 };

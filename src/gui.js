@@ -542,6 +542,7 @@ export const GUI = function(Data, Event){
             form.appendChild(amountPaidLabel);
 
             const amountPaidInput = document.createElement('input');
+            amountPaidInput.name = 'amountPaid';
             amountPaidInput.autofocus = true;
             amountPaidInput.id = 'amount-paid-input';
             amountPaidInput.type = 'number';
@@ -556,6 +557,7 @@ export const GUI = function(Data, Event){
             form.appendChild(paymentDateLabel);
 
             const paymentDateInput = document.createElement('input');
+            paymentDateInput.name = 'paymentDate';
             paymentDateInput.id = 'payment-date-input';
 
             //Actual date calculation and setting
@@ -578,6 +580,7 @@ export const GUI = function(Data, Event){
             form.appendChild(userIdLabel);
 
             const userIdInput = document.createElement('input');
+            userIdInput.name = 'userId';
             userIdInput.id = 'user-id-input';
             userIdInput.required = true;
             userIdInput.step = '1';
@@ -595,7 +598,7 @@ export const GUI = function(Data, Event){
             form.appendChild(cancelBtn);
 
             userIdInput.addEventListener('input', debouncedIdSearch);
-            eventMaster.resolveForm('payment',acceptBtn,form,dialog, renderTables, [], renderErrorMsg);
+            eventMaster.resolveForm('add-payment', acceptBtn, form, dialog, renderTables, [], renderErrorMsg);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 
@@ -607,14 +610,6 @@ export const GUI = function(Data, Event){
     };
 
     function renderAddTrainerForm(){
-
-    }
-
-    function renderDeleteTrainerForm(){
-
-    }
-
-    function renderAddUserForm(){
         try{
             const body = document.querySelector('body');
             const dialog = document.createElement('dialog');
@@ -626,10 +621,11 @@ export const GUI = function(Data, Event){
             
             const nameLabel = document.createElement('label');
             nameLabel.htmlFor = 'name-input';
-            nameLabel.textContent = 'Nombre:';
+            nameLabel.textContent = 'Nombre del entrenador:';
             form.appendChild(nameLabel);
 
             const nameInput = document.createElement('input');
+            nameInput.name = 'name';
             nameInput.autofocus = true;
             nameInput.id = 'name-input';
             nameInput.required = true;
@@ -643,6 +639,7 @@ export const GUI = function(Data, Event){
             form.appendChild(ciLabel);
 
             const ciInput = document.createElement('input');
+            ciInput.name = 'ci';
             ciInput.id = 'ci-input';
             ciInput.required = true;
             ciInput.inputMode = 'numeric';
@@ -661,7 +658,71 @@ export const GUI = function(Data, Event){
             cancelBtn.textContent = 'Cancelar';
             form.appendChild(cancelBtn);
 
-            eventMaster.resolveForm('user',acceptBtn,form,dialog, renderTables, [], renderErrorMsg);
+            eventMaster.resolveForm('add-trainer', acceptBtn, form, dialog, renderTables, [], renderErrorMsg);
+            eventMaster.closeDialog(cancelBtn, dialog);
+            eventMaster.checkForm(form);
+
+            body.appendChild(dialog);
+            dialog.showModal();
+        }catch(error){
+            renderErrorMsg(error);
+        }
+    }
+
+    function renderDeleteTrainerForm(){
+        
+    }
+
+    function renderAddUserForm(){
+        try{
+            const body = document.querySelector('body');
+            const dialog = document.createElement('dialog');
+            const form = document.createElement('form');
+            form.method = 'dialog';
+            form.noValidate = true;
+
+            dialog.appendChild(form);
+            
+            const nameLabel = document.createElement('label');
+            nameLabel.htmlFor = 'name-input';
+            nameLabel.textContent = 'Nombre:';
+            form.appendChild(nameLabel);
+
+            const nameInput = document.createElement('input');
+            nameInput.name = 'name';
+            nameInput.autofocus = true;
+            nameInput.id = 'name-input';
+            nameInput.required = true;
+            nameInput.placeholder = 'Mínimo 3 letras'
+            nameInput.minLength = 3;
+            form.appendChild(nameInput);
+
+            const ciLabel = document.createElement('label');
+            ciLabel.htmlFor = 'ci-input';
+            ciLabel.textContent = 'CI:';
+            form.appendChild(ciLabel);
+
+            const ciInput = document.createElement('input');
+            ciInput.name = 'ci';
+            ciInput.id = 'ci-input';
+            ciInput.required = true;
+            ciInput.inputMode = 'numeric';
+            ciInput.placeholder = 'Un número de 11 dígitos';
+            ciInput.pattern = '[0-9]{11}';
+            form.appendChild(ciInput);
+
+            const acceptBtn = document.createElement('button');
+            acceptBtn.className = 'accept-btn';
+            acceptBtn.type = 'submit';
+            acceptBtn.textContent = 'Aceptar';
+            form.appendChild(acceptBtn);
+
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'cancel-btn';
+            cancelBtn.textContent = 'Cancelar';
+            form.appendChild(cancelBtn);
+
+            eventMaster.resolveForm('add-client',acceptBtn,form,dialog, renderTables, [], renderErrorMsg);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 
@@ -695,12 +756,20 @@ export const GUI = function(Data, Event){
             eventMaster.checkForm(form);
 
             if (field.dataset.name !== undefined){
+                form.edit = 'client-name';
+                const userId = document.createElement('input');
+                userId.name = 'userId';
+                userId.hidden = true;
+                userId.value = field.dataset.id;
+                form.insertBefore(userId, acceptBtn);
+
                 const nameLabel = document.createElement('label');
                 nameLabel.htmlFor = 'name-input';
                 nameLabel.textContent = 'Nuevo nombre:';
                 form.insertBefore(nameLabel, acceptBtn);
 
                 const nameInput = document.createElement('input');
+                nameInput.name = 'name';
                 nameInput.autofocus = true;
                 nameInput.id = 'name-input';
                 nameInput.value = field.dataset.name;
@@ -712,12 +781,20 @@ export const GUI = function(Data, Event){
                 dialog.showModal();
 
             } else if (field.dataset.ci !== undefined){
+                form.edit = 'client-ci';
+                const userId = document.createElement('input');
+                userId.name = 'userId';
+                userId.hidden = true;
+                userId.value = field.dataset.id;
+                form.insertBefore(userId, acceptBtn);
+
                 const ciLabel = document.createElement('label');
                 ciLabel.htmlFor = 'ci-input';
                 ciLabel.textContent = 'Nuevo CI:';
                 form.insertBefore(ciLabel, acceptBtn);
 
                 const ciInput = document.createElement('input');
+                ciInput.name = 'ci';
                 ciInput.autofocus = true;
                 ciInput.id = 'ci-input';
                 ciInput.inputMode = 'numeric';
@@ -730,12 +807,30 @@ export const GUI = function(Data, Event){
                 dialog.showModal();
 
             } else if (field.dataset.amountPaid !== undefined){
+                form.edit = 'amount-paid';
+                const amountPaid = document.createElement('input');
+                amountPaid.name = 'prevAmountPaid';
+                amountPaid.hidden = true;
+                amountPaid.value = field.dataset.amountPaid;
+                form.insertBefore(amountPaid, acceptBtn);
+                const userId = document.createElement('input');
+                userId.name = 'userId';
+                userId.hidden = true;
+                userId.value = field.dataset.userId;
+                form.insertBefore(userId, acceptBtn);
+                const paymentId = document.createElement('input');
+                paymentId.name = 'paymentId';
+                paymentId.hidden = true;
+                paymentId.value = field.dataset.id;
+                form.insertBefore(paymentId, acceptBtn);
+
                 const amountPaidLabel = document.createElement('label');
                 amountPaidLabel.htmlFor = 'amount-paid-input';
                 amountPaidLabel.textContent = 'Nueva cantidad pagada:';
                 form.insertBefore(amountPaidLabel, acceptBtn);
 
                 const amountPaidInput = document.createElement('input');
+                amountPaidInput.name = 'amountPaid';
                 amountPaidInput.autofocus = true;
                 amountPaidInput.id = 'amount-paid-input';
                 amountPaidInput.type = 'number';
@@ -748,12 +843,25 @@ export const GUI = function(Data, Event){
                 dialog.showModal();
 
             } else if (field.dataset.paymentDate !== undefined){
+                form.edit = 'payment-date';
+                const userId = document.createElement('input');
+                userId.name = 'userId';
+                userId.hidden = true;
+                userId.value = field.dataset.userId;
+                form.insertBefore(userId, acceptBtn);
+                const paymentId = document.createElement('input');
+                paymentId.name = 'paymentId';
+                paymentId.hidden = true;
+                paymentId.value = field.dataset.id;
+                form.insertBefore(paymentId, acceptBtn);
+
                 const paymentDateLabel = document.createElement('label');
                 paymentDateLabel.htmlFor = 'payment-date-input';
                 paymentDateLabel.textContent = 'Nueva fecha de pago:';
                 form.insertBefore(paymentDateLabel, acceptBtn);
 
                 const paymentDateInput = document.createElement('input');
+                paymentDateInput.name = 'paymentDate';
                 paymentDateInput.autofocus = true;
                 paymentDateInput.id = 'payment-date-input';
                 paymentDateInput.type = 'datetime-local';
@@ -775,12 +883,20 @@ export const GUI = function(Data, Event){
                 dialog.showModal();
 
             }else if (field.dataset.active !== undefined){
+                form.edit = 'client-active';
+                const userId = document.createElement('input');
+                userId.name = 'userId';
+                userId.hidden = true;
+                userId.value = field.dataset.userId;
+                form.insertBefore(userId, acceptBtn);
+
                 const activeLabel = document.createElement('label');
                 activeLabel.htmlFor = 'active-input';
                 activeLabel.textContent = 'Nuevo estado de cliente:';
                 form.insertBefore(activeLabel, acceptBtn);
 
                 const activeInput = document.createElement('select');
+                activeInput.name = 'active';
                 activeInput.id = 'active-input';
                 activeInput.required = true;
                 form.insertBefore(activeInput, acceptBtn);
@@ -799,12 +915,25 @@ export const GUI = function(Data, Event){
                 dialog.showModal();
                 
             } else if (field.dataset.userId !== undefined){
+                form.edit = 'client-payment-id';
+                const userId = document.createElement('input');
+                userId.name = 'prevUserId';
+                userId.hidden = true;
+                userId.value = field.dataset.userId;
+                form.insertBefore(userId, acceptBtn);
+                const paymentId = document.createElement('input');
+                paymentId.name = 'paymentId';
+                paymentId.hidden = true;
+                paymentId.value = field.dataset.id;
+                form.insertBefore(paymentId, acceptBtn);
+
                 const userIdLabel = document.createElement('label');
                 userIdLabel.htmlFor = 'user-id-input';
                 userIdLabel.textContent = 'Nuevo ID de cliente:';
                 form.insertBefore(userIdLabel, acceptBtn);
 
                 const userIdInput = document.createElement('input');
+                userIdInput.name = 'userId';
                 userIdInput.autofocus = true;
                 userIdInput.id = 'user-id-input';
                 userIdInput.value = field.dataset.userId;
@@ -838,6 +967,7 @@ export const GUI = function(Data, Event){
             form.appendChild(paymentIdLabel);
 
             const paymentIdInput = document.createElement('input');
+            paymentIdInput.name = 'paymentId';
             paymentIdInput.autofocus = true;
             paymentIdInput.id = 'payment-id-input';
             paymentIdInput.type = 'number';
@@ -856,7 +986,7 @@ export const GUI = function(Data, Event){
             cancelBtn.textContent = 'Cancelar';
             form.appendChild(cancelBtn);
 
-            eventMaster.resolveForm('delete', acceptBtn, form, dialog, renderTables, [], renderErrorMsg);
+            eventMaster.resolveForm('delete-payment', acceptBtn, form, dialog, renderTables, [], renderErrorMsg);
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 
@@ -1072,6 +1202,7 @@ export const GUI = function(Data, Event){
         form.appendChild(userNameLabel);
 
         const userNameInput = document.createElement('input');
+        userNameInput.name = 'username';
         userNameInput.id = 'user-name-input';
         userNameInput.required = true;
         userNameInput.autofocus = true;
@@ -1085,6 +1216,7 @@ export const GUI = function(Data, Event){
         form.appendChild(userPasswordLabel);
 
         const userPasswordInput = document.createElement('input');
+        userPasswordInput.name = 'password';
         userPasswordInput.id = 'user-password-input';
         userPasswordInput.required = true;
         userPasswordInput.placeholder = 'Mínimo 8 caracteres';
@@ -1139,6 +1271,7 @@ export const GUI = function(Data, Event){
         form.appendChild(userNameLabel);
 
         const userNameInput = document.createElement('input');
+        userNameInput.name = 'username';
         userNameInput.id = 'user-name-input';
         userNameInput.autofocus = true;
         userNameInput.required = true;
@@ -1151,6 +1284,7 @@ export const GUI = function(Data, Event){
         form.appendChild(userPasswordLabel);
 
         const userPasswordInput = document.createElement('input');
+        userPasswordInput.name = 'password';
         userPasswordInput.id = 'user-password-input';
         userPasswordInput.required = true;
         userPasswordInput.minLength = 8;
@@ -1163,6 +1297,7 @@ export const GUI = function(Data, Event){
         form.appendChild(userRoleLabel);
 
         const userRoleInput = document.createElement('select');
+        userRoleInput.name = 'role';
         userRoleInput.id = 'user-role-input';
         const adminOpt = document.createElement('option');
         adminOpt.value = 'admin';
@@ -1205,6 +1340,7 @@ export const GUI = function(Data, Event){
         form.appendChild(userNameLabel);
 
         const userNameInput = document.createElement('input');
+        userNameInput.name = 'username';
         userNameInput.id = 'user-name-input';
         userNameInput.autofocus = true;
         userNameInput.required = true;
@@ -1326,6 +1462,7 @@ export const GUI = function(Data, Event){
 
     eventMaster.addClickEventListener(addPaymentBtn, renderAddPaymentForm);
     eventMaster.addClickEventListener(addUserBtn, renderAddUserForm);
+    eventMaster.addClickEventListener(addTrainerBtn, renderAddTrainerForm);
     eventMaster.editTableFields(usersTable, renderEditForm);
     eventMaster.editTableFields(paymentsTable, renderEditForm);
     eventMaster.addClickEventListener(deletePaymentBtn, renderDeletePaymentForm);

@@ -188,6 +188,17 @@ export const eventMaster = function(Data){
         }
     }
 
+    /**
+     * 
+     * @param {String} type - Action to be done. It can be add-user, add-trainer, delete-user, login, add-payment, add-client, delete-payment and edit.
+     * If its edit, the provided form must have the name of the edition to be performed
+     * @param {HTMLElement} DOMElement 
+     * @param {HTMLFormElement} form 
+     * @param {HTMLDialogElement} dialog 
+     * @param {Function} renderFunc 
+     * @param {HTMLElement} field 
+     * @param {Function} renderErrorMsg 
+     */
     function resolveForm(type, DOMElement, form, dialog, renderFunc=function(){}, field=[], renderErrorMsg=function(e){}){
         DOMElement.addEventListener('click', async (e)=>{
             e.preventDefault();
@@ -200,102 +211,136 @@ export const eventMaster = function(Data){
 
                 DOMElement.disabled = true;
                 DOMElement.textContent = 'Procesando...';
+
+                const formData = getFormData(form);
                 
                 if (type === 'add-user'){
-                    const inputs = [
-                        form.querySelector('#user-name-input'),
-                        form.querySelector('#user-password-input'),
-                        form.querySelector('#user-role-input')
-                    ];
-
-                    const hash = await hashPassword(inputs[1].value);
-
-                    await Database.addUserSession(inputs[0].value, hash, inputs[2].value);
+                    const hash = await hashPassword(formData.password);
+                    await Database.addUserSession(
+                        formData.username, 
+                        hash, 
+                        formData.role
+                    );
 
                     dialog.close();
                     dialog.remove();
-                }else if(type === 'delete-user'){
-                    const input = form.querySelector('#user-name-input');
+                }else if (type === 'add-trainer') {
+                    await Database.addTrainer(
+                        formData.name, 
+                        formData.ci
+                    );
 
-                    await Database.deleteUserSession(input.value);
+                    dialog.close();
+                    dialog.remove();
+                    renderFunc();
+                }else if(type === 'delete-user'){
+                    await Database.deleteUserSession(formData.username);
 
                     dialog.close();
                     dialog.remove();
                 }else if (type === 'login'){
-                    const inputs = [
-                        form.querySelector('#user-name-input'),
-                        form.querySelector('#user-password-input')
-                    ];
-                    
-                    const hash = await hashPassword(inputs[1].value);
-                    
-                    const user = await Database.verifyLogin(inputs[0].value, hash);
-                    
+                    const hash = await hashPassword(formData.password);
+                    const user = await Database.verifyLogin(
+                        formData.username, 
+                        hash
+                    );
                     Database.setCurrentUser(user);
                     
                     dialog.close();
                     dialog.remove();
                     renderFunc[0]();
                     renderFunc[1]();
-                }else if (type === 'payment'){
-                    const inputs = [
-                        form.querySelector('#amount-paid-input'),
-                        form.querySelector('#payment-date-input'),
-                        form.querySelector('#user-id-input')
-                    ];
-                    await Database.setPayment(inputs[2].value, inputs[0].value, inputs[1].value);
+                }else if (type === 'add-payment'){
+                    await Database.setPayment(
+                        formData.userId, 
+                        formData.amountPaid, 
+                        formData.paymentDate
+                    );
+
                     dialog.close();
                     dialog.remove();
                     renderFunc();
-                }else if (type === 'user'){
-                    const inputs = [
-                        form.querySelector('#name-input'),
-                        form.querySelector('#ci-input')
-                    ];
-                    await Database.addUser(inputs[0].value, inputs[1].value);
+                }else if (type === 'add-client'){
+                    await Database.addUser(
+                        formData.name, 
+                        formData.ci
+                    );
+
                     dialog.close();
                     dialog.remove();
                     renderFunc();
                 }else if (type === 'edit'){
-                    if(field.dataset.name !== undefined){
-                        await Database.changeUserName(form.querySelector('#name-input').value, field.dataset.id);
+                    if(form.edit === 'client-name'){
+                        console.log(formData.userId);
+                        await Database.changeUserName(
+                            formData.name, 
+                            formData.userId
+                        );
+
                         dialog.close();
                         dialog.remove();
                         renderFunc();
-                    }else if(field.dataset.ci !== undefined){
-                        await Database.changeUserCI(form.querySelector('#ci-input').value, field.dataset.id);
+                    }else if(form.edit === 'client-ci'){
+                        await Database.changeUserCI(
+                            formData.ci, 
+                            formData.userId
+                        );
+
                         dialog.close();
                         dialog.remove();
                         renderFunc();
-                    }else if(field.dataset.amountPaid !== undefined){
-                        await Database.changeAmountPaid(form.querySelector('#amount-paid-input').value, field.dataset.amountPaid, field.dataset.id, field.dataset.userId);
+                    }else if(form.edit === 'amount-paid'){
+                        await Database.changeAmountPaid(
+                            formData.amountPaid, 
+                            formData.prevAmountPaid, 
+                            formData.paymentId, 
+                            formData.userId
+                        );
+                        
                         dialog.close();
                         dialog.remove();
                         renderFunc();
-                    }else if(field.dataset.paymentDate !== undefined){
-                        await Database.changePaymentDate(form.querySelector('#payment-date-input').value, field.dataset.id, field.dataset.userId);
+                    }else if(form.edit === 'payment-date'){
+                        await Database.changePaymentDate(
+                            formData.paymentDate, 
+                            formData.paymentId, 
+                            formData.userId
+                        );
+                        
                         dialog.close();
                         dialog.remove();
                         renderFunc();
-                    }else if(field.dataset.active !== undefined){
-                        await Database.changeUserStatus(form.querySelector('#active-input').value, field.dataset.id);
+                    }else if(form.edit === 'client-active'){
+                        await Database.changeUserStatus(
+                            formData.active, 
+                            formData.userId
+                        );
+                        
                         dialog.close();
                         dialog.remove();
                         renderFunc();
-                    }else if(field.dataset.userId !== undefined){
-                        await Database.changePaymentUser(field.dataset.userId, form.querySelector('#user-id-input').value, field.dataset.id);
+                    }else if(form.edit === 'client-payment-id'){
+                        await Database.changePaymentUser(
+                            formData.prevUserId, 
+                            formData.userId, 
+                            formData.paymentDate
+                        );
+
                         dialog.close();
                         dialog.remove();
                         renderFunc();
                     }
-                }else if (type === 'delete'){
-                    const confirmed = confirm(`¿Estás seguro de que deseas eliminar el registro de pago #${form.querySelector('#payment-id-input').value}?`);
-                    if (!confirmed) return;
-                    await Database.deletePayment(form.querySelector('#payment-id-input').value);
+                }else if (type === 'delete-payment'){
+                    await Database.deletePayment(
+                        formData.paymentId
+                    );
+
                     dialog.close();
                     dialog.remove();
                     renderFunc();
                 }else{
+                    DOMElement.disabled = false;
+                    DOMElement.textContent = text;
                     return;
                 }
             }catch(error){
@@ -339,6 +384,21 @@ export const eventMaster = function(Data){
         DOMElement.addEventListener('touchcancel', () => {
             clearTimeout(touchTimer);
         });
+    }
+
+    /**
+     * 
+     * @param {HTMLFormElement} form - A form element
+     * @returns {Object} 
+     */
+    function getFormData(form){
+        let data = {};
+        const formData = new FormData(form);
+        for( let [key, value] of formData){
+            data[key] = value;
+        }
+        console.log('Form Data:', data);
+        return data;
     }
 
     return {

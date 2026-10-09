@@ -30,8 +30,7 @@ export class Data{
                 expiration_date TEXT NOT NULL DEFAULT '1970-01-01T00:00',
                 trainer VARCHAR(100) NOT NULL,
                 active BOOLEAN DEFAULT 1,
-                registered_by VARCHAR(50) NOT NULL,
-                FOREIGN KEY(trainer) REFERENCES trainers(name) ON DELETE CASCADE
+                registered_by VARCHAR(50) NOT NULL
                 );`);
 
             await db.execute(`
@@ -81,13 +80,14 @@ export class Data{
 
         return new Data(db);
         }catch(error){
-            throw this.handleDatabaseError(error);
+            console.log(error);
+            throw error;
         }
     }
     //TODO: Improve error messages
     handleDatabaseError(error) {
         const errorMsg = String(error).toLowerCase();
-
+        console.log(errorMsg);
         if (errorMsg.includes('unique constraint failed')) {
             if (errorMsg.includes('ci')) {
                 return 'Ya existe un cliente registrado con este número de identidad. Por favor, verifica los datos.';
@@ -500,6 +500,17 @@ export class Data{
         }
     }
 
+    async getTrainersNames(){
+        try{
+            //Ordered by ascending id
+            return await this.queryDatabase('get', 
+                `SELECT name FROM trainers ORDER BY id`
+            );
+        }catch(error){
+            throw this.handleDatabaseError(error);
+        }
+    }
+
     async setPayment(userId, amountPaid, date){
         return this.sqlQueue.enqueue(async () => {
             try{
@@ -533,11 +544,11 @@ export class Data{
         });
     }
 
-    async addUser(name, ci){
+    async addUser(name, ci, trainer){
         try {
             await this.queryDatabase('set', 
-                `INSERT INTO users_id(name, ci, registered_by) VALUES ($1, $2, $3)`, 
-                [name, ci, this.#currentUser.username]);
+                `INSERT INTO users_id(name, ci, trainer, registered_by) VALUES ($1, $2, $3, $4)`, 
+                [name, ci, trainer, this.#currentUser.username]);
         } catch (error) {
            throw this.handleDatabaseError(error); 
         }
@@ -558,6 +569,16 @@ export class Data{
             await this.queryDatabase('set', 
                 `DELETE FROM trainers WHERE id = $1`, 
                 [id]);
+        } catch (error) {
+           throw this.handleDatabaseError(error); 
+        }
+    }
+
+    async changeUserTrainer(trainerName, id){
+        try {
+            await this.queryDatabase('set', 
+                `UPDATE users_id SET trainer = $1, registered_by = $3 WHERE id = $2`, 
+                [trainerName, id, this.#currentUser.username]);
         } catch (error) {
            throw this.handleDatabaseError(error); 
         }
@@ -850,6 +871,18 @@ export class Data{
                 throw this.handleDatabaseError(error);
             }
         });
+    }
+
+    async deleteTrainer(id){
+        try {
+            await this.queryDatabase(
+                'set',
+                `DELETE from trainers WHERE id = $1`,
+                [id]
+            );
+        } catch (error) {
+            this.handleDatabaseError(error);
+        }
     }
 
     async getDateResume(date){

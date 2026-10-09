@@ -263,7 +263,8 @@ export const eventMaster = function(Data){
                 }else if (type === 'add-client'){
                     await Database.addUser(
                         formData.name, 
-                        formData.ci
+                        formData.ci,
+                        formData.trainer
                     );
 
                     dialog.close();
@@ -292,6 +293,15 @@ export const eventMaster = function(Data){
                     }else if(form.edit === 'client-ci'){
                         await Database.changeUserCI(
                             formData.ci, 
+                            formData.userId
+                        );
+
+                        dialog.close();
+                        dialog.remove();
+                        renderFunc();
+                    }else if(form.edit === 'client-trainer'){
+                        await Database.changeUserTrainer(
+                            formData.trainer,
                             formData.userId
                         );
 

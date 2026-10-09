@@ -300,7 +300,7 @@ export const GUI = function(Data, Event){
     async function renderUsersTable() {
         usersTable.querySelector('tbody').innerHTML = `
             <tr>
-                <td colspan="8" class="loading-state-cell">
+                <td colspan="9" class="loading-state-cell">
                     <div class="spinner-container">
                         <span class="spinner"></span> 
                         <span>Cargando datos...</span>
@@ -383,6 +383,17 @@ export const GUI = function(Data, Event){
                 lastPayment.textContent += `/ ${element.expiration_date === '1970-01-01T00:00' ? '-' : dateFormatter.format(new Date(element.expiration_date))}`;
                 lastPayment.classList.add('text-right');
                 row.appendChild(lastPayment);
+
+                let trainer = document.createElement('td');
+                trainer.dataset.clientTrainerEditable = true;
+                trainer.dataset.id = element.id;
+                trainer.textContent = element.trainer;
+                trainer.classList.add('text-left');
+                if (currentUser.role === 'admin'){
+                    trainer.classList.add('editable-cell');
+                    trainer.title = 'Ctrl+Clic para editar';
+                }
+                row.appendChild(trainer);
 
                 let active = document.createElement('td');
                 active.dataset.clientActiveEditable = true;
@@ -689,7 +700,7 @@ export const GUI = function(Data, Event){
         
     }
 
-    function renderAddUserForm(){
+    async function renderAddUserForm(){
         try{
             const body = document.querySelector('body');
             const dialog = document.createElement('dialog');
@@ -727,6 +738,26 @@ export const GUI = function(Data, Event){
             ciInput.pattern = '[0-9]{11}';
             form.appendChild(ciInput);
 
+            const trainerLabel = document.createElement('label');
+            trainerLabel.htmlFor = 'trainer';
+            trainerLabel.textContent = 'Entrenador:';
+            form.appendChild(trainerLabel);
+
+            const trainerInput = document.createElement('select');
+            trainerInput.name = 'trainer';
+            const noTrainerOpt = document.createElement('option');
+            noTrainerOpt.value = 'No';
+            noTrainerOpt.textContent = '(Ninguno)';
+            trainerInput.appendChild(noTrainerOpt);
+            const response = await Database.getTrainersNames();
+            response.forEach(element => {
+                const trainerOpt = document.createElement('option');
+                trainerOpt.value = element.name;
+                trainerOpt.textContent = element.name;
+                trainerInput.appendChild(trainerOpt);
+            });
+            form.appendChild(trainerInput);
+
             const acceptBtn = document.createElement('button');
             acceptBtn.className = 'accept-btn';
             acceptBtn.type = 'submit';
@@ -749,7 +780,7 @@ export const GUI = function(Data, Event){
         }
     };
 
-    function renderEditForm(field){
+    async function renderEditForm(field){
         try{
             const dialog = document.createElement('dialog');
             const form = document.createElement('form');
@@ -869,6 +900,37 @@ export const GUI = function(Data, Event){
                 ciInput.required = true;
                 ciInput.pattern = '[0-9]{11}';
                 form.insertBefore(ciInput, acceptBtn);
+
+                body.appendChild(dialog);
+                dialog.showModal();
+
+            } else if (field.dataset.clientTrainerEditable){
+                form.edit = 'client-trainer';
+                const userId = document.createElement('input');
+                userId.name = 'userId';
+                userId.hidden = true;
+                userId.value = field.dataset.id;
+                form.insertBefore(userId, acceptBtn);
+
+                const trainerLabel = document.createElement('label');
+                trainerLabel.htmlFor = 'trainer';
+                trainerLabel.textContent = 'Nuevo entrenador:';
+                form.insertBefore(trainerLabel, acceptBtn);
+
+                const trainerInput = document.createElement('select');
+                trainerInput.name = 'trainer';
+                const noTrainerOpt = document.createElement('option');
+                noTrainerOpt.value = 'No';
+                noTrainerOpt.textContent = '(Ninguno)';
+                trainerInput.appendChild(noTrainerOpt);
+                const response = await Database.getTrainersNames();
+                response.forEach(element => {
+                    const trainerOpt = document.createElement('option');
+                    trainerOpt.value = element.name;
+                    trainerOpt.textContent = element.name;
+                    trainerInput.appendChild(trainerOpt);
+                });
+                form.insertBefore(trainerInput, acceptBtn);
 
                 body.appendChild(dialog);
                 dialog.showModal();

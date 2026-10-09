@@ -576,6 +576,19 @@ export class Data{
         }
     }
 
+    async changeTrainerName(name, id){
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
+        try {
+            await this.queryDatabase('set',
+                `UPDATE trainers SET name = $1 WHERE id = $2`,
+                [name, id]);
+        } catch (error) {
+            throw this.handleDatabaseError(error);
+        }
+    }
+
     async changeUserCI(ci, id){
         if(this.#currentUser.role !== 'admin'){
             throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
@@ -584,6 +597,19 @@ export class Data{
             await this.queryDatabase('set',
                 `UPDATE users_id SET ci = $1, registered_by = $3 WHERE id = $2`,
                 [ci, id, this.#currentUser.username]);
+        } catch (error) {
+            throw this.handleDatabaseError(error);
+        }
+    }
+
+    async changeTrainerCI(ci, id){
+        if(this.#currentUser.role !== 'admin'){
+            throw new Error('No tienes los permisos necesarios para ejecutar esta acción');
+        }
+        try {
+            await this.queryDatabase('set',
+                `UPDATE trainers SET ci = $1 WHERE id = $2`,
+                [ci, id]);
         } catch (error) {
             throw this.handleDatabaseError(error);
         }

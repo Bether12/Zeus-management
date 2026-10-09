@@ -246,6 +246,7 @@ export const GUI = function(Data, Event){
                 }
 
                 let userId = document.createElement('td');
+                userId.dataset.paymentClientEditable = true;
                 userId.dataset.userId = element.user_id;
                 userId.dataset.id = element.id;
                 userId.textContent = element.user_id;
@@ -260,6 +261,7 @@ export const GUI = function(Data, Event){
                 row.appendChild(name);
 
                 let amountPaid = document.createElement('td');
+                amountPaid.dataset.amountPaidEditable = true;
                 amountPaid.dataset.amountPaid = element.amount_paid;
                 amountPaid.dataset.id = element.id;
                 amountPaid.dataset.userId = element.user_id;
@@ -272,6 +274,7 @@ export const GUI = function(Data, Event){
                 row.appendChild(amountPaid);
 
                 let paymentDate = document.createElement('td');
+                paymentDate.dataset.paymentDateEditable = true;
                 paymentDate.dataset.paymentDate = element.payment_date;
                 paymentDate.dataset.userId = element.user_id;
                 paymentDate.dataset.id = element.id;
@@ -339,6 +342,7 @@ export const GUI = function(Data, Event){
                 row.appendChild(id);
 
                 let name = document.createElement('td');
+                name.dataset.clientNameEditable = true;
                 name.dataset.name = element.name;
                 name.dataset.id = element.id;
                 name.textContent = element.name;
@@ -350,6 +354,7 @@ export const GUI = function(Data, Event){
                 row.appendChild(name);
 
                 let ci = document.createElement('td');
+                ci.dataset.clientCiEditable = true;
                 ci.dataset.ci = element.ci;
                 ci.dataset.id = element.id;
                 ci.textContent = element.ci;
@@ -380,6 +385,7 @@ export const GUI = function(Data, Event){
                 row.appendChild(lastPayment);
 
                 let active = document.createElement('td');
+                active.dataset.clientActiveEditable = true;
                 active.dataset.active = element.active;
                 active.dataset.id = element.id;
                 if (currentUser.role === 'admin'){
@@ -499,17 +505,27 @@ export const GUI = function(Data, Event){
                 row.appendChild(id);
 
                 let name = document.createElement('td');
+                name.dataset.trainerNameEditable = true;
                 name.textContent = element.name;
                 name.dataset.name = element.name;
                 name.dataset.id = element.id;
                 name.classList.add('text-left');
+                if (currentUser.role === 'admin'){
+                    name.classList.add('editable-cell');
+                    name.title = 'Ctrl+Clic para editar';
+                }
                 row.appendChild(name);
 
                 let ci = document.createElement('td');
+                ci.dataset.trainerCiEditable = true;
                 ci.textContent = element.ci;
                 ci.dataset.ci = element.ci;
                 ci.dataset.id = element.id;
                 ci.classList.add('text-right');
+                if (currentUser.role === 'admin'){
+                    ci.classList.add('editable-cell');
+                    ci.title = 'Ctrl+Clic para editar';
+                }
                 row.appendChild(ci);
                 trainersTable.querySelector('tbody').appendChild(row);
             });
@@ -755,7 +771,7 @@ export const GUI = function(Data, Event){
             eventMaster.closeDialog(cancelBtn, dialog);
             eventMaster.checkForm(form);
 
-            if (field.dataset.name !== undefined){
+            if (field.dataset.clientNameEditable){
                 form.edit = 'client-name';
                 const userId = document.createElement('input');
                 userId.name = 'userId';
@@ -780,7 +796,32 @@ export const GUI = function(Data, Event){
                 body.appendChild(dialog);
                 dialog.showModal();
 
-            } else if (field.dataset.ci !== undefined){
+            } else if (field.dataset.trainerNameEditable){
+                form.edit = 'trainer-name';
+                const userId = document.createElement('input');
+                userId.name = 'userId';
+                userId.hidden = true;
+                userId.value = field.dataset.id;
+                form.insertBefore(userId, acceptBtn);
+
+                const nameLabel = document.createElement('label');
+                nameLabel.htmlFor = 'name-input';
+                nameLabel.textContent = 'Nuevo nombre:';
+                form.insertBefore(nameLabel, acceptBtn);
+
+                const nameInput = document.createElement('input');
+                nameInput.name = 'name';
+                nameInput.autofocus = true;
+                nameInput.id = 'name-input';
+                nameInput.value = field.dataset.name;
+                nameInput.required = true;
+                nameInput.minLength = 3;
+                form.insertBefore(nameInput, acceptBtn);
+
+                body.appendChild(dialog);
+                dialog.showModal();
+
+            } else if (field.dataset.clientCiEditable){
                 form.edit = 'client-ci';
                 const userId = document.createElement('input');
                 userId.name = 'userId';
@@ -806,7 +847,33 @@ export const GUI = function(Data, Event){
                 body.appendChild(dialog);
                 dialog.showModal();
 
-            } else if (field.dataset.amountPaid !== undefined){
+            } else if(field.dataset.trainerCiEditable){
+                form.edit = 'trainer-ci';
+                const userId = document.createElement('input');
+                userId.name = 'userId';
+                userId.hidden = true;
+                userId.value = field.dataset.id;
+                form.insertBefore(userId, acceptBtn);
+
+                const ciLabel = document.createElement('label');
+                ciLabel.htmlFor = 'ci-input';
+                ciLabel.textContent = 'Nuevo CI:';
+                form.insertBefore(ciLabel, acceptBtn);
+
+                const ciInput = document.createElement('input');
+                ciInput.name = 'ci';
+                ciInput.autofocus = true;
+                ciInput.id = 'ci-input';
+                ciInput.inputMode = 'numeric';
+                ciInput.value = field.dataset.ci;
+                ciInput.required = true;
+                ciInput.pattern = '[0-9]{11}';
+                form.insertBefore(ciInput, acceptBtn);
+
+                body.appendChild(dialog);
+                dialog.showModal();
+
+            } else if (field.dataset.amountPaidEditable){
                 form.edit = 'amount-paid';
                 const amountPaid = document.createElement('input');
                 amountPaid.name = 'prevAmountPaid';
@@ -842,7 +909,7 @@ export const GUI = function(Data, Event){
                 body.appendChild(dialog);
                 dialog.showModal();
 
-            } else if (field.dataset.paymentDate !== undefined){
+            } else if (field.dataset.paymentDateEditable){
                 form.edit = 'payment-date';
                 const userId = document.createElement('input');
                 userId.name = 'userId';
@@ -882,7 +949,7 @@ export const GUI = function(Data, Event){
                 body.appendChild(dialog);
                 dialog.showModal();
 
-            }else if (field.dataset.active !== undefined){
+            }else if (field.dataset.clientActiveEditable){
                 form.edit = 'client-active';
                 const userId = document.createElement('input');
                 userId.name = 'userId';
@@ -914,7 +981,7 @@ export const GUI = function(Data, Event){
                 body.appendChild(dialog);
                 dialog.showModal();
                 
-            } else if (field.dataset.userId !== undefined){
+            } else if (field.dataset.paymentClientEditable){
                 form.edit = 'client-payment-id';
                 const userId = document.createElement('input');
                 userId.name = 'prevUserId';
@@ -1465,6 +1532,7 @@ export const GUI = function(Data, Event){
     eventMaster.addClickEventListener(addTrainerBtn, renderAddTrainerForm);
     eventMaster.editTableFields(usersTable, renderEditForm);
     eventMaster.editTableFields(paymentsTable, renderEditForm);
+    eventMaster.editTableFields(trainersTable, renderEditForm);
     eventMaster.addClickEventListener(deletePaymentBtn, renderDeletePaymentForm);
     eventMaster.addClickEventListener(generateResumeBtn, renderResumeForm);
     eventMaster.addClickEventListener(changeCurrentUserBtn, logIn);

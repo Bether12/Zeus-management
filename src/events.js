@@ -280,12 +280,30 @@ export const eventMaster = function(Data){
                         dialog.close();
                         dialog.remove();
                         renderFunc();
+                    }else if(form.edit === 'trainer-name'){
+                        await Database.changeTrainerName(
+                            formData.name, 
+                            formData.userId
+                        );
+
+                        dialog.close();
+                        dialog.remove();
+                        renderFunc();
                     }else if(form.edit === 'client-ci'){
                         await Database.changeUserCI(
                             formData.ci, 
                             formData.userId
                         );
 
+                        dialog.close();
+                        dialog.remove();
+                        renderFunc();
+                    }else if(form.edit === 'trainer-ci'){
+                        await Database.changeTrainerCI(
+                            formData.ci, 
+                            formData.userId
+                        );
+                        
                         dialog.close();
                         dialog.remove();
                         renderFunc();
